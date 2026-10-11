@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="farmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E5E3A"/>
+      <stop offset="100%" stop-color="#15442A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Fond écusson / squirle vert agricole Lawtan -->
+  <rect width="128" height="128" rx="30" fill="url(#farmGrad)"/>
+  
+  <!-- Monogramme L Lawtan stylisé -->
+  <path d="M38 30 H52 V82 H86 V94 H38 Z" fill="#FFFFFF"/>
+  
+  <!-- Goutte de lait laitière stylisée -->
+  <path d="M76 38 C76 38 90 54 90 64 C90 72 84 78 76 78 C68 78 62 72 62 64 C62 54 76 38 76 38 Z" fill="#FFFFFF" opacity="0.9"/>
+  
+  <!-- Épi / feuille or dorée bio -->
+  <path d="M76 38 C81 32 88 29 95 30 C95 37 91 43 86 46 C81 46 78 41 76 38 Z" fill="#D9A441"/>
+</svg>
