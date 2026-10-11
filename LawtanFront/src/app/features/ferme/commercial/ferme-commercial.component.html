@@ -240,6 +240,120 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Cartes Mobiles Dédiées (Smartphone <= 768px pour éviter le tableau déformé) -->
+  <div class="mobile-commandes-cards" role="region" aria-label="Commandes de lait format mobile">
+    @for (cmd of commandesFiltrees(); track cmd.id) {
+      <article class="m-cmd-card">
+        <!-- En-tête : Référence + Lot + Statut -->
+        <div class="m-cmd-header">
+          <div class="m-cmd-ref-box">
+            <span class="m-cmd-ref font-numeric">{{ cmd.reference }}</span>
+            <span class="type-tag">{{ cmd.numeroLotLait }}</span>
+          </div>
+
+          <span 
+            class="status-pill" 
+            [class.status-success]="cmd.statut === 'paye'" 
+            [class.status-info]="cmd.statut === 'livre'" 
+            [class.status-warn]="cmd.statut === 'en_livraison'"
+            [class.status-muted]="cmd.statut === 'en_attente'">
+            @if (cmd.statut === 'paye') {
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="status-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            }
+            @if (cmd.statut === 'en_livraison') {
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            }
+            @if (cmd.statut === 'livre') {
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+            }
+            @if (cmd.statut === 'en_attente') {
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            }
+            {{ getLibelleStatutCommande(cmd.statut) }}
+          </span>
+        </div>
+
+        <!-- Informations Client & Livraison -->
+        <div class="m-cmd-client-row">
+          <div class="m-cmd-client-main">
+            <h3 class="m-cmd-client-name">{{ cmd.clientNom }}</h3>
+            <div class="m-cmd-client-sub">
+              <span class="m-cmd-client-badge">{{ getLibelleClient(cmd.clientType) }}</span>
+              <a [href]="'tel:' + cmd.clientTelephone" class="m-cmd-phone-link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span>{{ cmd.clientTelephone }}</span>
+              </a>
+            </div>
+          </div>
+          <div class="m-cmd-destination">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="dest-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>{{ cmd.lieuLivraison }}</span>
+          </div>
+        </div>
+
+        <!-- Bloc Produit & Montant -->
+        <div class="m-cmd-order-box">
+          <div class="m-cmd-prod-info">
+            <span class="m-cmd-prod-title">{{ cmd.produit === 'lait_bio_frais' ? 'Lait Bio Frais' : 'Lait Caillé Bio' }}</span>
+            <span class="m-cmd-prod-format">{{ cmd.quantiteUnites }} L • {{ cmd.format }}</span>
+          </div>
+          <div class="m-cmd-amount">
+            <span class="m-cmd-amount-val text-success font-numeric font-bold">{{ cmd.montantTotalFCFA | number }}</span>
+            <span class="m-cmd-amount-currency">FCFA</span>
+          </div>
+        </div>
+
+        <!-- Avis Client (si présent) -->
+        @if (cmd.noteSatisfaction) {
+          <div class="m-cmd-review">
+            <div class="m-cmd-stars text-warn font-numeric">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <strong>{{ cmd.noteSatisfaction }}/5</strong>
+            </div>
+            @if (cmd.avisClient) {
+              <p class="m-cmd-quote">« {{ cmd.avisClient }} »</p>
+            }
+          </div>
+        }
+
+        <!-- Actions : statut + contact -->
+        <div class="m-cmd-actions">
+          <div class="m-cmd-status-action">
+            @if (cmd.statut === 'en_attente') {
+              <button type="button" class="btn-statut-step" (click)="changerStatut(cmd, 'en_livraison')">Démarrer livraison</button>
+            }
+            @if (cmd.statut === 'en_livraison') {
+              <button type="button" class="btn-statut-step" (click)="changerStatut(cmd, 'livre')">Confirmer livraison</button>
+            }
+            @if (cmd.statut === 'livre') {
+              <button type="button" class="btn-statut-step btn-statut-pay" (click)="changerStatut(cmd, 'paye')">Encaisser</button>
+            }
+            @if (cmd.statut === 'paye') {
+              <span class="m-cmd-cloture-text">Clôturée (Encaissée)</span>
+            }
+          </div>
+
+          <div class="m-cmd-contact-action">
+            <a 
+              [href]="genererLienWhatsApp(cmd)" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="btn-whatsapp">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" class="whatsapp-icon">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"></path>
+              </svg>
+              WhatsApp
+            </a>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <div class="empty-state">
+        <p class="empty-text">Aucune commande pour ce filtre.</p>
+      </div>
+    }
+  </div>
 </div>
 
 @if (modalCommandeOuvert()) {

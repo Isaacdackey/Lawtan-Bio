@@ -114,3 +114,217 @@
   color: var(--color-text-secondary);
 }
 
+/* ==========================================================================
+   CARTES MOBILES POUR COMMANDES (<= 768px)
+   ========================================================================== */
+.mobile-commandes-cards {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    display: none !important;
+  }
+
+  .mobile-commandes-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .m-cmd-card {
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  }
+
+  .m-cmd-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .m-cmd-ref-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .m-cmd-ref {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.01em;
+  }
+
+  .m-cmd-client-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .m-cmd-client-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0F172A;
+    line-height: 1.3;
+  }
+
+  .m-cmd-client-sub {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .m-cmd-client-badge {
+    background: #F1F5F9;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 6px;
+  }
+
+  .m-cmd-phone-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 12px;
+    font-weight: 600;
+    color: #059669;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .m-cmd-phone-link:hover {
+    text-decoration: underline;
+  }
+
+  .m-cmd-destination {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 12px;
+    color: #64748B;
+  }
+
+  .dest-pin {
+    color: #94A3B8;
+    flex-shrink: 0;
+  }
+
+  .m-cmd-order-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.95rem;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+  }
+
+  .m-cmd-prod-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .m-cmd-prod-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1E293B;
+  }
+
+  .m-cmd-prod-format {
+    font-size: 12px;
+    color: #64748B;
+  }
+
+  .m-cmd-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+
+  .m-cmd-amount-val {
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .m-cmd-amount-currency {
+    font-size: 11px;
+    font-weight: 700;
+    color: #059669;
+  }
+
+  .m-cmd-review {
+    padding: 0.65rem 0.85rem;
+    background: #FFFBEB;
+    border: 1px solid #FEF3C7;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .m-cmd-stars {
+    font-size: 12px;
+    font-weight: 700;
+    color: #D97706;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .m-cmd-quote {
+    margin: 0;
+    font-size: 12px;
+    font-style: italic;
+    color: #78350F;
+    line-height: 1.4;
+  }
+
+  .m-cmd-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    padding-top: 0.65rem;
+    border-top: 1px solid #F1F5F9;
+  }
+
+  .m-cmd-status-action {
+    flex: 1;
+  }
+
+  .m-cmd-status-action button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .m-cmd-cloture-text {
+    font-size: 11.5px;
+    color: #64748B;
+    font-weight: 600;
+  }
+
+  .m-cmd-contact-action {
+    flex-shrink: 0;
+  }
+}
+
+
