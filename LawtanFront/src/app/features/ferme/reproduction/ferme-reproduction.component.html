@@ -1,0 +1,253 @@
+<div class="view-panel">
+  <div class="toolbar-header">
+    <div>
+      <h1 class="page-title">Reproduction & Calendrier de Vêlage</h1>
+      <span class="page-sub">Insémination artificielle (IA), suivi des gestations, génétique et planning des tarissements</span>
+    </div>
+
+    @if (fermeService.currentPermission().peutAjouterReproduction) {
+      <button type="button" class="btn-primary" (click)="ouvrirModalReproduction()">
+        + Enregistrer un acte
+      </button>
+    }
+  </div>
+
+  <div class="metrics-row" role="region" aria-label="Indicateurs de reproduction">
+    <div class="metric-card">
+      <div class="metric-card-header">
+        <span class="metric-title">Femelles gestantes</span>
+        <span class="metric-icon-wrap icon-repro" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        {{ fermeService.kpiVachesGestantesNb() }}
+        <span class="unit">/ 7 laitières</span>
+      </div>
+      <div class="metric-detail">
+        Diagnostics de gestation (DG) confirmés
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-card-header">
+        <span class="metric-title">Prochain vêlage</span>
+        <span class="metric-icon-wrap icon-milk" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        @if (fermeService.kpiProchainsVelages().length > 0) {
+          {{ fermeService.kpiProchainsVelages()[0].joursRestantsAvantVelage }}
+        } @else {
+          0
+        }
+        <span class="unit">jours</span>
+      </div>
+      <div class="metric-detail">
+        @if (fermeService.kpiProchainsVelages().length > 0) {
+          Vache : <strong>{{ fermeService.kpiProchainsVelages()[0].animalNom }}</strong> ({{ fermeService.kpiProchainsVelages()[0].datePrevisionnelleVelage }})
+        } @else {
+          Aucun vêlage programmé
+        }
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-card-header">
+        <span class="metric-title">Génétique & Semence</span>
+        <span class="metric-icon-wrap icon-herd" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        100%
+        <span class="unit">Pedigree</span>
+      </div>
+      <div class="metric-detail">
+        Semences sexées certifiées & Taureaux purs
+      </div>
+    </div>
+  </div>
+
+  <div class="card-box">
+    <div class="card-box-header">
+      <div>
+        <h2 class="box-title">Calendrier Prévisionnel des Vêlages & Tarissements</h2>
+        <span class="box-sub">Planification du repos de 60 jours avant la mise bas pour protéger le troupeau</span>
+      </div>
+    </div>
+
+    <div class="plots-grid">
+      @for (v of fermeService.kpiProchainsVelages(); track v.id) {
+        <div class="plot-card">
+          <div class="plot-card-header">
+            <div>
+              <h3 class="plot-title">{{ v.animalNom }} <span class="mono-id">({{ v.animalBoucle }})</span></h3>
+              <span class="plot-type">Taureau/Semence : {{ v.taureauOuSemence }}</span>
+            </div>
+            <span class="status-pill status-warn">
+              J-{{ v.joursRestantsAvantVelage }} jours
+            </span>
+          </div>
+
+          <div class="plot-metrics">
+            <div class="plot-stat">
+              <span class="ps-label">Tarissement</span>
+              <strong class="ps-val font-numeric">{{ v.datePrevisionnelleTarissement }}</strong>
+            </div>
+            <div class="plot-stat">
+              <span class="ps-label">Vêlage estimé</span>
+              <strong class="ps-val font-numeric text-success">{{ v.datePrevisionnelleVelage }}</strong>
+            </div>
+            <div class="plot-stat">
+              <span class="ps-label">Praticien</span>
+              <strong class="ps-val">{{ v.technicienNom }}</strong>
+            </div>
+          </div>
+
+          <div class="gestation-progress-block">
+            <div class="gestation-track">
+              <div class="gestation-fill" [style.width.%]="((283 - (v.joursRestantsAvantVelage || 0)) / 283) * 100"></div>
+            </div>
+            <span class="text-sub font-numeric">Progression gestation : {{ Math.round(((283 - (v.joursRestantsAvantVelage || 0)) / 283) * 100) }}% ({{ 283 - (v.joursRestantsAvantVelage || 0) }} / 283 j)</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="card-box mt-4">
+    <div class="card-box-header">
+      <div>
+        <h2 class="box-title">Registre des Actes de Reproduction</h2>
+        <span class="box-sub">Chaleurs observées, inséminations artificielles et diagnostics de gestation</span>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Animal</th>
+            <th scope="col">Type d'acte</th>
+            <th scope="col">Géniteur / Semence</th>
+            <th scope="col">Diagnostic / Résultat</th>
+            <th scope="col">Opérateur</th>
+            <th scope="col">Observations</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rep of fermeService.suivisReproduction(); track rep.id) {
+            <tr>
+              <td data-label="Date" class="cell-date font-numeric">{{ rep.date }}</td>
+              <td data-label="Animal">
+                <strong>{{ rep.animalNom }}</strong>
+                <span class="sub-id">{{ rep.animalBoucle }}</span>
+              </td>
+              <td data-label="Type d'acte"><span class="type-tag">{{ getLibelleActe(rep.typeActe) }}</span></td>
+              <td data-label="Géniteur / Semence">{{ rep.taureauOuSemence || 'Non spécifié' }}</td>
+              <td data-label="Résultat">
+                @if (rep.resultatGestation === 'gestante') {
+                  <span class="status-pill status-success">Gestante confirmée</span>
+                } @else if (rep.resultatGestation === 'non_gestante') {
+                  <span class="status-pill status-danger">Non gestante</span>
+                } @else {
+                  <span class="status-pill status-info">En attente DG</span>
+                }
+              </td>
+              <td data-label="Opérateur">{{ rep.technicienNom }}</td>
+              <td data-label="Observations">{{ rep.observations || '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+@if (modalReproductionOuvert()) {
+  <div class="modal-backdrop" (click)="fermerModalReproduction()">
+    <div 
+      class="modal-dialog" 
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="repro-modal-title">
+      
+      <header class="modal-header">
+        <h2 class="modal-title" id="repro-modal-title">Enregistrer un acte de reproduction</h2>
+        <button type="button" class="btn-close" (click)="fermerModalReproduction()" aria-label="Fermer la reproduction">✕</button>
+      </header>
+
+      <form [formGroup]="formReproduction" (ngSubmit)="soumettreReproduction()" class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label for="repAnim">Femelle concernée</label>
+            <select id="repAnim" formControlName="animalId" class="form-input">
+              @for (a of fermeService.animaux(); track a.id) {
+                @if (a.sexe === 'femelle') {
+                  <option [value]="a.id">{{ a.nom }} ({{ a.boucleId }}) — {{ a.race }}</option>
+                }
+              }
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="repType">Type d'acte</label>
+            <select id="repType" formControlName="typeActe" class="form-input">
+              <option value="chaleur">Détection de chaleur</option>
+              <option value="insemination_ia">Insémination Artificielle (IA)</option>
+              <option value="saillie_naturelle">Saillie Naturelle</option>
+              <option value="diagnostic_gestation">Diagnostic de Gestation (Échographie / DG)</option>
+              <option value="tarissement">Mise au repos / Tarissement</option>
+              <option value="velage">Mise bas / Vêlage</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="repGeni">Géniteur / Semence & Qualité</label>
+          <input id="repGeni" type="text" formControlName="taureauOuSemence" class="form-input" placeholder="ex: Maximus du Jura (Semence Sexée 90%)" />
+        </div>
+
+        @if (formReproduction.get('typeActe')?.value === 'diagnostic_gestation') {
+          <div class="form-field">
+            <label for="repRes">Résultat du diagnostic de gestation</label>
+            <select id="repRes" formControlName="resultatGestation" class="form-input">
+              <option value="gestante">Gestante confirmée (Fœtus viable)</option>
+              <option value="non_gestante">Non gestante (Vide - À réinséminer)</option>
+              <option value="incertain">Incertain (Contrôle à J+15)</option>
+            </select>
+          </div>
+        }
+
+        <div class="form-field">
+          <label for="repTech">Praticien / Technicien</label>
+          <input id="repTech" type="text" formControlName="technicienNom" class="form-input" />
+        </div>
+
+        <div class="form-field">
+          <label for="repObs">Observations cliniques & tonus utérin</label>
+          <input id="repObs" type="text" formControlName="observations" class="form-input" placeholder="ex: Col bien dilaté, glaire filante, insémination réussie" />
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn-subtle" (click)="fermerModalReproduction()">Annuler</button>
+          <button type="submit" class="btn-primary" [disabled]="formReproduction.invalid">Enregistrer l'acte</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

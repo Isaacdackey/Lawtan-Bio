@@ -1,0 +1,213 @@
+<div class="view-panel">
+  <div class="toolbar-header">
+    <div>
+      <h1 class="page-title">Registre Sanitaire & Santé Vétérinaire</h1>
+      <span class="page-sub">
+        Suivi médical des 13 bovins, vaccinations ISRA, protocoles de biosécurité et délais légaux de retrait du lait
+      </span>
+    </div>
+
+    @if (fermeService.currentPermission().peutAjouterSoin) {
+      <button type="button" class="btn-primary" (click)="ouvrirModalSoin()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Nouvelle intervention
+      </button>
+    }
+  </div>
+
+  @if (soinsEnCours().length > 0) {
+    <div class="urgent-alert-banner" role="alert">
+      <div class="alert-icon-box" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+      <div class="alert-content">
+        <div class="alert-title-row">
+          <strong class="alert-headline">Consigne Sanitaire & Délai d'attente Lait en Cours</strong>
+          <span class="badge-quarantine">{{ soinsEnCours().length }} animal sous traitement</span>
+        </div>
+        @for (s of soinsEnCours(); track s.id) {
+          <p class="alert-desc">
+            Vache : <strong>{{ s.animalNom }}</strong> ({{ s.animalBoucle }}) • Diagnostic : <em>{{ s.diagnostic }}</em> • Prescription : {{ s.medicament }}.<br />
+            <strong>Mesure obligatoire :</strong> Lait consigné et écarté de la cuve bio jusqu'au <strong>{{ s.dateFinDelaiLait }}</strong> (Délai de rémanence : {{ s.delaiAttenteLaitJours }} jours).
+          </p>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="sante-filter-bar">
+    <div class="segmented-control" role="group" aria-label="Filtrer les interventions sanitaires">
+      <button 
+        type="button" 
+        [class.selected]="filtreStatut() === 'tous'" 
+        [attr.aria-pressed]="filtreStatut() === 'tous'"
+        (click)="filtreStatut.set('tous')">
+        Toutes les interventions ({{ fermeService.soinsVeterinaires().length }})
+      </button>
+      <button 
+        type="button" 
+        [class.selected]="filtreStatut() === 'en_cours'" 
+        [attr.aria-pressed]="filtreStatut() === 'en_cours'"
+        (click)="filtreStatut.set('en_cours')">
+        Traitements en cours ({{ soinsEnCours().length }})
+      </button>
+      <button 
+        type="button" 
+        [class.selected]="filtreStatut() === 'resolu'" 
+        [attr.aria-pressed]="filtreStatut() === 'resolu'"
+        (click)="filtreStatut.set('resolu')">
+        Résolues ({{ fermeService.soinsVeterinaires().length - soinsEnCours().length }})
+      </button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Animal</th>
+          <th scope="col">Intervention</th>
+          <th scope="col">Diagnostic & Prescription</th>
+          <th scope="col">Délai Lait</th>
+          <th scope="col">Coût</th>
+          <th scope="col">Praticien</th>
+          <th scope="col">État</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (soin of soinsFiltres(); track soin.id) {
+          <tr>
+            <td data-label="Date" class="cell-date font-numeric">{{ soin.date }}</td>
+            <td data-label="Animal">
+              <strong>{{ soin.animalNom }}</strong>
+              <span class="sub-id">{{ soin.animalBoucle }}</span>
+            </td>
+            <td data-label="Intervention">
+              <span class="type-tag">{{ getLibelleIntervention(soin.type) }}</span>
+            </td>
+            <td data-label="Diagnostic & Prescription">
+              <div><strong>{{ soin.diagnostic }}</strong></div>
+              @if (soin.medicament) {
+                <div class="text-sub">Prescription : {{ soin.medicament }}</div>
+              }
+            </td>
+            <td data-label="Délai Lait">
+              @if (soin.delaiAttenteLaitJours > 0) {
+                <span class="badge-quarantine">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon" aria-hidden="true">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  {{ soin.delaiAttenteLaitJours }} j (jusqu'au {{ soin.dateFinDelaiLait }})
+                </span>
+              } @else {
+                <span class="text-sub">Aucun (lait conforme)</span>
+              }
+            </td>
+            <td data-label="Coût" class="font-numeric font-bold">{{ soin.coutFCFA | number }} FCFA</td>
+            <td data-label="Praticien">{{ soin.veterinaireNom }}</td>
+            <td data-label="État">
+              @if (soin.statut === 'en_cours') {
+                <span class="status-pill status-warn">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  En cours
+                </span>
+              } @else {
+                <span class="status-pill status-success">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="status-icon" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Résolu
+                </span>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="empty-cell">Aucune intervention correspondant à ce filtre.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (modalSoinOuvert()) {
+  <div class="modal-backdrop" (click)="fermerModalSoin()">
+    <div 
+      class="modal-dialog" 
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="soin-modal-title">
+      
+      <header class="modal-header">
+        <h2 class="modal-title" id="soin-modal-title">Nouvelle intervention vétérinaire</h2>
+        <button type="button" class="btn-close" (click)="fermerModalSoin()" aria-label="Fermer l'intervention sanitaire">✕</button>
+      </header>
+
+      <form [formGroup]="formSoin" (ngSubmit)="soumettreSoin()" class="modal-body">
+        <div class="form-field">
+          <label for="animS">Animal concerné</label>
+          <select id="animS" formControlName="animalId" class="form-input">
+            @for (a of fermeService.animaux(); track a.id) {
+              <option [value]="a.id">{{ a.boucleId }} — {{ a.nom }} ({{ a.race }})</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label for="sType">Type d'acte</label>
+            <select id="sType" formControlName="type" class="form-input">
+              <option value="traitement">Traitement curatif</option>
+              <option value="vaccination">Vaccination</option>
+              <option value="vermifuge">Déparasitage</option>
+              <option value="visite_routine">Contrôle de routine / Échographie</option>
+              <option value="mise_bas">Assistance mise bas</option>
+              <option value="alerte_bouvier">Alerte bouvier</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="sCout">Coût d'intervention (FCFA)</label>
+            <input id="sCout" type="number" formControlName="coutFCFA" class="form-input" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="sDiag">Diagnostic clinique</label>
+          <input id="sDiag" type="text" formControlName="diagnostic" class="form-input" placeholder="ex: Contrôle mamelle, légère rougeur" />
+        </div>
+
+        <div class="form-field">
+          <label for="sMed">Prescription / Traitement administré</label>
+          <input id="sMed" type="text" formControlName="medicament" class="form-input" placeholder="ex: Pommade apaisante intramammaire" />
+        </div>
+
+        <div class="form-field">
+          <label for="sDelai">Délai d'attente légal du lait (en jours)</label>
+          <input id="sDelai" type="number" min="0" formControlName="delaiAttenteLaitJours" class="form-input" />
+          <small class="field-hint">Si supérieur à 0, le lait est automatiquement exclu des ventes jusqu'à expiration du délai.</small>
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn-subtle" (click)="fermerModalSoin()">Annuler</button>
+          <button type="submit" class="btn-primary" [disabled]="formSoin.invalid">Enregistrer le soin</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

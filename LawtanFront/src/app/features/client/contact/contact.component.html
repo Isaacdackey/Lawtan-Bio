@@ -1,0 +1,312 @@
+<app-public-header activePage="contact"></app-public-header>
+
+<section class="contact-page">
+  <header class="page-hero">
+    <div class="container hero-inner">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <a routerLink="/">Accueil</a>
+        <span class="sep">/</span>
+        <span class="current">Contact</span>
+      </nav>
+
+      <div class="hero-badge">
+        Équipe disponible & Écoute active
+      </div>
+
+      <h1 class="page-title">Contactez l'Équipe du GIE LAWTAN</h1>
+      <p class="page-subtitle">
+        Une question sur nos produits laitiers, un projet de partenariat ou une visite d'exploitation dans la vallée du Fleuve ? Nos conseillers vous répondent rapidement.
+      </p>
+
+      <div class="hero-highlights">
+        <div class="hl-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Réponse sous 24h ouvrées</span>
+        </div>
+        <div class="hl-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>Exploitation à Dagana (Saint-Louis)</span>
+        </div>
+        <div class="hl-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span>Lait 100% pur & Traçabilité garantie</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container content-container">
+    <div class="contact-grid">
+      <main class="contact-main">
+        <div class="form-container">
+          @if (isSubmitted()) {
+            <div class="success-screen">
+              <div class="success-icon-wrapper">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <h2 class="success-title">Message envoyé avec succès !</h2>
+              <p class="success-desc">
+                Merci <strong>{{ submittedData()?.fullName }}</strong>. Votre message a bien été transmis aux équipes du GIE LAWTAN. Nous reviendrons vers vous sous 24h à 48h au <strong>{{ submittedData()?.phone }}</strong>.
+              </p>
+
+              <div class="summary-card">
+                <div class="summary-header">Récapitulatif transmis :</div>
+                <div class="summary-grid">
+                  <div><span>Demandeur :</span> {{ submittedData()?.fullName }}</div>
+                  <div><span>Téléphone :</span> {{ submittedData()?.phone }}</div>
+                  <div><span>E-mail :</span> {{ submittedData()?.email }}</div>
+                  <div><span>Localité :</span> {{ submittedData()?.locality }}</div>
+                  <div><span>Objet :</span> {{ submittedData()?.subject }}</div>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-secondary" (click)="resetForm()">
+                Envoyer un autre message
+              </button>
+            </div>
+          } @else {
+            <div class="form-header-intro">
+              <h2 class="form-title">Formulaire de Contact Direct</h2>
+              <p class="form-sub">Remplissez ce formulaire pour nous transmettre votre demande. Tous les champs marqués d'un astérisque sont obligatoires.</p>
+            </div>
+
+            <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="form-body" novalidate>
+              <fieldset class="form-section">
+                <legend class="section-legend">
+                  <span class="step-badge">1</span>
+                  Vos Coordonnées
+                </legend>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="contactFullName" class="form-label">
+                      Nom complet <span class="required-star">*</span>
+                    </label>
+                    <input
+                      id="contactFullName"
+                      type="text"
+                      formControlName="fullName"
+                      class="form-input"
+                      [class.input-error]="isFieldInvalid('fullName')"
+                      placeholder="Ex: Ibrahima Diallo" />
+                    @if (isFieldInvalid('fullName')) {
+                      <p class="error-msg">Veuillez renseigner votre nom complet.</p>
+                    }
+                  </div>
+
+                  <div class="form-group">
+                    <label for="contactOrg" class="form-label">Entreprise / Exploitation / GIE</label>
+                    <input
+                      id="contactOrg"
+                      type="text"
+                      formControlName="organization"
+                      class="form-input"
+                      placeholder="Ex: Coopérative de Dagana (optionnel)" />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="contactLocality" class="form-label">
+                    Localité / Commune <span class="required-star">*</span>
+                  </label>
+                  <input
+                    id="contactLocality"
+                    type="text"
+                    formControlName="locality"
+                    class="form-input"
+                    [class.input-error]="isFieldInvalid('locality')"
+                    placeholder="Ex: Saint-Louis, Richard-Toll, Dagana, Dakar..." />
+                  @if (isFieldInvalid('locality')) {
+                    <p class="error-msg">Veuillez préciser votre localité.</p>
+                  }
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="contactPhone" class="form-label">
+                      Numéro de Téléphone <span class="required-star">*</span>
+                    </label>
+                    <input
+                      id="contactPhone"
+                      type="tel"
+                      formControlName="phone"
+                      class="form-input"
+                      [class.input-error]="isFieldInvalid('phone')"
+                      placeholder="Ex: +221 77 123 45 67" />
+                    @if (isFieldInvalid('phone')) {
+                      <p class="error-msg">Numéro de téléphone requis.</p>
+                    }
+                  </div>
+
+                  <div class="form-group">
+                    <label for="contactEmail" class="form-label">
+                      Adresse E-mail <span class="required-star">*</span>
+                    </label>
+                    <input
+                      id="contactEmail"
+                      type="email"
+                      formControlName="email"
+                      class="form-input"
+                      [class.input-error]="isFieldInvalid('email')"
+                      placeholder="nom@exemple.com" />
+                    @if (isFieldInvalid('email')) {
+                      <p class="error-msg">Adresse e-mail valide requise.</p>
+                    }
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-section">
+                <legend class="section-legend">
+                  <span class="step-badge">2</span>
+                  Objet de votre Demande
+                </legend>
+
+                <div class="form-group">
+                  <label for="contactSubject" class="form-label">
+                    Objet du message <span class="required-star">*</span>
+                  </label>
+                  <input
+                    id="contactSubject"
+                    type="text"
+                    formControlName="subject"
+                    class="form-input"
+                    [class.input-error]="isFieldInvalid('subject')"
+                    placeholder="Ex: Partenariat distribution, commande de lait, visite de la ferme..." />
+                  @if (isFieldInvalid('subject')) {
+                    <p class="error-msg">Veuillez indiquer l'objet de votre démarche.</p>
+                  }
+                </div>
+              </fieldset>
+
+              <fieldset class="form-section">
+                <legend class="section-legend">
+                  <span class="step-badge">3</span>
+                  Votre Message & Précisions
+                </legend>
+
+                <div class="form-group">
+                  <label for="contactMessage" class="form-label">
+                    Précisions / Commentaires <span class="required-star">*</span>
+                  </label>
+                  <textarea
+                    id="contactMessage"
+                    rows="4"
+                    formControlName="message"
+                    class="form-textarea"
+                    [class.input-error]="isFieldInvalid('message')"
+                    placeholder="Décrivez vos besoins, volumes recherchés, questions ou spécificités..."></textarea>
+                  @if (isFieldInvalid('message')) {
+                    <p class="error-msg">Veuillez renseigner un message d'au moins 10 caractères.</p>
+                  }
+                </div>
+
+                <div class="form-check">
+                  <input
+                    id="contactTerms"
+                    type="checkbox"
+                    formControlName="termsAccepted"
+                    class="form-checkbox" />
+                  <label for="contactTerms" class="check-label">
+                    J'accepte que les informations saisies soient exploitées par le GIE LAWTAN pour le traitement de ma demande et la relation commerciale.
+                  </label>
+                </div>
+              </fieldset>
+
+              <div class="form-actions">
+                <button
+                  type="submit"
+                  class="btn btn-primary-green"
+                  [disabled]="isSubmitting()">
+                  @if (isSubmitting()) {
+                    <span class="spinner"></span>
+                    Envoi en cours...
+                  } @else {
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                    Envoyer mon message
+                  }
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      </main>
+
+      <aside class="contact-sidebar">
+        <div class="sidebar-card">
+          <h3 class="sidebar-card-title">Nos Engagements Visiteurs</h3>
+          <div class="engagements-list">
+            @for (eng of engagements; track eng.titre) {
+              <div class="engagement-item">
+                <div class="eng-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="eng-title">{{ eng.titre }}</h4>
+                  <p class="eng-desc">{{ eng.desc }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="sidebar-card whatsapp-direct-card">
+          <div class="wdc-header">
+            <span class="wdc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+            </span>
+            <div>
+              <span class="wdc-badge">Discuter en Direct</span>
+              <h4 class="wdc-title">Assistance Rapide</h4>
+            </div>
+          </div>
+          <p class="wdc-text">Pour un renseignement immédiat ou une commande urgente, écrivez-nous directement.</p>
+          <a href="https://wa.me/221770000000" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-sidebar">
+            Ouvrir WhatsApp (+221 77 000 00 00)
+          </a>
+        </div>
+
+        <div class="sidebar-card">
+          <h3 class="sidebar-card-title">Foire Aux Questions</h3>
+          <div class="faq-list">
+            @for (faq of faqs; track faq.question; let idx = $index) {
+              <div class="faq-item" [class.open]="faqOuverte() === idx">
+                <button type="button" class="faq-q-btn" (click)="toggleFaq(idx)">
+                  <span>{{ faq.question }}</span>
+                  <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                @if (faqOuverte() === idx) {
+                  <div class="faq-a-content">
+                    {{ faq.reponse }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<app-public-footer></app-public-footer>

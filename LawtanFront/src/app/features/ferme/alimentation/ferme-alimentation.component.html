@@ -1,0 +1,229 @@
+<div class="view-panel">
+  <div class="toolbar-header">
+    <div>
+      <h1 class="page-title">Alimentation & Cultures Fourragères Bio</h1>
+      <span class="page-sub">Rations journalières, réduction du gaspillage et parcelles fourragères bio sous pompage solaire</span>
+    </div>
+
+    @if (fermeService.currentPermission().peutAjouterRation) {
+      <button type="button" class="btn-primary" (click)="ouvrirModalRation()">
+        + Distribuer une ration
+      </button>
+    }
+  </div>
+
+  <div class="metrics-row" role="region" aria-label="Indicateurs d'alimentation et conversion">
+    <div class="metric-card">
+      <div class="metric-card-header">
+        <span class="metric-title">Rations du jour</span>
+        <span class="metric-icon-wrap icon-feed" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        {{ fermeService.kpiConsommationAlimentsJourKg() }}
+        <span class="unit">kg</span>
+      </div>
+      <div class="metric-detail">
+        Coût total : <strong>{{ fermeService.kpiCoutAlimentationJourFCFA() | number }} FCFA</strong>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-card-header">
+        <span class="metric-title">Conversion Alimentaire (FCR)</span>
+        <span class="metric-icon-wrap icon-finance" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        {{ fermeService.kpiTauxConversionAlimentaire() }}
+        <span class="unit">kg/L</span>
+      </div>
+      <div class="metric-detail">
+        Objectif Cadrage : &lt; 1.30 kg par litre produit
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-card-header">
+        <span class="metric-title">Stock Fourrage Estimé</span>
+        <span class="metric-icon-wrap icon-herd" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        {{ fermeService.kpiStockFourrageTotalKg() | number }}
+        <span class="unit">kg</span>
+      </div>
+      <div class="metric-detail">
+        3 parcelles en rotation (Maralfalfa, Panicum, Sorgho)
+      </div>
+    </div>
+  </div>
+
+  <div class="card-box">
+    <div class="card-box-header">
+      <div>
+        <h2 class="box-title">Parcelles Fourragères en Culture (Site de Thiès)</h2>
+        <span class="box-sub">Irrigation automatisée par pompe solaire immergée et distribution optimisée</span>
+      </div>
+    </div>
+
+    <div class="plots-grid">
+      @for (p of fermeService.parcellesFourrage(); track p.id) {
+        <div class="plot-card">
+          <div class="plot-card-header">
+            <div>
+              <h3 class="plot-title">{{ p.nomParcelle }}</h3>
+              <span class="plot-type">{{ p.typeCulture }} • {{ p.surfaceHa }} ha</span>
+            </div>
+            <span class="status-pill" [class.status-success]="p.statut === 'pret_fauche'" [class.status-info]="p.statut === 'en_croissance'" [class.status-warn]="p.statut === 'en_rotation'">
+              {{ p.statut === 'pret_fauche' ? 'Prêt fauche' : (p.statut === 'en_croissance' ? 'En croissance' : 'En rotation') }}
+            </span>
+          </div>
+
+          <div class="plot-metrics">
+            <div class="plot-stat">
+              <span class="ps-label">Rendement estimé</span>
+              <strong class="ps-val font-numeric">{{ p.rendementEstimeKg | number }} kg</strong>
+            </div>
+            <div class="plot-stat">
+              <span class="ps-label">Irrigation</span>
+              <strong class="ps-val">{{ p.irrigation === 'goutte_a_goutte_solaire' ? 'Goutte-à-goutte solaire' : 'Aspersion solaire' }}</strong>
+            </div>
+            <div class="plot-stat">
+              <span class="ps-label">Prochaine fauche</span>
+              <strong class="ps-val font-numeric">{{ p.prochaineFauchePrevue || 'À définir' }}</strong>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="card-box mt-4">
+    <div class="card-box-header">
+      <div>
+        <h2 class="box-title">Rations Distribuées Aujourd'hui</h2>
+        <span class="box-sub">Traçabilité des apports nutritionnels par lot d'animaux</span>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th scope="col">Lot ciblé</th>
+            <th scope="col">Type</th>
+            <th scope="col">Aliment distribué</th>
+            <th scope="col">Quantité (kg)</th>
+            <th scope="col">Coût (FCFA)</th>
+            <th scope="col">Opérateur</th>
+            <th scope="col">Observations</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of fermeService.rationsAlimentaires(); track r.id) {
+            <tr>
+              <td data-label="Lot ciblé"><strong>{{ getLibelleLot(r.lotCible) }}</strong></td>
+              <td data-label="Type"><span class="type-tag">{{ getLibelleAliment(r.typeAliment) }}</span></td>
+              <td data-label="Aliment"><strong>{{ r.nomAliment }}</strong></td>
+              <td data-label="Quantité" class="font-numeric font-bold">{{ r.quantiteKg }} kg</td>
+              <td data-label="Coût" class="font-numeric font-bold">{{ r.coutFCFA | number }} FCFA</td>
+              <td data-label="Opérateur">{{ r.distribuePar }}</td>
+              <td data-label="Observations">{{ r.observations || '—' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-cell">Aucune ration distribuée enregistrée.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+@if (modalRationOuvert()) {
+  <div class="modal-backdrop" (click)="fermerModalRation()">
+    <div 
+      class="modal-dialog" 
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ration-modal-title">
+      
+      <header class="modal-header">
+        <h2 class="modal-title" id="ration-modal-title">Distribuer une ration alimentaire</h2>
+        <button type="button" class="btn-close" (click)="fermerModalRation()" aria-label="Fermer la saisie de ration">✕</button>
+      </header>
+
+      <form [formGroup]="formRation" (ngSubmit)="soumettreRation()" class="modal-body">
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label for="rLot">Lot cible d'animaux</label>
+            <select id="rLot" formControlName="lotCible" class="form-input">
+              <option value="laitieres">Vaches en lactation (x7)</option>
+              <option value="genisses">Jeunes génisses (x2)</option>
+              <option value="taureaux">Taureaux reproducteurs (x4)</option>
+              <option value="tous">Troupeau entier (x13)</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="rType">Type d'aliment</label>
+            <select id="rType" formControlName="typeAliment" class="form-input">
+              <option value="fourrage_vert">Fourrage vert frais fauché</option>
+              <option value="foin">Foin sec conditionné</option>
+              <option value="concentre">Aliment concentré / Tourteau</option>
+              <option value="mineraux_cmv">Minéraux & CMV</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="rNom">Désignation de l'aliment</label>
+          <input id="rNom" type="text" formControlName="nomAliment" class="form-input" placeholder="ex: Maralfalfa haché (P1) ou Tourteau de coton" />
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label for="rQte">Quantité distribuée (kg)</label>
+            <input id="rQte" type="number" formControlName="quantiteKg" class="form-input" />
+          </div>
+
+          <div class="form-field">
+            <label for="rCout">Coût estimé (FCFA)</label>
+            <input id="rCout" type="number" formControlName="coutFCFA" class="form-input" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="rDist">Distribué par (Opérateur)</label>
+          <input id="rDist" type="text" formControlName="distribuePar" class="form-input" />
+        </div>
+
+        <div class="form-field">
+          <label for="rObs">Observations terrain & appétence</label>
+          <input id="rObs" type="text" formControlName="observations" class="form-input" placeholder="ex: Consommation intégrale, zéro refus au râtelier" />
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn-subtle" (click)="fermerModalRation()">Annuler</button>
+          <button type="submit" class="btn-primary" [disabled]="formRation.invalid">Enregistrer la ration</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

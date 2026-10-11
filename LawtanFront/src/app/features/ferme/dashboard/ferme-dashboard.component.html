@@ -1,0 +1,446 @@
+<div class="view-panel">
+  @if (fermeService.kpiVachesSousAlerte() > 0) {
+    <div class="warning-callout" role="alert">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="callout-icon" aria-hidden="true">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      <div class="callout-text">
+        <strong>Sécurité sanitaire :</strong>
+        Lait de Binta (SN-LTN-07) consigné jusqu'au 12/10 (traitement antibiotique en cours). Volume écarté : 11 L.
+      </div>
+      <button type="button" class="btn-subtle" (click)="naviguerVers('sante')">Consulter la fiche</button>
+    </div>
+  }
+
+  <div class="metrics-row" role="region" aria-label="Indicateurs clés du jour">
+    <button 
+      type="button" 
+      class="metric-card" 
+      (click)="naviguerVers('production')" 
+      [attr.aria-label]="'Traite du jour : ' + fermeService.traiteAujourdhui().totalJourLitres + ' Litres, cliquer pour ouvrir la vue production'">
+      <div class="metric-card-header">
+        <span class="metric-title">Traite du jour</span>
+        <span class="metric-icon-wrap icon-milk" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 2h8l1 6H7L8 2z"></path>
+            <path d="M7 8c0 10 2 12 5 12s5-2 5-12"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        {{ fermeService.traiteAujourdhui().totalJourLitres }}
+        <span class="unit">L</span>
+      </div>
+      <div class="metric-detail">
+        Commercialisable : <strong>{{ fermeService.kpiProductionJourCommercialisable() }} L</strong>
+      </div>
+    </button>
+
+    <button 
+      type="button" 
+      class="metric-card" 
+      (click)="naviguerVers('troupeau')" 
+      [attr.aria-label]="'Cheptel : ' + fermeService.kpiTotalAnimaux() + ' têtes, cliquer pour consulter le troupeau'">
+      <div class="metric-card-header">
+        <span class="metric-title">Cheptel</span>
+        <span class="metric-icon-wrap icon-herd" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        {{ fermeService.kpiTotalAnimaux() }}
+        <span class="unit">têtes</span>
+      </div>
+      <div class="metric-detail">
+        7 laitières • 2 génisses • 4 taureaux
+      </div>
+    </button>
+
+    <button 
+      type="button" 
+      class="metric-card" 
+      (click)="naviguerVers('sante')" 
+      [attr.aria-label]="'Santé du troupeau : ' + fermeService.kpiVachesSousAlerte() + ' cas actif, cliquer pour ouvrir le registre'">
+      <div class="metric-card-header">
+        <span class="metric-title">Santé du troupeau</span>
+        <span class="metric-icon-wrap icon-health" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+        </span>
+      </div>
+      <div class="metric-value font-numeric">
+        {{ fermeService.kpiVachesSousAlerte() }}
+        <span class="unit">cas actif</span>
+      </div>
+      <div class="metric-detail">
+        Mortalité : 0 • Traitements suivis
+      </div>
+    </button>
+
+    @if (fermeService.currentPermission().peutVoirFinances) {
+      <button 
+        type="button" 
+        class="metric-card" 
+        (click)="naviguerVers('commercial')" 
+        [attr.aria-label]="'Chiffre d\'affaires du jour : ' + (fermeService.kpiChiffreAffairesJour() | number) + ' FCFA, cliquer pour voir les ventes'">
+        <div class="metric-card-header">
+          <span class="metric-title">Chiffre du jour</span>
+          <span class="metric-icon-wrap icon-finance" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4"></path>
+              <path d="M12 6v2m0 8v2"></path>
+            </svg>
+          </span>
+        </div>
+        <div class="metric-value font-numeric">
+          {{ fermeService.kpiChiffreAffairesJour() | number }}
+          <span class="unit">FCFA</span>
+        </div>
+        <div class="metric-detail">
+          Marge nette : <strong>{{ kpiMargeBruteLitre() }} FCFA / L</strong> ({{ kpiTauxMargeBrute() }}%)
+        </div>
+      </button>
+    }
+  </div>
+
+  <section class="tank-card-soft" aria-labelledby="tank-title-id">
+    <div class="tank-card-header">
+      <div class="tank-title-group">
+        <div class="tank-icon-pill" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 2h8l1 6H7L8 2z"></path>
+            <path d="M7 8c0 10 2 12 5 12s5-2 5-12"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="tank-title" id="tank-title-id">Cuve Réfrigérée N°1 — Stockage Bio</h2>
+          <span class="tank-sub">Cuve isotherme inox • Traçabilité microbiologique en direct</span>
+        </div>
+      </div>
+      <div class="tank-badges">
+        <span class="badge-soft badge-temp" title="Température de régulation sous consigne">
+          <span class="temp-indicator" aria-hidden="true"></span> {{ cuveTemperature() }} °C (Optimal)
+        </span>
+        <span class="badge-soft badge-lot">
+          Lot BIO-{{ fermeService.traiteAujourdhui().date.replace('-', '') }}
+        </span>
+      </div>
+    </div>
+
+    <div class="tank-gauge-section">
+      <div class="tank-gauge-bar-wrapper">
+        <div 
+          class="tank-gauge-track" 
+          tabindex="0"
+          role="progressbar" 
+          [attr.aria-valuenow]="cuveVolumeActuel()" 
+          aria-valuemin="0" 
+          [attr.aria-valuemax]="cuveCapaciteMax"
+          [attr.aria-label]="'Niveau de remplissage de la cuve réfrigérée N°1 : ' + cuveVolumeActuel() + ' litres sur ' + cuveCapaciteMax + ' litres (' + cuvePourcentage() + '%)'">
+          
+          <div class="tank-gauge-fill" [style.width.%]="cuvePourcentage()"></div>
+          
+          <div class="gauge-ticks" aria-hidden="true">
+            <span class="gauge-tick tick-25"></span>
+            <span class="gauge-tick tick-50"></span>
+            <span class="gauge-tick tick-75"></span>
+            <span class="gauge-tick tick-100"></span>
+          </div>
+        </div>
+
+        <div class="gauge-scale-labels" aria-hidden="true">
+          <span>0 L</span>
+          <span>125 L (25%)</span>
+          <span>250 L (50%)</span>
+          <span>375 L (75%)</span>
+          <span>500 L (Max)</span>
+        </div>
+      </div>
+
+      <div class="tank-big-percent-box">
+        <span class="tank-big-percent font-numeric">{{ cuvePourcentage() }}%</span>
+        <span class="tank-percent-caption">Capacité utile</span>
+      </div>
+    </div>
+
+    <div class="tank-metrics-grid">
+      <div class="tank-stat">
+        <span class="ts-lbl">Volume Collecté</span>
+        <strong class="ts-val font-numeric">{{ cuveVolumeActuel() }} <span class="ts-unit">/ {{ cuveCapaciteMax }} L</span></strong>
+        <span class="ts-sub">Remplissage {{ cuvePourcentage() }}% de la capacité totale</span>
+      </div>
+      <div class="tank-stat">
+        <span class="ts-lbl">Lait Conforme Vente</span>
+        <strong class="ts-val font-numeric text-success">{{ cuveCommercialisable() }} <span class="ts-unit">L</span></strong>
+        <span class="ts-sub">Prêt pour conditionnement & distribution</span>
+      </div>
+      <div class="tank-stat">
+        <span class="ts-lbl">Lait Consigné (Soin)</span>
+        <strong class="ts-val font-numeric" [class.text-danger]="cuveConsignee() > 0">{{ cuveConsignee() }} <span class="ts-unit">L</span></strong>
+        <span class="ts-sub">{{ cuveConsignee() > 0 ? 'Isolé pour retrait médical (non vendu)' : 'Aucun retrait sanitaire (100% propre)' }}</span>
+      </div>
+    </div>
+
+    <div class="tank-infra-strip">
+      <div class="tis-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tis-icon" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+        </svg>
+        <span><strong>Groupe Froid Solaire :</strong> Alimentation 100% autonome par la centrale photovoltaïque 45 kWc (batterie {{ fermeService.etatSysteme().batteriePct }}%)</span>
+      </div>
+      <span class="tis-badge">Autoconsommation Bio</span>
+    </div>
+  </section>
+
+  <div class="dashboard-split mt-4">
+    <div class="card-box flex-2">
+      <div class="card-box-header">
+        <h2 class="box-title">Production du jour par vache</h2>
+        <button type="button" class="btn-link" (click)="naviguerVers('production')">Saisie complète →</button>
+      </div>
+
+      <div class="table-responsive-wrapper">
+        <table class="compact-table">
+          <thead>
+            <tr>
+              <th scope="col">Vache</th>
+              <th scope="col">Boucle</th>
+              <th scope="col">Matin</th>
+              <th scope="col">Soir</th>
+              <th scope="col">Total</th>
+              <th scope="col">Conformité</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of fermeService.traiteAujourdhui().traites; track t.animalId) {
+              <tr>
+                <td data-label="Vache"><strong>{{ t.nomAnimal }}</strong></td>
+                <td data-label="Boucle"><span class="mono-id">{{ t.boucleId }}</span></td>
+                <td data-label="Matin" class="font-numeric">{{ t.traiteMatinLitres }} L</td>
+                <td data-label="Soir" class="font-numeric">{{ t.traiteSoirLitres }} L</td>
+                <td data-label="Total" class="font-bold font-numeric">{{ t.totalLitres }} L</td>
+                <td data-label="Conformité">
+                  @if (t.qualiteNote === 'suspecte') {
+                    <span class="status-pill status-danger">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon" aria-hidden="true">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                      </svg>
+                      Consigné
+                    </span>
+                  } @else {
+                    <span class="status-pill status-success">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="status-icon" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      Conforme
+                    </span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-cell">Aucune donnée de traite pour aujourd'hui.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-box flex-1">
+      <div class="card-box-header">
+        <h2 class="box-title">Actions rapides</h2>
+      </div>
+
+      <div class="action-stack">
+        @if (fermeService.currentPermission().peutSaisirTraite) {
+          <button type="button" class="btn-action-row" (click)="naviguerVers('production')">
+            <div class="btn-action-left">
+              <div class="btn-action-icon icon-milking">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 2h8l2 5H6l2-5z"></path>
+                  <rect x="6" y="7" width="12" height="14" rx="2"></rect>
+                  <line x1="10" y1="12" x2="14" y2="12"></line>
+                </svg>
+              </div>
+              <div class="btn-action-text">
+                <div class="btn-action-title-line">
+                  <strong>Saisie de traite terrain</strong>
+                  <span class="action-badge-kpi">{{ fermeService.kpiVachesLactation() }} vaches</span>
+                </div>
+                <span>Enregistrer la collecte du matin ou du soir</span>
+              </div>
+            </div>
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+        }
+
+        @if (fermeService.currentPermission().peutAjouterSoin) {
+          <button type="button" class="btn-action-row" (click)="naviguerVers('sante')">
+            <div class="btn-action-left">
+              <div class="btn-action-icon icon-vet">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+              </div>
+              <div class="btn-action-text">
+                <div class="btn-action-title-line">
+                  <strong>Intervention vétérinaire</strong>
+                  @if (traitementsActifsNb() > 0) {
+                    <span class="action-badge-alert">{{ traitementsActifsNb() }} en cours</span>
+                  }
+                </div>
+                <span>Prescription, vaccin ou déparasitage</span>
+              </div>
+            </div>
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+        }
+
+        @if (fermeService.currentPermission().peutCreerCommande) {
+          <button type="button" class="btn-action-row" (click)="naviguerVers('commercial')">
+            <div class="btn-action-left">
+              <div class="btn-action-icon icon-orders">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="3" width="15" height="13"></rect>
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                  <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                  <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+              </div>
+              <div class="btn-action-text">
+                <div class="btn-action-title-line">
+                  <strong>Commandes & Livraisons</strong>
+                  @if (commandesEnAttenteNb() > 0) {
+                    <span class="action-badge-warn">{{ commandesEnAttenteNb() }} à suivre</span>
+                  }
+                </div>
+                <span>Créer un bon de livraison ou expédier</span>
+              </div>
+            </div>
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+        }
+
+        <button type="button" class="btn-action-row" (click)="naviguerVers('troupeau')">
+          <div class="btn-action-left">
+            <div class="btn-action-icon icon-herd">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div class="btn-action-text">
+              <div class="btn-action-title-line">
+                <strong>Consulter le cheptel</strong>
+                <span class="action-badge-kpi">{{ fermeService.kpiTotalAnimaux() }} têtes</span>
+              </div>
+              <span>Fiches d'identité et pedigrees des 13 bovins</span>
+            </div>
+          </div>
+          <span class="btn-arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-split mt-4">
+    <div class="card-box flex-2">
+      <div class="card-box-header">
+        <div>
+          <h2 class="box-title">Historique de Production & Tendances (7 jours)</h2>
+          <span class="box-sub">Quotidien : {{ fermeService.traiteAujourdhui().totalJourLitres }} L • Moy. Hebdomadaire : {{ fermeService.kpiMoyenneHebdoLait() }} L/j • Moy. Mensuelle : {{ fermeService.kpiMoyenneMensuelleLait() }} L/j</span>
+        </div>
+        <div class="legend-group">
+          <span class="legend-item"><span class="legend-dot bg-olive"></span> Conforme</span>
+          <span class="legend-item"><span class="legend-dot bg-amber"></span> Consigné</span>
+        </div>
+      </div>
+
+      <div class="mini-chart-container">
+        <div class="chart-bars-wrap">
+          @for (item of fermeService.historiqueTraite7Jours(); track item.date) {
+            <div class="chart-bar-col">
+              <div class="bar-val-top font-numeric">{{ item.totalLitres }}L</div>
+              <div class="bar-track">
+                <div class="bar-fill-comm" [style.height.%]="(item.commercialisable / 120) * 100" [title]="item.commercialisable + ' L conforme'"></div>
+                @if (item.totalLitres > item.commercialisable) {
+                  <div class="bar-fill-cons" [style.height.%]="((item.totalLitres - item.commercialisable) / 120) * 100" [title]="(item.totalLitres - item.commercialisable) + ' L consigné'"></div>
+                }
+              </div>
+              <span class="bar-date-label">{{ item.jour }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="card-box flex-1">
+      <div class="card-box-header">
+        <h2 class="box-title">Performance Agropastorale</h2>
+      </div>
+      <div class="agro-kpi-stack">
+        <div class="agro-kpi-item" (click)="naviguerVers('alimentation')" role="button" tabindex="0">
+          <div class="agro-kpi-icon icon-feed">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+            </svg>
+          </div>
+          <div class="agro-kpi-content">
+            <span class="agro-lbl">Conversion Alimentaire (FCR)</span>
+            <strong class="agro-val font-numeric">{{ fermeService.kpiTauxConversionAlimentaire() }} <span class="unit-sm">kg/L</span></strong>
+            <span class="agro-sub">{{ fermeService.kpiConsommationAlimentsJourKg() }} kg rations servies aujourd'hui</span>
+          </div>
+          <span class="agro-arrow">→</span>
+        </div>
+
+        <div class="agro-kpi-item" (click)="naviguerVers('reproduction')" role="button" tabindex="0">
+          <div class="agro-kpi-icon icon-repro">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </div>
+          <div class="agro-kpi-content">
+            <span class="agro-lbl">Cycles & Gestations</span>
+            <strong class="agro-val font-numeric">{{ fermeService.kpiVachesGestantesNb() }} <span class="unit-sm">gestantes</span></strong>
+            @if (fermeService.kpiProchainsVelages().length > 0) {
+              <span class="agro-sub text-warn">Prochain : {{ fermeService.kpiProchainsVelages()[0].animalNom }} (J-{{ fermeService.kpiProchainsVelages()[0].joursRestantsAvantVelage }})</span>
+            }
+          </div>
+          <span class="agro-arrow">→</span>
+        </div>
+
+        <div class="agro-kpi-item" (click)="naviguerVers('commercial')" role="button" tabindex="0">
+          <div class="agro-kpi-icon icon-stars">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div class="agro-kpi-content">
+            <span class="agro-lbl">Satisfaction Clients Bio</span>
+            <strong class="agro-val font-numeric">{{ fermeService.kpiSatisfactionClientMoyenne() }} / 5</strong>
+            <span class="agro-sub">Retours réguliers marchés et hôtels</span>
+          </div>
+          <span class="agro-arrow">→</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,279 @@
+<div class="farm-app">
+  <header class="farm-header">
+    <div class="header-left">
+      <a routerLink="/" class="header-logo-link" title="Retour au portail d'accueil">
+        <div class="header-logo">
+          @if (!logoError()) {
+            <img 
+              src="/images/Logo.png" 
+              alt="Logo LAWTAN Agro-Industries" 
+              class="logo-img" 
+              (error)="onLogoError()" />
+          } @else {
+            <span class="logo-monogram" aria-label="Logo LAWTAN">L</span>
+          }
+        </div>
+        <div class="header-titles">
+          <div class="brand-badge-line">
+            <span class="app-brand">LAWTAN</span>
+            <span class="brand-tag-bio">BIO SÉNÉGAL</span>
+          </div>
+          <span class="app-scope">Ferme Pilote Agro-Industries • Thiès / Niayes</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="header-center-infra" role="region" aria-label="État des infrastructures de la ferme">
+      <div class="infra-chip" [title]="'Dernière synchronisation locale à ' + fermeService.derniereSynchronisation()">
+        @if (fermeService.statutSynchro() === 'en_cours') {
+          <span class="status-dot dot-syncing" aria-hidden="true"></span>
+          <span class="infra-label">Synchro en cours...</span>
+        } @else {
+          <span class="status-dot dot-online" aria-hidden="true"></span>
+          <span class="infra-label">Synchro : {{ fermeService.derniereSynchronisation() }}</span>
+        }
+      </div>
+      <div class="infra-chip" title="Connexion réseau cellulaire terrain 4G">
+        <span class="status-dot dot-online" aria-hidden="true"></span>
+        <span class="infra-label">4G Terrain</span>
+      </div>
+      <div class="infra-chip" title="Centrale photovoltaïque et groupe froid autonome">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="infra-icon-sun" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+        </svg>
+        <span class="infra-label">Solaire ({{ fermeService.etatSysteme().batteriePct }}%)</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="user-menu-wrapper">
+        <button 
+          type="button" 
+          class="user-btn-trigger" 
+          (click)="toggleMenuUtilisateur()"
+          [attr.aria-expanded]="menuUtilisateurOuvert()"
+          aria-haspopup="menu"
+          aria-label="Menu utilisateur : changer de profil ou vue">
+          <span class="user-avatar-badge" aria-hidden="true">{{ fermeService.profilActif().avatar }}</span>
+          <div class="user-meta-summary">
+            <span class="user-name">{{ fermeService.profilActif().nom }}</span>
+            <span class="user-current-role">
+              <span class="role-caption">Vue :</span> {{ fermeService.profilActif().roleTitre }}
+            </span>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="chevron-icon" [class.rotated]="menuUtilisateurOuvert()" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        @if (menuUtilisateurOuvert()) {
+          <div class="user-dropdown" role="menu" aria-label="Changer de vue">
+            <div class="dropdown-header">
+              <span class="dropdown-title">Vues opérationnelles disponibles</span>
+            </div>
+            @for (p of fermeService.profilsDisponibles; track p.id) {
+              <button 
+                type="button" 
+                role="menuitem"
+                class="dropdown-item" 
+                [class.active]="p.id === fermeService.profilActif().id"
+                (click)="selectionnerRole(p.id)">
+                <span class="item-avatar" aria-hidden="true">{{ p.avatar }}</span>
+                <div class="item-info">
+                  <strong class="item-title">{{ p.roleTitre }}</strong>
+                  <span class="item-desc">{{ fermeService.permissionsParRole[p.role].description }}</span>
+                </div>
+                @if (p.id === fermeService.profilActif().id) {
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="check-mark" aria-label="Profil actif">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                }
+              </button>
+            }
+            <div class="dropdown-footer">
+              <a routerLink="/login" class="dropdown-logout-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Se déconnecter
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </header>
+
+  <nav class="farm-nav" aria-label="Navigation principale du module ferme">
+    <div class="nav-container">
+      @if (fermeService.currentPermission().ongletsAutorises.includes('dashboard')) {
+        <a 
+          routerLink="/ferme/dashboard"
+          routerLinkActive="active"
+          class="nav-item"
+          title="Tableau de bord global">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Tableau de bord</span>
+        </a>
+      }
+
+      @if (fermeService.currentPermission().ongletsAutorises.includes('troupeau') || fermeService.currentPermission().ongletsAutorises.includes('cheptel')) {
+        <a 
+          routerLink="/ferme/troupeau"
+          routerLinkActive="active"
+          class="nav-item"
+          title="Troupeau & Fiches bovines">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+          <span>Troupeau</span>
+          <span class="count-tag" [attr.aria-label]="fermeService.kpiTotalAnimaux() + ' animaux'">{{ fermeService.kpiTotalAnimaux() }}</span>
+        </a>
+      }
+
+      @if (fermeService.currentPermission().ongletsAutorises.includes('production') || fermeService.currentPermission().ongletsAutorises.includes('traite')) {
+        <a 
+          routerLink="/ferme/production"
+          routerLinkActive="active"
+          class="nav-item"
+          title="Production laitière & Traite">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+          </svg>
+          <span>Production & Traite</span>
+        </a>
+      }
+
+      @if (fermeService.currentPermission().ongletsAutorises.includes('sante')) {
+        <a 
+          routerLink="/ferme/sante"
+          routerLinkActive="active"
+          class="nav-item"
+          title="Santé vétérinaire & Soins">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+          <span>Santé</span>
+          @if (fermeService.kpiVachesSousAlerte() > 0) {
+            <span class="alert-dot" title="Alerte sanitaire active"></span>
+          }
+        </a>
+      }
+
+      @if (fermeService.currentPermission().ongletsAutorises.includes('alimentation')) {
+        <a 
+          routerLink="/ferme/alimentation"
+          routerLinkActive="active"
+          class="nav-item"
+          title="Alimentation & Fourrage">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+          </svg>
+          <span>Alimentation</span>
+        </a>
+      }
+
+      @if (fermeService.currentPermission().ongletsAutorises.includes('commercial') || fermeService.currentPermission().ongletsAutorises.includes('ventes')) {
+        <a 
+          routerLink="/ferme/commercial"
+          routerLinkActive="active"
+          class="nav-item"
+          title="Commercial, commandes & expéditions">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+            <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          </svg>
+          <span>Commercial</span>
+        </a>
+      }
+
+      @if (fermeService.currentPermission().ongletsAutorises.includes('reproduction')) {
+        <a 
+          routerLink="/ferme/reproduction"
+          routerLinkActive="active"
+          class="nav-item"
+          title="Reproduction & Vêlage">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Reproduction</span>
+          @if (fermeService.kpiVachesGestantesNb() > 0) {
+            <span class="count-tag" [attr.aria-label]="fermeService.kpiVachesGestantesNb() + ' gestations en cours'">{{ fermeService.kpiVachesGestantesNb() }}</span>
+          }
+        </a>
+      }
+    </div>
+  </nav>
+
+  <main class="farm-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <nav class="mobile-bottom-bar" aria-label="Navigation rapide sur mobile">
+    <a routerLink="/ferme/dashboard" routerLinkActive="active" class="mbb-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+      <span>Bord</span>
+    </a>
+    <a routerLink="/ferme/production" routerLinkActive="active" class="mbb-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+      </svg>
+      <span>Traite</span>
+    </a>
+    <a routerLink="/ferme/troupeau" routerLinkActive="active" class="mbb-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+      </svg>
+      <span>Troupeau</span>
+    </a>
+    <a routerLink="/ferme/sante" routerLinkActive="active" class="mbb-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+      </svg>
+      <span>Santé</span>
+      @if (fermeService.kpiVachesSousAlerte() > 0) {
+        <span class="mbb-alert-badge" aria-label="Alerte active">!</span>
+      }
+    </a>
+    <a routerLink="/ferme/commercial" routerLinkActive="active" class="mbb-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+      </svg>
+      <span>Ventes</span>
+    </a>
+  </nav>
+
+  @if (notificationService.toastMessage()) {
+    <div class="toast-box" role="status" aria-live="polite">
+      <span class="toast-text">{{ notificationService.toastMessage() }}</span>
+      <button 
+        type="button" 
+        class="toast-close-btn" 
+        (click)="notificationService.fermerToast()" 
+        aria-label="Fermer la notification">✕</button>
+    </div>
+  }
+</div>

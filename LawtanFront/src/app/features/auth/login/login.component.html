@@ -1,0 +1,219 @@
+<div class="login-wrapper">
+  <aside class="showcase-pane">
+    <div class="showcase-bg"></div>
+    <div class="showcase-overlay"></div>
+    <div class="showcase-glow glow-1"></div>
+    <div class="showcase-glow glow-2"></div>
+
+    <div class="showcase-content">
+      <div class="showcase-brand">
+        <div class="brand-crest-wrapper">
+          <div class="brand-aura"></div>
+          <img src="/images/Logo.png" alt="Lawtan Agro Industries" class="brand-crest-logo" />
+        </div>
+      </div>
+
+      <div class="showcase-hero">
+        <h1 class="hero-title">
+          L'agriculture moderne,<br>
+          <span class="hero-title-accent">pilotée avec précision.</span>
+        </h1>
+        <p class="hero-desc">
+          Une plateforme unifiée pour planifier vos prestations mécanisées, suivre la chaîne de collecte laitière et optimiser vos rendements.
+        </p>
+      </div>
+
+      <div class="showcase-cards">
+        <div class="glass-card">
+          <div class="card-icon-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-headline">Prestations Mécanisées</span>
+            <span class="card-detail">Labour, semis, moisson & logistique d'équipements</span>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-icon-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 2h8l2 5H6l2-5z"></path>
+              <rect x="6" y="7" width="12" height="14" rx="2"></rect>
+              <line x1="10" y1="12" x2="14" y2="12"></line>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-headline">Filière Laitière Intégrée</span>
+            <span class="card-detail">Traçabilité rigoureuse et contrôle qualité continu</span>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-icon-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-headline">Devis & Tarification Directe</span>
+            <span class="card-detail">Chiffrage immédiat sans frais cachés</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-footer">
+        <span class="flag-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          Sénégal
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="auth-pane">
+    <div class="auth-card">
+      <div class="mobile-logo-box">
+        <img src="/images/Logo.png" alt="Lawtan Agro Industries" class="mobile-logo-img" />
+      </div>
+
+      <header class="card-header">
+        <h2 class="card-title">Connexion</h2>
+        <p class="card-subtitle">Accédez à votre espace de travail LAWTAN BIO</p>
+      </header>
+
+      @if (loginSuccess()) {
+        <div class="state-success">
+          <div class="success-icon-wrapper">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h3 class="success-title">Connexion réussie !</h3>
+          <p class="success-message">Bienvenue dans votre espace LAWTAN BIO. Redirection...</p>
+        </div>
+      } @else {
+        @if (loginError()) {
+          <div class="alert-box" role="alert">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>{{ loginError() }}</span>
+          </div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="card-form" novalidate>
+          <div class="form-field">
+            <label for="identifier" class="field-title">Email professionnel</label>
+            <div class="field-control" [class.field-error]="isFieldInvalid('identifier')">
+              <span class="field-prefix-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </span>
+              <input
+                id="identifier"
+                type="text"
+                formControlName="identifier"
+                class="field-input"
+                placeholder="ex: amadou.sow@lawtan.sn"
+                autocomplete="username" />
+            </div>
+            @if (isFieldInvalid('identifier')) {
+              <p class="field-error-text">Veuillez renseigner un email valide.</p>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="password" class="field-title">Mot de passe</label>
+            <div class="field-control" [class.field-error]="isFieldInvalid('password')">
+              <span class="field-prefix-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <input
+                id="password"
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                class="field-input has-toggle"
+                placeholder="Votre mot de passe"
+                autocomplete="current-password" />
+              <button
+                type="button"
+                class="field-toggle-btn"
+                (click)="togglePasswordVisibility()"
+                [attr.aria-label]="showPassword() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+                @if (showPassword()) {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                } @else {
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                }
+              </button>
+            </div>
+            @if (isFieldInvalid('password')) {
+              <p class="field-error-text">Mot de passe requis (au moins 4 caractères).</p>
+            }
+          </div>
+
+          <div class="form-check-group">
+            <label class="check-container">
+              <input
+                id="rememberMe"
+                type="checkbox"
+                formControlName="rememberMe"
+                class="check-input" />
+              <span class="check-box">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+              <span class="check-text">Rester connecté sur cet appareil</span>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            class="btn-connect"
+            [disabled]="isLoading()">
+            @if (isLoading()) {
+              <span class="btn-spinner"></span>
+              <span>Connexion en cours...</span>
+            } @else {
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+              </svg>
+              <span>Se connecter</span>
+            }
+          </button>
+        </form>
+
+        <footer class="card-footer">
+          <div class="system-status">
+            <span class="system-text">Système opérationnel • LAWTAN BIO © 2026</span>
+          </div>
+        </footer>
+      }
+    </div>
+  </main>
+</div>

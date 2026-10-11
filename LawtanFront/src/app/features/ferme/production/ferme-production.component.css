@@ -1,0 +1,462 @@
+.view-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Statistiques du bandeau */
+.summary-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.95rem;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-sm);
+  min-width: 100px;
+}
+
+.stat-box-success {
+  background: var(--agri-subtle);
+  border-color: var(--agri-border);
+}
+
+.stat-box-alert {
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+}
+
+.stat-title {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.stat-number {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 0.15rem;
+}
+
+/* Cuve Quick Strip (Froid et sécurité microbiologique) */
+.tank-quick-strip {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-md);
+  padding: 0.95rem 1.25rem;
+  flex-wrap: wrap;
+}
+
+.tqs-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--agri-subtle);
+  color: var(--agri-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tqs-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 220px;
+}
+
+.tqs-title {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: var(--agri-brand);
+}
+
+.tqs-desc {
+  font-size: 12.5px;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-top: 0.15rem;
+}
+
+.tqs-track {
+  width: 150px;
+  height: 12px;
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.tqs-fill {
+  height: 100%;
+  background: var(--agri-action);
+  border-radius: var(--radius-btn);
+}
+
+.tqs-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.tqs-badge {
+  padding: 0.35rem 0.75rem;
+  background: var(--agri-subtle);
+  color: var(--agri-brand);
+  border: 1px solid var(--agri-border);
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tqs-sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--warm-gray);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+
+.sync-spinner {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #3B82F6;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Barre de filtres pour la traite */
+.traite-filter-bar {
+  margin-bottom: -0.5rem;
+}
+
+/* Liste des traites tactiles */
+.traite-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.traite-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.15rem 1.25rem;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  transition: all 0.15s ease;
+}
+
+.traite-row:hover {
+  border-color: var(--agri-action);
+  box-shadow: var(--shadow-md);
+}
+
+.traite-row.row-warn {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.traite-cow-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  gap: 0.2rem;
+}
+
+.cow-badge-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.row-tag {
+  font-family: var(--font-title);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--agri-brand);
+}
+
+.pill-conforme {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--agri-subtle);
+  color: var(--agri-brand);
+  border: 1px solid var(--agri-border);
+}
+
+.pill-retrait {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  background: #FDF2F2;
+  color: #C0392B;
+  border: 1px solid #F8D7DA;
+}
+
+.row-cow-name {
+  font-family: var(--font-title);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.row-obs {
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.traite-input-group {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stepper-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.stepper-controls {
+  display: flex;
+  align-items: center;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-btn);
+  padding: 2px;
+}
+
+/* Boutons tactiles 44x44px conformes WCAG 2.2 AA */
+.btn-step {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s ease;
+}
+
+.btn-step:hover:not(:disabled) {
+  background: var(--agri-action);
+  color: #FFFFFF;
+  border-color: var(--agri-action);
+}
+
+.btn-step:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.btn-step:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stepper-val {
+  min-width: 68px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.unit-xs {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+/* Presets rapides de traite */
+.presets-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.preset-pill {
+  min-height: 28px;
+  padding: 0 0.5rem;
+  background: var(--warm-gray);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-pill:hover {
+  background: var(--agri-subtle);
+  color: var(--agri-brand);
+  border-color: var(--agri-border);
+}
+
+.total-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+}
+
+.total-num {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--agri-brand);
+}
+
+.unit-sm {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.traite-status-col {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.btn-edit-sm {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-btn);
+  padding: 0 1rem;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-edit-sm:hover {
+  background: var(--agri-subtle);
+  color: var(--agri-brand);
+  border-color: var(--agri-border);
+}
+
+/* Adaptation smartphone terrain (360px - 768px) */
+@media (max-width: 768px) {
+  .traite-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .traite-cow-col {
+    width: 100%;
+  }
+
+  .traite-input-group {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .stepper-item {
+    flex: 1;
+  }
+
+  .stepper-controls {
+    justify-content: space-between;
+  }
+
+  .total-item {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--sand);
+  }
+
+  .traite-status-col {
+    width: 100%;
+  }
+
+  .btn-edit-sm {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tank-quick-strip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tqs-track {
+    width: 100%;
+  }
+
+  .tqs-badge-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+

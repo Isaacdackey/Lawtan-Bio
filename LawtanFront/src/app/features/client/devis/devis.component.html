@@ -1,0 +1,412 @@
+<app-public-header activePage="devis"></app-public-header>
+
+<section class="devis-page">
+  <header class="page-hero">
+    <div class="container hero-inner">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <a routerLink="/">Accueil</a>
+        <span class="sep">/</span>
+        <span class="current">Demande de Devis</span>
+      </nav>
+
+      <div class="hero-badge">
+        Devis 100% Gratuit & Sans Engagement
+      </div>
+
+      <h1 class="page-title">Demande de Devis & Commande en Gros</h1>
+      <p class="page-subtitle">
+        Obtenez une estimation rapide et transparente pour vos prestations agricoles mécanisées (labour, moissonnage) ou vos approvisionnements en produits laitiers purs du terroir.
+      </p>
+
+      <div class="hero-highlights">
+        <div class="hl-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>Tarif direct exploitation sans intermédiaire</span>
+        </div>
+        <div class="hl-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Réponse chiffrée sous 24h ouvrées</span>
+        </div>
+        <div class="hl-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+          <span>Logistique & chaîne du froid maîtrisées</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container content-container">
+    <div class="devis-grid">
+      <main class="devis-main">
+        <div class="form-container">
+          @if (isSubmitted()) {
+            <div class="success-screen">
+              <div class="success-icon-wrapper">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <h2 class="success-title">Demande de devis transmise !</h2>
+              <p class="success-desc">
+                Merci <strong>{{ submittedData()?.fullName }}</strong>. Votre estimation pour
+                <strong>{{ submittedData()?.category === 'prestation' ? 'vos Prestations Agricoles' : 'vos Produits Laitiers' }}</strong>
+                est entre les mains de notre équipe commerciale. Nous vous contacterons sous 24h au <strong>{{ submittedData()?.phone }}</strong>.
+              </p>
+
+              <div class="summary-card">
+                <div class="summary-header">Détails de l'estimation :</div>
+                <div class="summary-grid">
+                  <div><span>Demandeur :</span> {{ submittedData()?.fullName }} ({{ submittedData()?.organization || 'Particulier' }})</div>
+                  <div><span>Téléphone :</span> {{ submittedData()?.phone }}</div>
+                  <div><span>Localité :</span> {{ submittedData()?.locality }}</div>
+                  @if (submittedData()?.category === 'prestation') {
+                    <div><span>Prestation demandée :</span> {{ submittedData()?.agriculturalService }}</div>
+                    @if (submittedData()?.workVolume) {
+                      <div><span>Volume / Superficie :</span> {{ submittedData()?.workVolume }} {{ submittedData()?.volumeUnit }}</div>
+                    }
+                  } @else {
+                    <div><span>Produit laitier ciblé :</span> {{ submittedData()?.dairyProduct }}</div>
+                    @if (submittedData()?.estimatedQuantity) {
+                      <div><span>Volume souhaité :</span> {{ submittedData()?.estimatedQuantity }} ({{ submittedData()?.deliveryFrequency }})</div>
+                    }
+                  }
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-secondary" (click)="resetForm()">
+                Faire une autre demande de devis
+              </button>
+            </div>
+          } @else {
+            <div class="nature-selector-block">
+              <div class="nature-title">
+                <span class="nature-step">Étape 1</span>
+                Sélectionnez le domaine de votre besoin :
+              </div>
+
+              <div class="nature-cards-grid">
+                <button
+                  type="button"
+                  class="nature-card"
+                  [class.active]="devisCategory() === 'prestation'"
+                  (click)="setCategory('prestation')">
+                  <div class="nature-icon-box">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10 21v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"></path>
+                      <circle cx="7" cy="18" r="3"></circle>
+                      <circle cx="17" cy="18" r="3"></circle>
+                      <line x1="10" y1="9" x2="14" y2="9"></line>
+                      <path d="M14 6l3 3-5 5"></path>
+                    </svg>
+                  </div>
+                  <div class="nature-card-content">
+                    <div class="nature-card-heading">Prestations Agricoles</div>
+                    <div class="nature-card-sub">Labour mécanisé, moissonnage, pressage, biyonnage</div>
+                  </div>
+                  <div class="nature-radio-indicator">
+                    <span class="radio-dot"></span>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  class="nature-card"
+                  [class.active]="devisCategory() === 'laitier'"
+                  (click)="setCategory('laitier')">
+                  <div class="nature-icon-box">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M7 2h10l1 4H6l1-4z"></path>
+                      <path d="M6 6v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6"></path>
+                      <line x1="10" y1="11" x2="14" y2="11"></line>
+                      <line x1="10" y1="15" x2="14" y2="15"></line>
+                    </svg>
+                  </div>
+                  <div class="nature-card-content">
+                    <div class="nature-card-heading">Produits Laitiers</div>
+                    <div class="nature-card-sub">Lait frais pasteurisé, caillé traditionnel, beurre & CHR</div>
+                  </div>
+                  <div class="nature-radio-indicator">
+                    <span class="radio-dot"></span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <form [formGroup]="devisForm" (ngSubmit)="onSubmit()" class="form-body" novalidate>
+              <fieldset class="form-section">
+                <legend class="section-legend">
+                  <span class="step-badge">2</span>
+                  Vos Coordonnées & Exploitation
+                </legend>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="devisFullName" class="form-label">
+                      Nom complet <span class="required-star">*</span>
+                    </label>
+                    <input
+                      id="devisFullName"
+                      type="text"
+                      formControlName="fullName"
+                      class="form-input"
+                      [class.input-error]="isFieldInvalid('fullName')"
+                      placeholder="Ex: Ibrahima Diallo" />
+                    @if (isFieldInvalid('fullName')) {
+                      <p class="error-msg">Veuillez renseigner votre nom complet.</p>
+                    }
+                  </div>
+
+                  <div class="form-group">
+                    <label for="devisOrg" class="form-label">Entreprise / Exploitation / GIE</label>
+                    <input
+                      id="devisOrg"
+                      type="text"
+                      formControlName="organization"
+                      class="form-input"
+                      placeholder="Ex: Coopérative de Dagana (optionnel)" />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="devisLocality" class="form-label">
+                    Localité / Commune d'intervention ou de livraison <span class="required-star">*</span>
+                  </label>
+                  <input
+                    id="devisLocality"
+                    type="text"
+                    formControlName="locality"
+                    class="form-input"
+                    [class.input-error]="isFieldInvalid('locality')"
+                    placeholder="Ex: Dagana, Richard-Toll, Saint-Louis, Podor, Dakar..." />
+                  @if (isFieldInvalid('locality')) {
+                    <p class="error-msg">Veuillez préciser votre localité.</p>
+                  }
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label for="devisPhone" class="form-label">
+                      Numéro de Téléphone (avec WhatsApp) <span class="required-star">*</span>
+                    </label>
+                    <input
+                      id="devisPhone"
+                      type="tel"
+                      formControlName="phone"
+                      class="form-input"
+                      [class.input-error]="isFieldInvalid('phone')"
+                      placeholder="Ex: +221 77 123 45 67" />
+                    @if (isFieldInvalid('phone')) {
+                      <p class="error-msg">Numéro de téléphone requis.</p>
+                    }
+                  </div>
+
+                  <div class="form-group">
+                    <label for="devisEmail" class="form-label">
+                      Adresse E-mail <span class="required-star">*</span>
+                    </label>
+                    <input
+                      id="devisEmail"
+                      type="email"
+                      formControlName="email"
+                      class="form-input"
+                      [class.input-error]="isFieldInvalid('email')"
+                      placeholder="nom@exemple.com" />
+                    @if (isFieldInvalid('email')) {
+                      <p class="error-msg">Adresse e-mail valide requise.</p>
+                    }
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-section">
+                <legend class="section-legend">
+                  <span class="step-badge">3</span>
+                  @if (devisCategory() === 'prestation') {
+                    Paramètres des Travaux Agricoles
+                  } @else {
+                    Sélection des Produits Laitiers
+                  }
+                </legend>
+
+                @if (devisCategory() === 'prestation') {
+                  <div class="form-group">
+                    <label for="agriService" class="form-label">Type de prestation agricole</label>
+                    <select id="agriService" formControlName="agriculturalService" class="form-input">
+                      @for (serv of servicesAgricoles; track serv.id) {
+                        <option [value]="serv.id">{{ serv.label }} (Unité : {{ serv.unit }})</option>
+                      }
+                    </select>
+                  </div>
+
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label for="workVol" class="form-label">Superficie estimée (ha)</label>
+                      <input id="workVol" type="number" formControlName="workVolume" class="form-input" placeholder="Ex: 5" min="1" />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="desDate" class="form-label">Période d'intervention souhaitée</label>
+                      <input id="desDate" type="date" formControlName="desiredDate" class="form-input" />
+                    </div>
+                  </div>
+                } @else {
+                  <div class="form-group">
+                    <label for="dairyProd" class="form-label">Produit laitier recherché</label>
+                    <select id="dairyProd" formControlName="dairyProduct" class="form-input">
+                      @for (prod of produitsLaitiers; track prod.id) {
+                        <option [value]="prod.id">{{ prod.label }}</option>
+                      }
+                    </select>
+                  </div>
+
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label for="estQty" class="form-label">Volume estimé (Litres ou Pots)</label>
+                      <input id="estQty" type="text" formControlName="estimatedQuantity" class="form-input" placeholder="Ex: 50L / semaine" />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="delivFreq" class="form-label">Fréquence d'approvisionnement</label>
+                      <select id="delivFreq" formControlName="deliveryFrequency" class="form-input">
+                        <option value="ponctuel">Commande ponctuelle</option>
+                        <option value="hebdomadaire">Hebdomadaire (1 à 2 fois par semaine)</option>
+                        <option value="quotidien">Quotidienne (CHR / Hôtels / Boutiques)</option>
+                      </select>
+                    </div>
+                  </div>
+                }
+              </fieldset>
+
+              <fieldset class="form-section">
+                <legend class="section-legend">
+                  <span class="step-badge">4</span>
+                  Précisions & Cahier des Charges
+                </legend>
+
+                <div class="form-group">
+                  <label for="devisMsg" class="form-label">
+                    Détails complémentaires <span class="required-star">*</span>
+                  </label>
+                  <textarea
+                    id="devisMsg"
+                    rows="4"
+                    formControlName="message"
+                    class="form-textarea"
+                    [class.input-error]="isFieldInvalid('message')"
+                    placeholder="Précisez l'accessibilité de vos parcelles, contraintes de livraison, horaires souhaités..."></textarea>
+                  @if (isFieldInvalid('message')) {
+                    <p class="error-msg">Veuillez apporter quelques précisions d'au moins 10 caractères.</p>
+                  }
+                </div>
+
+                <div class="form-check">
+                  <input
+                    id="devisTerms"
+                    type="checkbox"
+                    formControlName="termsAccepted"
+                    class="form-checkbox" />
+                  <label for="devisTerms" class="check-label">
+                    J'accepte que les informations saisies soient traitées par le GIE LAWTAN pour l'établissement de mon devis et le suivi commercial.
+                  </label>
+                </div>
+              </fieldset>
+
+              <div class="form-actions">
+                <button
+                  type="submit"
+                  class="btn btn-primary-green"
+                  [disabled]="isSubmitting()">
+                  @if (isSubmitting()) {
+                    <span class="spinner"></span>
+                    Calcul & Envoi en cours...
+                  } @else {
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    Recevoir mon Devis Chiffré Gratuit
+                  }
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      </main>
+
+      <aside class="devis-sidebar">
+        <div class="sidebar-card">
+          <h3 class="sidebar-card-title">Pourquoi Choisir le GIE LAWTAN ?</h3>
+          <div class="engagements-list">
+            @for (eng of engagementsDevis; track eng.titre) {
+              <div class="engagement-item">
+                <div class="eng-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="eng-title">{{ eng.titre }}</h4>
+                  <p class="eng-desc">{{ eng.desc }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="sidebar-card whatsapp-direct-card">
+          <div class="wdc-header">
+            <span class="wdc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+            </span>
+            <div>
+              <span class="wdc-badge">Service Devis Express</span>
+              <h4 class="wdc-title">Conseiller Dédié</h4>
+            </div>
+          </div>
+          <p class="wdc-text">Une question urgente sur la disponibilité d'un tracteur ou un volume de lait ? Échangez directement par WhatsApp.</p>
+          <a href="https://wa.me/221770000000" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-sidebar">
+            Contacter par WhatsApp
+          </a>
+        </div>
+
+        <div class="sidebar-card">
+          <h3 class="sidebar-card-title">Questions Fréquentes Devis</h3>
+          <div class="faq-list">
+            @for (faq of faqsDevis; track faq.question; let idx = $index) {
+              <div class="faq-item" [class.open]="faqOuverte() === idx">
+                <button type="button" class="faq-q-btn" (click)="toggleFaq(idx)">
+                  <span>{{ faq.question }}</span>
+                  <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                @if (faqOuverte() === idx) {
+                  <div class="faq-a-content">
+                    {{ faq.reponse }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<app-public-footer></app-public-footer>
