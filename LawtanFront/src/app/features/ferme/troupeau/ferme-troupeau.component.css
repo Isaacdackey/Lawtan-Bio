@@ -1,0 +1,297 @@
+.view-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Grille des animaux */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 1.25rem;
+}
+
+.cow-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  transition: all 0.15s ease;
+}
+
+.cow-card:hover {
+  border-color: var(--agri-action);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.cow-card.quarantined {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.cow-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.cow-tag {
+  font-family: var(--font-title);
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--sand-light);
+  color: var(--agri-brand);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--sand);
+}
+
+.cow-status-pill {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 0.22rem 0.6rem;
+  border-radius: var(--radius-sm);
+}
+
+.badge-lactation { background: var(--agri-subtle); color: var(--agri-brand); border: 1px solid var(--agri-border); }
+.badge-tarie { background: var(--sand-light); color: var(--agri-brand); border: 1px solid var(--sand); }
+.badge-jeune { background: #EDF3F7; color: #3D6B82; border: 1px solid #C8DCE6; }
+.badge-male { background: var(--warm-gray); color: var(--ink); border: 1px solid var(--sand); }
+.badge-neutre { background: var(--warm-gray); color: var(--ink-secondary); border: 1px solid var(--sand); }
+
+.cow-info-main {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
+}
+
+.cow-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+  flex-shrink: 0;
+}
+
+.cow-identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cow-name {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.cow-breed {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.cow-sex {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.cow-data-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.data-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.cell-label {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  margin-bottom: 0.1rem;
+}
+
+.cell-val {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+
+.cow-alert-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: #FDF2F2;
+  border: 1px solid #F8D7DA;
+  color: #C0392B;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.cow-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.btn-card-primary {
+  flex: 1;
+  min-height: 42px;
+  background: var(--agri-action);
+  color: #FFFFFF;
+  border: 1px solid var(--agri-action);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-card-primary:hover {
+  background: var(--agri-pressed);
+  border-color: var(--agri-pressed);
+}
+
+.btn-card-traite {
+  min-height: 42px;
+  padding: 0 1rem;
+  background: var(--agri-subtle);
+  color: var(--agri-brand);
+  border: 1px solid var(--agri-border);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-card-traite:hover {
+  background: var(--agri-action);
+  color: #FFFFFF;
+  border-color: var(--agri-action);
+}
+
+.btn-card-secondary {
+  min-height: 42px;
+  padding: 0 1rem;
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-card-secondary:hover {
+  background: var(--sand-light);
+  border-color: var(--agri-action);
+}
+
+/* Modal Pedigree Styles */
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.65rem 0.85rem;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-sm);
+}
+
+.d-label {
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+}
+
+.d-val {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.pedigree-heading {
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 0.85rem;
+}
+
+.tree-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tree-branch {
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem 1rem;
+  background: var(--warm-gray);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--agri-brand);
+}
+
+.branch-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: var(--agri-brand);
+}
+
+.branch-sub {
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+}
+
+.branch-kpi {
+  margin-top: 0.35rem;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #27AE60;
+}
+
+.notes-callout {
+  padding: 0.85rem 1rem;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+}
+
+.notes-callout p {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-secondary);
+}

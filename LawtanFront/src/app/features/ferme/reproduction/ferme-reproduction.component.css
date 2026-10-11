@@ -1,0 +1,86 @@
+.view-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.plots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.15rem;
+}
+
+.plot-card {
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-md);
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.plot-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.plot-title {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.plot-type {
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+}
+
+.plot-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--sand);
+}
+
+.plot-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.ps-label {
+  font-size: 10.5px;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.1rem;
+}
+
+.ps-val {
+  font-size: 12.5px;
+  color: var(--ink);
+}
+
+.gestation-progress-block {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.gestation-track {
+  height: 10px;
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+}
+
+.gestation-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #D9A441 0%, #2A7F48 100%);
+  border-radius: var(--radius-btn);
+}
