@@ -1,0 +1,30 @@
+<header class="public-navbar">
+  <div class="nav-container">
+    <a routerLink="/" class="brand" title="GIE LAWTAN Agro-Industries">
+      <div class="brand-logo">
+        <img src="/images/Logo.png" alt="GIE LAWTAN Agro-Industries" class="brand-logo-img" />
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">GIE LAWTAN</span>
+        <span class="brand-sub">Agro-Industries & Laiterie</span>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Accueil</a>
+      <a routerLink="/" fragment="produits" class="nav-link">Produits Laitiers</a>
+      <a routerLink="/" fragment="engagements" class="nav-link">Engagements</a>
+      <a routerLink="/devis" routerLinkActive="active" class="nav-link">Demande de Devis</a>
+      <a routerLink="/contact" routerLinkActive="active" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a routerLink="/login" class="btn-login-erp" title="Accès Gestion de la Ferme">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+        </svg>
+        <span>Espace Gestion</span>
+      </a>
+    </div>
+  </div>
+</header>
