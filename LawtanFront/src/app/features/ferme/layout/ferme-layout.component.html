@@ -112,6 +112,129 @@
     </div>
   </header>
 
+  <!-- Sélecteur Déroulant Tactile Mobile (remplace le défilement horizontal sur smartphone) -->
+  <div class="mobile-module-selector" role="region" aria-label="Sélecteur de module mobile">
+    <button 
+      type="button" 
+      class="mobile-selector-btn" 
+      (click)="toggleMenuMobileModule()"
+      [attr.aria-expanded]="menuMobileModuleOuvert()"
+      aria-haspopup="listbox"
+      aria-label="Changer de section ou module de la ferme">
+      <div class="mobile-selector-info">
+        <span class="mobile-selector-sub">Module actif</span>
+        <div class="mobile-selector-current">
+          <span class="current-icon">
+            @switch (moduleActif().id) {
+              @case ('dashboard') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              }
+              @case ('troupeau') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              }
+              @case ('production') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+              }
+              @case ('sante') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+              }
+              @case ('alimentation') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>
+              }
+              @case ('commercial') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+              }
+              @case ('reproduction') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              }
+            }
+          </span>
+          <span class="current-label">{{ moduleActif().titre }}</span>
+          @if (moduleActif().id === 'troupeau') {
+            <span class="count-tag">{{ fermeService.kpiTotalAnimaux() }}</span>
+          }
+          @if (moduleActif().id === 'sante' && fermeService.kpiVachesSousAlerte() > 0) {
+            <span class="alert-dot" title="Alerte active"></span>
+          }
+          @if (moduleActif().id === 'reproduction' && fermeService.kpiVachesGestantesNb() > 0) {
+            <span class="count-tag">{{ fermeService.kpiVachesGestantesNb() }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="mobile-selector-action">
+        <span class="action-caption">Changer</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="selector-chevron" [class.rotated]="menuMobileModuleOuvert()">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+    </button>
+
+    @if (menuMobileModuleOuvert()) {
+      <div class="mobile-selector-dropdown" role="listbox">
+        <div class="dropdown-tip">
+          <span>Sections d'exploitation</span>
+          <span class="tip-badge">{{ modulesAutorises().length }}</span>
+        </div>
+        <div class="dropdown-items-grid">
+          @for (m of modulesAutorises(); track m.id) {
+            <a 
+              [routerLink]="m.route" 
+              (click)="fermerMenuMobile()"
+              class="mobile-dropdown-link" 
+              [class.active]="moduleActif().id === m.id"
+              role="option"
+              [attr.aria-selected]="moduleActif().id === m.id">
+              <span class="link-icon">
+                @switch (m.id) {
+                  @case ('dashboard') {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                  }
+                  @case ('troupeau') {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                  }
+                  @case ('production') {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                  }
+                  @case ('sante') {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                  }
+                  @case ('alimentation') {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>
+                  }
+                  @case ('commercial') {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                  }
+                  @case ('reproduction') {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  }
+                }
+              </span>
+              <span class="link-label">{{ m.titre }}</span>
+
+              <span class="link-badges">
+                @if (m.id === 'troupeau') {
+                  <span class="count-tag">{{ fermeService.kpiTotalAnimaux() }}</span>
+                }
+                @if (m.id === 'sante' && fermeService.kpiVachesSousAlerte() > 0) {
+                  <span class="alert-dot" title="Alerte active"></span>
+                }
+                @if (m.id === 'reproduction' && fermeService.kpiVachesGestantesNb() > 0) {
+                  <span class="count-tag">{{ fermeService.kpiVachesGestantesNb() }}</span>
+                }
+                @if (moduleActif().id === m.id) {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="link-check">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                }
+              </span>
+            </a>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
   <nav class="farm-nav" aria-label="Navigation principale du module ferme">
     <div class="nav-container">
       @if (fermeService.currentPermission().ongletsAutorises.includes('dashboard')) {
