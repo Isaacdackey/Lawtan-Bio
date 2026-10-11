@@ -1,0 +1,15 @@
+# Fichiers système & éditeur
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.bak
+
+# Fichiers de backup temporaires
+.backup_full_lawtanfront/
+src_backup_monolith/
+
+# Node & Build
+node_modules/
+dist/
+.angular/
