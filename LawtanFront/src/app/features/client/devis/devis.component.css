@@ -1,6 +1,6 @@
 :host {
   display: block;
-  background-color: #F9F6F0;
+  background-color: #F8FAFC;
   color: #111827;
   font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
   line-height: 1.5;
@@ -8,9 +8,8 @@
 
   --lawtan-primary: #1E5E3A;
   --lawtan-primary-hover: #2A7F48;
-  --lawtan-sand: #E2D6C6;
-  --lawtan-cream: #F9F6F0;
-  --lawtan-dark: #154528;
+  --lawtan-sand: #E2E8F0;
+  --lawtan-cream: #F8FAFC;
   --lawtan-border: #E5E7EB;
   --lawtan-text: #1F2937;
   --lawtan-muted: #6B7280;
@@ -20,8 +19,8 @@
   box-sizing: border-box;
 }
 
-.contact-page {
-  background-color: #F9F6F0;
+.devis-page {
+  background-color: #F8FAFC;
   min-height: 100vh;
   padding-bottom: 5rem;
 }
@@ -37,7 +36,7 @@
    PAGE HERO & BREADCRUMBS
    ========================================================================== */
 .page-hero {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F4EBE0 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
   padding: 2.75rem 0 3.25rem 0;
   border-bottom: 1px solid var(--lawtan-sand);
 }
@@ -99,13 +98,13 @@
   color: #111827;
   margin: 0 auto 0.75rem auto;
   letter-spacing: -0.025em;
-  max-width: 780px;
+  max-width: 800px;
 }
 
 .page-subtitle {
   font-size: 1.08rem;
   color: #4B5563;
-  max-width: 720px;
+  max-width: 740px;
   margin: 0 auto 2rem auto;
   line-height: 1.6;
 }
@@ -143,7 +142,7 @@
   margin-top: 2.5rem;
 }
 
-.contact-grid {
+.devis-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: 2.5rem;
@@ -151,9 +150,129 @@
 }
 
 /* ==========================================================================
+   SÉLECTEUR DE CATÉGORIE (NATURE DU BESOIN)
+   ========================================================================== */
+.nature-selector-block {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--lawtan-border);
+}
+
+.nature-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.25rem;
+}
+
+.nature-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.65rem;
+  background-color: #1E5E3A;
+  color: #FFFFFF;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.nature-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.nature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #F9FAFB;
+  border: 2px solid #E5E7EB;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nature-card:hover {
+  border-color: #C4E9CE;
+  background: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.nature-card.active {
+  border-color: #1E5E3A;
+  background: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(30, 94, 58, 0.1);
+}
+
+.nature-icon-box {
+  width: 44px;
+  height: 44px;
+  background: #EBF7EE;
+  color: #1E5E3A;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nature-card.active .nature-icon-box {
+  background: #1E5E3A;
+  color: #FFFFFF;
+}
+
+.nature-card-content {
+  flex: 1;
+}
+
+.nature-card-heading {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.nature-card-sub {
+  font-size: 0.8rem;
+  color: var(--lawtan-muted);
+  line-height: 1.4;
+}
+
+.nature-radio-indicator {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #D1D5DB;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nature-card.active .nature-radio-indicator {
+  border-color: #1E5E3A;
+}
+
+.nature-card.active .radio-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #1E5E3A;
+  border-radius: 50%;
+}
+
+/* ==========================================================================
    FORMULAIRE
    ========================================================================== */
-.contact-main {
+.devis-main {
   width: 100%;
 }
 
@@ -163,25 +282,6 @@
   border-radius: 16px;
   padding: 2.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-}
-
-.form-header-intro {
-  margin-bottom: 2rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--lawtan-border);
-}
-
-.form-title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: #111827;
-  margin: 0 0 0.4rem 0;
-}
-
-.form-sub {
-  font-size: 0.9rem;
-  color: var(--lawtan-muted);
-  margin: 0;
 }
 
 .form-body {
@@ -346,7 +446,7 @@
 /* ==========================================================================
    SIDEBAR REASSURANCE & FAQ
    ========================================================================== */
-.contact-sidebar {
+.devis-sidebar {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -595,7 +695,7 @@
    RESPONSIVE (MOBILE & TABLETTE)
    ========================================================================== */
 @media (max-width: 960px) {
-  .contact-grid {
+  .devis-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
@@ -604,6 +704,9 @@
 @media (max-width: 640px) {
   .page-title {
     font-size: 1.75rem;
+  }
+  .nature-cards-grid {
+    grid-template-columns: 1fr;
   }
   .form-container {
     padding: 1.5rem 1.25rem;

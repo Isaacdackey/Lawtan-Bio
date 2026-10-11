@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "name": "Backend V1 (Spring Boot)",
+            "path": "LawtanBack"
+        },
+        {
+            "name": "Frontend V1 (Angular)",
+            "path": "LawtanFront"
+        },
+        {
+            "name": "Projet Global",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "java.import.maven.enabled": true
+    }
+}
