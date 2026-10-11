@@ -582,3 +582,55 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 768px) {
+  .tank-card-soft {
+    padding: 1.15rem;
+  }
+
+  .tank-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .tank-badges {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .tank-metrics-mini {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .warning-callout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.85rem;
+  }
+
+  .warning-callout .btn-subtle {
+    width: 100%;
+    text-align: center;
+  }
+
+  .agro-kpi-item {
+    padding: 0.75rem;
+    gap: 0.65rem;
+  }
+
+  .agro-kpi-val {
+    font-size: 15px;
+  }
+}
+

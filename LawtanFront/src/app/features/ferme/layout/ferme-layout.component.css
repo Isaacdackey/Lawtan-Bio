@@ -685,3 +685,17 @@
     left: 0;
   }
 }
+
+@media (max-width: 480px) {
+  .infra-chip {
+    font-size: 10.5px;
+    padding: 0.25rem 0.55rem;
+  }
+  .app-brand {
+    font-size: 16px;
+  }
+  .app-scope {
+    font-size: 10.5px;
+  }
+}
+
