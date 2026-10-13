@@ -1,196 +1,320 @@
-<div class="view-panel">
-  <div class="toolbar-header cheptel-toolbar-header">
-    <div class="toolbar-titles">
-      <h1 class="page-title">Registre du Troupeau & Cheptel</h1>
-      <span class="page-sub">13 bovins d'élite identifiés par boucle permanente au Sénégal</span>
+<div class="page" style="padding: 0;">
+  <div class="page-header-row">
+    <div class="page-header-text">
+      <h2>Registre du Troupeau & Pedigree ({{ animals().length }} Animaux)</h2>
+      <p>Fiches d'identification individuelles, généalogie complète, statut de lactation et génétique.</p>
     </div>
+    <div class="header-action-group">
+      <button class="btn-primary" (click)="openNewAnimalModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        <span>+ Enregistrer Nouvel Animal</span>
+      </button>
+    </div>
+  </div>
 
-    <div class="toolbar-actions cheptel-toolbar-actions">
-      <div class="search-input-wrap">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon" aria-hidden="true">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input 
-          type="text" 
-          placeholder="Rechercher nom, boucle, race..." 
-          [ngModel]="rechercheAnimal()" 
-          (ngModelChange)="rechercheAnimal.set($event)" 
-          class="form-search"
-          aria-label="Rechercher un animal par son nom, sa boucle ou sa race" />
+  <div class="animal-filter-bar">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <select class="filter-select-pro" [ngModel]="herdFilter()" (ngModelChange)="filterHerd($event)">
+        <option value="all">Tous les animaux ({{ animals().length }})</option>
+        <option value="prod">Vaches Laitières & Reproductrices</option>
+        <option value="genisse">Génisses</option>
+        <option value="male">Taureaux & Reproducteurs</option>
+        <option value="veau">Veaux & Velles</option>
+        <option value="reforme">Alerte Réforme</option>
+      </select>
+    </div>
+    <div class="search-input-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher par nom, boucle, RFID ou race..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+    </div>
+  </div>
+
+  <div class="herd-cards-grid">
+    <div *ngFor="let animal of paginatedAnimals()" class="animal-item-card" [class.card-alert-glow]="animal.status === 'FEVER_TREATMENT'" (click)="openAnimalModal(animal.internalId)">
+      <div class="card-top-row">
+        <div class="animal-avatar-box" [class.avatar-heifer]="animal.category === 'HEIFER_YOUNG'" [class.avatar-male]="animal.category === 'MALE_BULL'">
+          <img *ngIf="animal.imageUrl" [src]="animal.imageUrl" alt="Photo" style="width:100%;height:100%;object-fit:cover;border-radius:10px" />
+          <svg *ngIf="!animal.imageUrl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="6 3 18 3 20 14 12 21 4 14"/>
+            <circle cx="12" cy="8" r="2"/>
+          </svg>
+        </div>
+        <div class="animal-header-meta">
+          <span class="animal-code-tag">{{ animal.internalId }}</span>
+          <h4 class="animal-cow-name">{{ animal.name }}</h4>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:2px;">
+            <span class="badge-pill badge-green" *ngIf="animal.category === 'MILKING_COW' && animal.status !== 'FEVER_TREATMENT'">En production</span>
+            <span class="badge-pill badge-red" *ngIf="animal.status === 'FEVER_TREATMENT'">Fièvre / Soin</span>
+            <span class="badge-pill badge-blue" *ngIf="animal.category === 'HEIFER_YOUNG'">Génisse</span>
+            <span class="badge-pill badge-purple" *ngIf="animal.category === 'MALE_BULL'">Reproducteur</span>
+            <span class="badge-pill badge-red" *ngIf="animal.cullingRecommended" title="Alerte CowMaster: Réforme recommandée">Réforme</span>
+          </div>
+        </div>
+        <span class="status-indicator-dot" [class.dot-healthy]="animal.status === 'EXCELLENT' || animal.status === 'HEALTHY'" [class.dot-fever]="animal.status === 'FEVER_TREATMENT'" [class.dot-watch]="animal.status === 'PREGNANT' || animal.cullingRecommended"></span>
       </div>
-
-      <div class="segmented-control" role="group" aria-label="Filtrer les animaux par statut">
-        <button 
-          type="button" 
-          [class.selected]="filtreStatut() === 'tous'" 
-          [attr.aria-pressed]="filtreStatut() === 'tous'"
-          (click)="filtreStatut.set('tous')">Tous (13)</button>
-        <button 
-          type="button" 
-          [class.selected]="filtreStatut() === 'lactation'" 
-          [attr.aria-pressed]="filtreStatut() === 'lactation'"
-          (click)="filtreStatut.set('lactation')">Laitières (7)</button>
-        <button 
-          type="button" 
-          [class.selected]="filtreStatut() === 'jeune'" 
-          [attr.aria-pressed]="filtreStatut() === 'jeune'"
-          (click)="filtreStatut.set('jeune')">Génisses (2)</button>
-        <button 
-          type="button" 
-          [class.selected]="filtreStatut() === 'reproducteur'" 
-          [attr.aria-pressed]="filtreStatut() === 'reproducteur'"
-          (click)="filtreStatut.set('reproducteur')">Taureaux (4)</button>
+      <div class="animal-metrics-grid">
+        <div class="metric-unit-item"><span class="lbl">Race</span><strong class="val">{{ animal.breed }}</strong></div>
+        <div class="metric-unit-item" *ngIf="animal.dailyMilkYield && animal.dailyMilkYield > 0"><span class="lbl">Lait / Jour</span><strong class="val">{{ animal.dailyMilkYield }} L/j</strong></div>
+        <div class="metric-unit-item" *ngIf="!animal.dailyMilkYield || animal.dailyMilkYield === 0"><span class="lbl">Statut</span><strong class="val">{{ animal.category === 'MALE_BULL' ? 'Reproducteur' : 'Élevage' }}</strong></div>
+        <div class="metric-unit-item"><span class="lbl">Poids</span><strong class="val">{{ animal.weight != null ? animal.weight + ' kg' : 'Non pesé' }}</strong></div>
+        <div class="metric-unit-item"><span class="lbl">Température</span><strong class="val" [style.color]="animal.temperature && animal.temperature > 39.0 ? '#dc2626' : 'inherit'">{{ animal.temperature != null ? animal.temperature + ' °C' : 'Non relevée' }}</strong></div>
+      </div>
+      <div class="animal-card-bottom">
+        <span class="badge-pedigree-tag" [title]="animal.pedigree.subjectNote || animal.breed">{{ animal.pedigree.subjectNote || animal.breed }}</span>
+        <span *ngIf="animal.daysOpen && animal.daysOpen > 0" class="badge-pill badge-gold" style="font-size:0.68rem;padding:2px 6px;white-space:nowrap;flex-shrink:0;">{{ animal.daysOpen }} j. ouverts</span>
+        <span *ngIf="!animal.daysOpen || animal.daysOpen <= 0" class="repro-status-txt" [title]="animal.reproStatus">{{ animal.reproStatus }}</span>
       </div>
     </div>
   </div>
 
-  <div class="cards-grid">
-    @for (animal of animauxFiltres(); track animal.id) {
-      <article class="cow-card" [class.quarantined]="animal.enTraitementMedical">
-        <div class="cow-card-top">
-          <span class="cow-tag">{{ animal.boucleId }}</span>
-          <span class="cow-status-pill" [ngClass]="getBadgeStatut(animal.statut).class">
-            {{ getBadgeStatut(animal.statut).label }}
-          </span>
-        </div>
+  <div class="pagination-bar" *ngIf="filteredAnimals().length > 0">
+    <button class="pagination-btn" (click)="prevHerdPage()" [disabled]="herdCurrentPage() === 1">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+      <span>Précédent</span>
+    </button>
+    
+    <div class="pagination-pages-wrapper">
+      <button *ngFor="let p of herdPageNumbers()" class="page-number-btn" [class.active]="p === herdCurrentPage()" (click)="setHerdPage(p)">
+        {{ p }}
+      </button>
+    </div>
 
-        <div class="cow-info-main">
-          <img [src]="animal.photoUrl" [alt]="'Photo de ' + animal.nom" class="cow-thumb" loading="lazy" />
-          <div class="cow-identity">
-            <h2 class="cow-name">{{ animal.nom }}</h2>
-            <span class="cow-breed">{{ animal.race }}</span>
-            <span class="cow-sex">{{ animal.sexe === 'femelle' ? 'Femelle' : 'Mâle' }}</span>
-          </div>
-        </div>
+    <div class="pagination-info-pill">
+      <span>Page <strong>{{ herdCurrentPage() }}</strong> / {{ totalHerdPages() }}</span>
+      <span style="opacity:0.4">•</span>
+      <span><strong>{{ filteredAnimals().length }}</strong> bêtes</span>
+    </div>
 
-        <div class="cow-data-row">
-          <div class="data-cell">
-            <span class="cell-label">Poids</span>
-            <span class="cell-val font-numeric">{{ animal.poidsKg }} kg</span>
-          </div>
-          <div class="data-cell">
-            <span class="cell-label">Température</span>
-            <span class="cell-val font-numeric">{{ animal.temperatureC }} °C</span>
-          </div>
-          @if (animal.derniereTraiteLitres != null) {
-            <div class="data-cell">
-              <span class="cell-label">Traite J</span>
-              <span class="cell-val font-bold font-numeric text-success">{{ animal.derniereTraiteLitres }} L</span>
-            </div>
-          }
-        </div>
-
-        @if (animal.enTraitementMedical && animal.finDelaiAttenteLait) {
-          <div class="cow-alert-strip" role="alert">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="strip-icon" aria-hidden="true">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            Lait consigné jusqu'au {{ animal.finDelaiAttenteLait }}
-          </div>
-        }
-
-        <div class="cow-actions">
-          <button type="button" class="btn-card-primary" (click)="ouvrirPedigree(animal)">
-            Fiche & Pedigree
-          </button>
-          @if (animal.statut === 'lactation' && fermeService.currentPermission().peutSaisirTraite) {
-            <button type="button" class="btn-card-traite" (click)="naviguerTraite()">
-              Traite
-            </button>
-          }
-          @if (fermeService.currentPermission().peutAjouterSoin) {
-            <button type="button" class="btn-card-secondary" (click)="ouvrirModalSoin(animal.id)">
-              Soin
-            </button>
-          }
-        </div>
-      </article>
-    } @empty {
-      <div class="empty-state">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon" aria-hidden="true">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <h3 class="empty-title">Aucun animal trouvé</h3>
-        <p class="empty-text">Aucun animal ne correspond à ce filtre ou critère de recherche.</p>
-        <button type="button" class="btn-subtle" (click)="reinitialiserFiltres()">Réinitialiser les filtres</button>
-      </div>
-    }
+    <button class="pagination-btn" (click)="nextHerdPage()" [disabled]="herdCurrentPage() === totalHerdPages()">
+      <span>Suivant</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m9 18 6-6-6-6"/>
+      </svg>
+    </button>
   </div>
 </div>
 
-@if (animalSelectionne()) {
-  <div class="modal-backdrop" (click)="fermerPedigree()">
-    <div 
-      class="modal-dialog" 
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="pedigree-title">
-      
-      <header class="modal-header">
+<div class="modal-overlay" *ngIf="isAnimalModalOpen()" (click)="closeAnimalModal()">
+  <div class="modal-card modal-card-lg" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div style="width:48px;height:48px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.15);display:grid;place-items:center;flex-shrink:0">
+          <img *ngIf="selectedAnimal()?.imageUrl" [src]="selectedAnimal()?.imageUrl" alt="Photo" style="width:100%;height:100%;object-fit:cover" />
+          <svg *ngIf="!selectedAnimal()?.imageUrl" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+        </div>
         <div>
-          <span class="modal-pretag">{{ animalSelectionne()!.boucleId }}</span>
-          <h2 class="modal-title" id="pedigree-title">{{ animalSelectionne()!.nom }} — {{ animalSelectionne()!.race }}</h2>
+          <h3>{{ selectedAnimal()?.name }} ({{ selectedAnimal()?.internalId }})</h3>
+          <p>{{ selectedAnimal()?.breed }} • Statut : {{ selectedAnimal()?.categoryLabel }}</p>
         </div>
-        <button type="button" class="btn-close" (click)="fermerPedigree()" aria-label="Fermer la fiche détaillée">✕</button>
-      </header>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-secondary" style="padding:6px 14px;font-size:0.8rem;border-radius:10px;background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);display:inline-flex;align-items:center;gap:6px" (click)="closeAnimalModal(); openEditAnimalModal(selectedAnimal()!)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          <span>Modifier la Fiche</span>
+        </button>
+        <button class="modal-close-btn" (click)="closeAnimalModal()">✕</button>
+      </div>
+    </div>
 
-      <div class="modal-body">
-        <div class="details-grid">
-          <div class="detail-item">
-            <span class="d-label">Date de naissance</span>
-            <span class="d-val font-numeric">{{ animalSelectionne()!.dateNaissance }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="d-label">Poids actuel</span>
-            <span class="d-val font-numeric">{{ animalSelectionne()!.poidsKg }} kg</span>
-          </div>
-          <div class="detail-item">
-            <span class="d-label">Mode de reproduction</span>
-            <span class="d-val">{{ animalSelectionne()!.pedigree.typeInsemination === 'artificielle' ? 'Insémination artificielle (IA)' : 'Saillie naturelle' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="d-label">Semence / Taureau</span>
-            <span class="d-val">{{ animalSelectionne()!.pedigree.taureauSemence || 'Non renseigné' }}</span>
-          </div>
-        </div>
+    <div class="modal-tabs-header">
+      <button class="modal-tab-button" [class.active]="activeModalTab() === 'infos'" (click)="switchModalTab('infos')">Fiche & Paramètres</button>
+      <button class="modal-tab-button" [class.active]="activeModalTab() === 'pedigree'" (click)="switchModalTab('pedigree')">Arbre Généalogique & Pedigree</button>
+      <button class="modal-tab-button" [class.active]="activeModalTab() === 'sante'" (click)="switchModalTab('sante')">Journal des Événements & Santé ({{ getAnimalEvents(selectedAnimal()?.internalId).length }})</button>
+      <button class="modal-tab-button" [class.active]="activeModalTab() === 'lactation'" (click)="switchModalTab('lactation')">Courbe de Lactation</button>
+    </div>
 
-        <h3 class="pedigree-heading">Arbre généalogique & Lignée génétique</h3>
-        <div class="tree-layout">
-          <div class="tree-branch">
-            <span class="branch-label">Père (Taureau)</span>
-            <strong>{{ animalSelectionne()!.pedigree.pere?.nom || 'Inconnu' }}</strong>
-            <span class="branch-sub">{{ animalSelectionne()!.pedigree.pere?.race }}</span>
-            @if (animalSelectionne()!.pedigree.pere?.rendementMoyenLait != null) {
-              <span class="branch-kpi">Rendement : {{ animalSelectionne()!.pedigree.pere?.rendementMoyenLait }} L/j</span>
-            }
-          </div>
-
-          <div class="tree-branch">
-            <span class="branch-label">Mère (Vache)</span>
-            <strong>{{ animalSelectionne()!.pedigree.mere?.nom || 'Inconnue' }}</strong>
-            <span class="branch-sub">{{ animalSelectionne()!.pedigree.mere?.race }}</span>
-            @if (animalSelectionne()!.pedigree.mere?.rendementMoyenLait != null) {
-              <span class="branch-kpi">Rendement : {{ animalSelectionne()!.pedigree.mere?.rendementMoyenLait }} L/j</span>
-            }
-          </div>
+    <div class="modal-scroll-body" style="padding:26px 30px">
+      <div class="modal-tab-pane" *ngIf="activeModalTab() === 'infos'">
+        <div *ngIf="selectedAnimal()?.cowMasterAlert" style="margin-bottom:16px;padding:10px 14px;background:#fffbeb;border:1px solid #fef3c7;border-left:4px solid #f59e0b;border-radius:8px;display:flex;align-items:center;gap:10px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span style="font-size:0.8rem;color:#92400e;font-weight:600">{{ selectedAnimal()?.cowMasterAlert }}</span>
         </div>
 
-        @if (animalSelectionne()!.observations) {
-          <div class="notes-callout">
-            <strong>Observations d'élevage :</strong>
-            <p>{{ animalSelectionne()!.observations }}</p>
-          </div>
-        }
+        <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="metric-unit-item"><span class="lbl">Matricule / ID</span><strong class="val">{{ selectedAnimal()?.internalId }}</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Nom de l'Animal</span><strong class="val">{{ selectedAnimal()?.name }}</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Marque Auriculaire</span><strong class="val">{{ selectedAnimal()?.earTagNumber }}</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Catégorie d'Élevage</span><strong class="val">{{ selectedAnimal()?.categoryLabel }}</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Race & Origine</span><strong class="val">{{ selectedAnimal()?.breed }}</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Date de Naissance</span><strong class="val">{{ selectedAnimal()?.birthDate }}</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Poids Actuel</span><strong class="val">{{ selectedAnimal()?.weight }} kg</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Température</span><strong class="val">{{ selectedAnimal()?.temperature }} °C</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Jours Ouverts</span><strong class="val">{{ selectedAnimal()?.daysOpen }} jours</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Statut Repro Détaillé</span><strong class="val">{{ selectedAnimal()?.reproStatus }}</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Production Lait Jour</span><strong class="val" style="color:#16a34a">{{ selectedAnimal()?.dailyMilkYield }} L/j</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Élevage / Origine</span><strong class="val">{{ selectedAnimal()?.originLot }}</strong></div>
+        </div>
       </div>
 
-      <footer class="modal-footer">
-        <button type="button" class="btn-subtle" (click)="fermerPedigree()">Fermer</button>
-      </footer>
+      <div class="modal-tab-pane" *ngIf="activeModalTab() === 'pedigree'">
+        <div class="pedigree-visual-tree" style="display:flex;flex-direction:column;gap:16px">
+          <div class="pedigree-tier" style="display:flex;justify-content:center">
+            <div class="pedigree-card-node node-target" style="border:2px solid #16a34a;padding:12px 18px;border-radius:8px;text-align:center;background:#f0fdf4;min-width:260px">
+              <p class="role-tag" style="font-size:0.7rem;color:#166534;font-weight:700">Sujet Sélectionné</p>
+              <strong class="name" style="font-size:1.1rem">{{ selectedAnimal()?.name }} ({{ selectedAnimal()?.internalId }})</strong>
+              <div class="details" style="font-size:0.78rem;color:#526658">{{ selectedAnimal()?.breed }} — Ferme LAWTAN BIO</div>
+            </div>
+          </div>
+
+          <div class="pedigree-tier" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="pedigree-card-node node-father" style="border:1px solid #bae6fd;padding:12px;border-radius:8px;background:#f0f9ff">
+              <p class="role-tag" style="color:#0284c7;font-weight:700;font-size:0.75rem">Père (Taureau / Semence)</p>
+              <strong class="name">{{ selectedAnimal()?.pedigree?.fatherName }}</strong>
+              <div class="details" style="font-size:0.75rem;color:#526658">{{ selectedAnimal()?.pedigree?.fatherBreed }}</div>
+            </div>
+
+            <div class="pedigree-card-node node-mother" style="border:1px solid #fecaca;padding:12px;border-radius:8px;background:#fef2f2">
+              <p class="role-tag" style="color:#dc2626;font-weight:700;font-size:0.75rem">Mère (Vache Laitière)</p>
+              <strong class="name">{{ selectedAnimal()?.pedigree?.motherName }}</strong>
+              <div class="details" style="font-size:0.75rem;color:#526658">{{ selectedAnimal()?.pedigree?.motherBreed }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-tab-pane" *ngIf="activeModalTab() === 'sante'">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date & Heure</th>
+                <th>Type d'Acte</th>
+                <th>Détails / Diagnostic</th>
+                <th>Intervenant</th>
+                <th>Résultat</th>
+                <th>Observations CowMaster</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let evt of getAnimalEvents(selectedAnimal()?.internalId)">
+                <td>
+                  <strong>{{ evt.date }}</strong>
+                  <span *ngIf="evt.time" style="font-size:0.7rem;color:#64748b;display:block">{{ evt.time }}</span>
+                </td>
+                <td><span class="badge-pill" [ngClass]="evt.badgeClass">{{ evt.typeLabel }}</span></td>
+                <td style="font-size:0.78rem"><strong>{{ evt.details }}</strong></td>
+                <td style="font-size:0.78rem">{{ evt.operator }}</td>
+                <td><span class="badge-pill badge-green">{{ evt.result }}</span></td>
+                <td style="max-width:280px;font-size:0.75rem;color:#475569">{{ evt.observations }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-tab-pane" *ngIf="activeModalTab() === 'lactation'">
+        <div style="height:240px;position:relative">
+          <canvas id="perfModalChart"></canvas>
+        </div>
+      </div>
     </div>
   </div>
-}
+</div>
+
+<div class="modal-overlay" *ngIf="isNewAnimalModalOpen()" (click)="isNewAnimalModalOpen.set(false)">
+  <div class="modal-card modal-card-lg" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Enregistrer un Nouvel Animal</h3>
+          <p>Création de la fiche d'identification, filiation & pedigree</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="isNewAnimalModalOpen.set(false)">✕</button>
+    </div>
+    
+    <form (ngSubmit)="submitNewAnimal()" style="padding:24px 28px;overflow-y:auto;max-height:calc(90vh - 80px)">
+      <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-group-item">
+          <label>Matricule / ID Interne *</label>
+          <input type="text" [(ngModel)]="newAnimalForm.internalId" name="newId" required />
+        </div>
+        <div class="form-group-item">
+          <label>Nom de l'Animal *</label>
+          <input type="text" [(ngModel)]="newAnimalForm.name" name="newName" placeholder="Ex: Awa, Fatou..." required />
+        </div>
+        <div class="form-group-item">
+          <label>Sexe *</label>
+          <select [(ngModel)]="newAnimalForm.gender" name="newGender">
+            <option value="FEMALE">Femelle</option>
+            <option value="MALE">Mâle</option>
+          </select>
+        </div>
+        <div class="form-group-item">
+          <label>Race du Bétail</label>
+          <select [(ngModel)]="newAnimalForm.breed" name="newBreed">
+            <option value="Holstein Pure">Holstein Pure</option>
+            <option value="Montbéliarde Pure">Montbéliarde Pure</option>
+            <option value="Jersiaise Pure">Jersiaise Pure</option>
+            <option value="Gobra">Gobra Locale</option>
+            <option value="Croisé Jersiaise/Holstein">Croisé Jersiaise / Holstein</option>
+          </select>
+        </div>
+        <div class="form-group-item">
+          <label>Poids Actuel (kg)</label>
+          <input type="number" [(ngModel)]="newAnimalForm.weight" name="newWeight" />
+        </div>
+        <div class="form-group-item">
+          <label>Date de Naissance</label>
+          <input type="date" [(ngModel)]="newAnimalForm.birthDate" name="newBirth" />
+        </div>
+        <div class="form-group-item">
+          <label>Nom du Père</label>
+          <input type="text" [(ngModel)]="newAnimalFather" name="fatherName" placeholder="Ex: Champion Pur..." />
+        </div>
+        <div class="form-group-item">
+          <label>Nom de la Mère</label>
+          <input type="text" [(ngModel)]="newAnimalMother" name="motherName" placeholder="Ex: Laitière Élite..." />
+        </div>
+        <div class="form-group-item" style="grid-column: span 2">
+          <label>Observations / Pedigree</label>
+          <textarea rows="2" [(ngModel)]="newAnimalForm.notes" name="newNotes" placeholder="Remarques zootechniques..."></textarea>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:flex-end">
+        <button type="button" class="btn-secondary" (click)="isNewAnimalModalOpen.set(false)">Annuler</button>
+        <button type="submit" class="btn-primary">Enregistrer l'Animal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="isEditAnimalModalOpen()" (click)="isEditAnimalModalOpen.set(false)">
+  <div class="modal-card modal-card-lg" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Modifier la Fiche de l'Animal</h3>
+          <p>{{ editAnimalForm.name }} ({{ editAnimalForm.internalId }})</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="isEditAnimalModalOpen.set(false)">✕</button>
+    </div>
+    
+    <form (ngSubmit)="submitEditAnimal()" style="padding:24px 28px;overflow-y:auto;max-height:calc(90vh - 80px)">
+      <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-group-item">
+          <label>Nom de l'Animal</label>
+          <input type="text" [(ngModel)]="editAnimalForm.name" name="editName" required />
+        </div>
+        <div class="form-group-item">
+          <label>Race</label>
+          <input type="text" [(ngModel)]="editAnimalForm.breed" name="editBreed" required />
+        </div>
+        <div class="form-group-item">
+          <label>Poids Actuel (kg)</label>
+          <input type="number" [(ngModel)]="editAnimalForm.weight" name="editWeight" />
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:flex-end">
+        <button type="button" class="btn-secondary" (click)="isEditAnimalModalOpen.set(false)">Annuler</button>
+        <button type="submit" class="btn-primary">Mettre à jour la Fiche</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,229 +1,327 @@
-<div class="view-panel">
-  <div class="toolbar-header">
-    <div>
-      <h1 class="page-title">Alimentation & Cultures Fourragères Bio</h1>
-      <span class="page-sub">Rations journalières, réduction du gaspillage et parcelles fourragères bio sous pompage solaire</span>
+<div class="page" style="padding: 0;">
+  
+  <div class="page-header-row">
+    <div class="page-header-text">
+      <h2>Nutrition, Fourrages & Rations Équilibrées</h2>
+      <p>Pilotage de la matière sèche (MS), stocks de sécurité des fourrages bio et optimisation du coût alimentaire par litre de lait produit.</p>
     </div>
-
-    @if (fermeService.currentPermission().peutAjouterRation) {
-      <button type="button" class="btn-primary" (click)="ouvrirModalRation()">
-        + Distribuer une ration
+    <div class="header-action-group">
+      <button class="btn-primary" (click)="openNewFeedStockModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        <span>+ Nouvel Aliment / Fourrage</span>
       </button>
-    }
-  </div>
-
-  <div class="metrics-row" role="region" aria-label="Indicateurs d'alimentation et conversion">
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">Rations du jour</span>
-        <span class="metric-icon-wrap icon-feed" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
-            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric">
-        {{ fermeService.kpiConsommationAlimentsJourKg() }}
-        <span class="unit">kg</span>
-      </div>
-      <div class="metric-detail">
-        Coût total : <strong>{{ fermeService.kpiCoutAlimentationJourFCFA() | number }} FCFA</strong>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">Conversion Alimentaire (FCR)</span>
-        <span class="metric-icon-wrap icon-finance" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-            <polyline points="17 6 23 6 23 12"></polyline>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric">
-        {{ fermeService.kpiTauxConversionAlimentaire() }}
-        <span class="unit">kg/L</span>
-      </div>
-      <div class="metric-detail">
-        Objectif Cadrage : &lt; 1.30 kg par litre produit
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">Stock Fourrage Estimé</span>
-        <span class="metric-icon-wrap icon-herd" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-            <polyline points="2 17 12 22 22 17"></polyline>
-            <polyline points="2 12 12 17 22 12"></polyline>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric">
-        {{ fermeService.kpiStockFourrageTotalKg() | number }}
-        <span class="unit">kg</span>
-      </div>
-      <div class="metric-detail">
-        3 parcelles en rotation (Maralfalfa, Panicum, Sorgho)
-      </div>
+      <button class="btn-secondary" (click)="openDistributeModal()">
+        <span>+ Distribuer une Ration</span>
+      </button>
     </div>
   </div>
 
-  <div class="card-box">
-    <div class="card-box-header">
-      <div>
-        <h2 class="box-title">Parcelles Fourragères en Culture (Site de Thiès)</h2>
-        <span class="box-sub">Irrigation automatisée par pompe solaire immergée et distribution optimisée</span>
+  <section class="kpi-grid">
+    <div class="kpi-card card-green" (click)="navigateToFeedSubTab('stocks')" title="Cliquer pour gérer les Stocks d'Aliments">
+      <div class="kpi-header">
+        <span class="kpi-title">Stock Global d'Aliments</span>
+        <span class="kpi-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 22 12 12"/><path d="M12 12 9 7a5 5 0 0 1 7-4 5 5 0 0 1-4 7Z"/></svg>
+        </span>
+      </div>
+      <div class="kpi-value">{{ totalFeedStockKg().toLocaleString() }} <span class="unit">kg</span></div>
+      <div class="kpi-footer trend-up">
+        <span>{{ feedStocks().length }} matières premières suivies</span>
       </div>
     </div>
 
-    <div class="plots-grid">
-      @for (p of fermeService.parcellesFourrage(); track p.id) {
-        <div class="plot-card">
-          <div class="plot-card-header">
-            <div>
-              <h3 class="plot-title">{{ p.nomParcelle }}</h3>
-              <span class="plot-type">{{ p.typeCulture }} • {{ p.surfaceHa }} ha</span>
-            </div>
-            <span class="status-pill" [class.status-success]="p.statut === 'pret_fauche'" [class.status-info]="p.statut === 'en_croissance'" [class.status-warn]="p.statut === 'en_rotation'">
-              {{ p.statut === 'pret_fauche' ? 'Prêt fauche' : (p.statut === 'en_croissance' ? 'En croissance' : 'En rotation') }}
-            </span>
-          </div>
+    <div class="kpi-card" [class.card-red]="lowFeedStockCount() > 0" [class.card-blue]="lowFeedStockCount() === 0" (click)="navigateToFeedSubTab('stocks')" title="Cliquer pour voir les alertes de stock">
+      <div class="kpi-header">
+        <span class="kpi-title">Alerte Réapprovisionnement</span>
+        <span class="kpi-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
+        </span>
+      </div>
+      <div class="kpi-value" [style.color]="lowFeedStockCount() > 0 ? '#dc2626' : '#0284c7'">
+        {{ lowFeedStockCount() }} <span class="unit">aliments bas</span>
+      </div>
+      <div class="kpi-footer">
+        <span *ngIf="lowFeedStockCount() > 0" style="color:#dc2626">Seuil de sécurité atteint</span>
+        <span *ngIf="lowFeedStockCount() === 0" style="color:#15803d">Tous les stocks sont optimaux</span>
+      </div>
+    </div>
 
-          <div class="plot-metrics">
-            <div class="plot-stat">
-              <span class="ps-label">Rendement estimé</span>
-              <strong class="ps-val font-numeric">{{ p.rendementEstimeKg | number }} kg</strong>
-            </div>
-            <div class="plot-stat">
-              <span class="ps-label">Irrigation</span>
-              <strong class="ps-val">{{ p.irrigation === 'goutte_a_goutte_solaire' ? 'Goutte-à-goutte solaire' : 'Aspersion solaire' }}</strong>
-            </div>
-            <div class="plot-stat">
-              <span class="ps-label">Prochaine fauche</span>
-              <strong class="ps-val font-numeric">{{ p.prochaineFauchePrevue || 'À définir' }}</strong>
-            </div>
-          </div>
+    <div class="kpi-card card-purple" (click)="navigateToFeedSubTab('rations')" title="Cliquer pour voir les Rations">
+      <div class="kpi-header">
+        <span class="kpi-title">Coût Journalier Moyen Ration</span>
+        <span class="kpi-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20a8 8 0 0 1-16 0"/><path d="M12 2v6"/></svg>
+        </span>
+      </div>
+      <div class="kpi-value">{{ averageDailyFeedCostFcfa().toLocaleString() }} <span class="unit">FCFA</span></div>
+      <div class="kpi-footer">
+        <span>Par vache en lactation / jour</span>
+      </div>
+    </div>
+
+    <div class="kpi-card card-gold" (click)="navigateToFeedSubTab('rations')" title="Cliquer pour voir les Formules de Ration">
+      <div class="kpi-header">
+        <span class="kpi-title">Formules Rations Actives</span>
+        <span class="kpi-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+        </span>
+      </div>
+      <div class="kpi-value">{{ feedRations().length }} <span class="unit">règles</span></div>
+      <div class="kpi-footer trend-up">
+        <span>Équilibrées en UFL & PDI</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-tabs-header" style="margin:20px 0;border-bottom:1px solid #e2e8f0;background:white;border-radius:12px;padding:6px;">
+    <button class="modal-tab-button" [class.active]="activeFeedSubTab() === 'stocks'" (click)="navigateToFeedSubTab('stocks')">
+      Stocks Fourrages & Concentrés ({{ feedStocks().length }})
+    </button>
+    <button class="modal-tab-button" [class.active]="activeFeedSubTab() === 'rations'" (click)="navigateToFeedSubTab('rations')">
+      Fiches Rations Équilibrées ({{ feedRations().length }})
+    </button>
+    <button class="modal-tab-button" [class.active]="activeFeedSubTab() === 'distributions'" (click)="navigateToFeedSubTab('distributions')">
+      Journal des Distributions
+    </button>
+    <button class="modal-tab-button" [class.active]="activeFeedSubTab() === 'suppliers'" (click)="navigateToFeedSubTab('suppliers')">
+      Fournisseurs d'Aliments ({{ suppliers().length }})
+    </button>
+  </div>
+
+  <div *ngIf="activeFeedSubTab() === 'stocks'">
+    <div class="content-card">
+      <div class="filter-search-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <label style="font-size:0.82rem;font-weight:700;color:#526658">Catégorie :</label>
+          <select [ngModel]="feedCategoryFilter()" (ngModelChange)="filterFeedStocks($event)" class="filter-select-pro">
+            <option value="ALL">Toutes les catégories</option>
+            <option value="FORAGE_GREEN">Fourrage Vert / Ensilage</option>
+            <option value="FORAGE_DRY">Fourrage Sec & Foins</option>
+            <option value="CONCENTRATE">Concentrés & Tourteaux</option>
+            <option value="MINERALS_VITAMINS">Minéraux & CMV</option>
+          </select>
         </div>
-      }
+
+        <div class="search-input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" [ngModel]="feedStockSearchTerm()" (ngModelChange)="feedStockSearchTerm.set($event)" placeholder="Rechercher aliment, lieu..." />
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Aliment / Matière Première</th>
+              <th>Catégorie</th>
+              <th>Stock Actuel</th>
+              <th>Seuil Alerte</th>
+              <th>Prix / kg</th>
+              <th>Lieu de Stockage</th>
+              <th>Statut Réserve</th>
+              <th style="text-align:right">Approvisionnement Rapide</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of filteredFeedStocks()" [class.row-alert]="s.currentStockKg <= s.alertThresholdKg">
+              <td><strong>{{ s.name }}</strong></td>
+              <td><span class="badge-pill badge-green">{{ s.categoryLabel }}</span></td>
+              <td><strong style="font-size:1rem;color:#0d381e">{{ s.currentStockKg.toLocaleString() }} kg</strong></td>
+              <td><span style="color:#64748b">{{ s.alertThresholdKg.toLocaleString() }} kg</span></td>
+              <td><code>{{ s.unitPriceKg }} FCFA</code></td>
+              <td style="font-size:0.8rem;color:#475569">{{ s.storageLocation }}</td>
+              <td>
+                <span class="badge-pill" [class.badge-red]="s.currentStockKg <= s.alertThresholdKg" [class.badge-green]="s.currentStockKg > s.alertThresholdKg">
+                  {{ s.currentStockKg <= s.alertThresholdKg ? 'Alerte Seuil Bas' : 'Optimal' }}
+                </span>
+              </td>
+              <td style="text-align:right">
+                <div style="display:inline-flex;gap:6px">
+                  <button class="btn-secondary" style="padding:4px 8px;font-size:0.75rem" (click)="addQuickStock(s, 100)">+ 100 kg</button>
+                  <button class="btn-secondary" style="padding:4px 8px;font-size:0.75rem" (click)="addQuickStock(s, 500)">+ 500 kg</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <div class="card-box mt-4">
-    <div class="card-box-header">
-      <div>
-        <h2 class="box-title">Rations Distribuées Aujourd'hui</h2>
-        <span class="box-sub">Traçabilité des apports nutritionnels par lot d'animaux</span>
+  <div *ngIf="activeFeedSubTab() === 'rations'">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:18px">
+      <div *ngFor="let r of feedRations()" class="content-card" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="content-card-header" style="border-bottom:none;padding-bottom:10px">
+            <div>
+              <h3 style="margin:0;font-size:1.05rem;color:#0d381e">{{ r.name }}</h3>
+              <p style="margin:2px 0 0;font-size:0.78rem;color:#526658">{{ r.targetGroup }}</p>
+            </div>
+            <span class="badge-pill badge-green">{{ r.dailyCostFcfa }} FCFA / j</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;margin:12px 0;background:#f8faf6;padding:10px;border-radius:8px">
+            <div style="text-align:center">
+              <span style="font-size:0.7rem;color:#526658;display:block">Matière Sèche</span>
+              <strong style="color:#0d381e">{{ r.dryMatterKg }} kg MS</strong>
+            </div>
+            <div style="text-align:center">
+              <span style="font-size:0.7rem;color:#526658;display:block">Énergie</span>
+              <strong style="color:#16a34a">{{ r.energyUfl }} UFL</strong>
+            </div>
+            <div style="text-align:center">
+              <span style="font-size:0.7rem;color:#526658;display:block">Protéines</span>
+              <strong style="color:#0284c7">{{ r.proteinPdiG }} g PDI</strong>
+            </div>
+          </div>
+
+          <h4 style="font-size:0.8rem;color:#0d381e;margin:10px 0 6px">Composition de la Ration :</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px">
+            <li *ngFor="let ing of r.ingredients" style="display:flex;justify-content:space-between;font-size:0.78rem;padding:4px 8px;background:white;border-radius:6px;border:1px solid #e2e8f0">
+              <span>{{ ing.name }}</span>
+              <strong>{{ ing.quantityKg }} kg / tête</strong>
+            </li>
+          </ul>
+        </div>
+
+        <button class="btn-primary" style="margin-top:16px;width:100%;justify-content:center" (click)="openDistributeModal(r)">
+          <span>+ Distribuer cette ration</span>
+        </button>
       </div>
     </div>
+  </div>
 
-    <div class="table-container">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th scope="col">Lot ciblé</th>
-            <th scope="col">Type</th>
-            <th scope="col">Aliment distribué</th>
-            <th scope="col">Quantité (kg)</th>
-            <th scope="col">Coût (FCFA)</th>
-            <th scope="col">Opérateur</th>
-            <th scope="col">Observations</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (r of fermeService.rationsAlimentaires(); track r.id) {
+  <div *ngIf="activeFeedSubTab() === 'distributions'">
+    <div class="content-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
             <tr>
-              <td data-label="Lot ciblé"><strong>{{ getLibelleLot(r.lotCible) }}</strong></td>
-              <td data-label="Type"><span class="type-tag">{{ getLibelleAliment(r.typeAliment) }}</span></td>
-              <td data-label="Aliment"><strong>{{ r.nomAliment }}</strong></td>
-              <td data-label="Quantité" class="font-numeric font-bold">{{ r.quantiteKg }} kg</td>
-              <td data-label="Coût" class="font-numeric font-bold">{{ r.coutFCFA | number }} FCFA</td>
-              <td data-label="Opérateur">{{ r.distribuePar }}</td>
-              <td data-label="Observations">{{ r.observations || '—' }}</td>
+              <th>Date</th>
+              <th>Lot Animal</th>
+              <th>Aliment / Ration</th>
+              <th>Quantité (kg)</th>
+              <th>Coût (FCFA)</th>
+              <th>Responsable</th>
             </tr>
-          } @empty {
-            <tr>
-              <td colspan="7" class="empty-cell">Aucune ration distribuée enregistrée.</td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of distributions()">
+              <td><strong>{{ d.date }}</strong></td>
+              <td><span class="badge-pill badge-green">{{ d.lotCible }}</span></td>
+              <td>{{ d.nomAliment }}</td>
+              <td><strong style="color:#16a34a">{{ d.quantiteKg }} kg</strong></td>
+              <td><code>{{ d.coutFCFA.toLocaleString() }} FCFA</code></td>
+              <td>{{ d.distribuePar }}</td>
             </tr>
-          }
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeFeedSubTab() === 'suppliers'">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px">
+      <div *ngFor="let sup of suppliers()" class="content-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <h4 style="margin:0;font-size:1.05rem;color:#0d381e">{{ sup.name }}</h4>
+            <p style="margin:2px 0 0;font-size:0.78rem;color:#526658">{{ sup.specialty }}</p>
+          </div>
+          <span class="badge-pill badge-green">Bio Certifié</span>
+        </div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px;font-size:0.8rem">
+          <div><strong>Téléphone :</strong> {{ sup.phone }}</div>
+          <div><strong>Localisation :</strong> {{ sup.location }}</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-@if (modalRationOuvert()) {
-  <div class="modal-backdrop" (click)="fermerModalRation()">
-    <div 
-      class="modal-dialog" 
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="ration-modal-title">
-      
-      <header class="modal-header">
-        <h2 class="modal-title" id="ration-modal-title">Distribuer une ration alimentaire</h2>
-        <button type="button" class="btn-close" (click)="fermerModalRation()" aria-label="Fermer la saisie de ration">✕</button>
-      </header>
-
-      <form [formGroup]="formRation" (ngSubmit)="soumettreRation()" class="modal-body">
-        <div class="form-grid-2">
-          <div class="form-field">
-            <label for="rLot">Lot cible d'animaux</label>
-            <select id="rLot" formControlName="lotCible" class="form-input">
-              <option value="laitieres">Vaches en lactation (x7)</option>
-              <option value="genisses">Jeunes génisses (x2)</option>
-              <option value="taureaux">Taureaux reproducteurs (x4)</option>
-              <option value="tous">Troupeau entier (x13)</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="rType">Type d'aliment</label>
-            <select id="rType" formControlName="typeAliment" class="form-input">
-              <option value="fourrage_vert">Fourrage vert frais fauché</option>
-              <option value="foin">Foin sec conditionné</option>
-              <option value="concentre">Aliment concentré / Tourteau</option>
-              <option value="mineraux_cmv">Minéraux & CMV</option>
-            </select>
-          </div>
+<div class="modal-overlay" *ngIf="isNewFeedStockModalOpen()" (click)="isNewFeedStockModalOpen.set(false)">
+  <div class="modal-card" style="max-width:540px" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Ajouter un Aliment ou Fourrage</h3>
+          <p>Matière première pastorale & stock initial</p>
         </div>
-
-        <div class="form-field">
-          <label for="rNom">Désignation de l'aliment</label>
-          <input id="rNom" type="text" formControlName="nomAliment" class="form-input" placeholder="ex: Maralfalfa haché (P1) ou Tourteau de coton" />
-        </div>
-
-        <div class="form-grid-2">
-          <div class="form-field">
-            <label for="rQte">Quantité distribuée (kg)</label>
-            <input id="rQte" type="number" formControlName="quantiteKg" class="form-input" />
-          </div>
-
-          <div class="form-field">
-            <label for="rCout">Coût estimé (FCFA)</label>
-            <input id="rCout" type="number" formControlName="coutFCFA" class="form-input" />
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label for="rDist">Distribué par (Opérateur)</label>
-          <input id="rDist" type="text" formControlName="distribuePar" class="form-input" />
-        </div>
-
-        <div class="form-field">
-          <label for="rObs">Observations terrain & appétence</label>
-          <input id="rObs" type="text" formControlName="observations" class="form-input" placeholder="ex: Consommation intégrale, zéro refus au râtelier" />
-        </div>
-
-        <footer class="modal-footer">
-          <button type="button" class="btn-subtle" (click)="fermerModalRation()">Annuler</button>
-          <button type="submit" class="btn-primary" [disabled]="formRation.invalid">Enregistrer la ration</button>
-        </footer>
-      </form>
+      </div>
+      <button class="modal-close-btn" (click)="isNewFeedStockModalOpen.set(false)">✕</button>
     </div>
+
+    <form (ngSubmit)="submitNewFeedStock()" style="padding:24px 28px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group-item">
+          <label>Désignation de l'Aliment *</label>
+          <input type="text" [(ngModel)]="newFeedForm.name" name="fName" placeholder="Ex: Tourteau de Sésame Bio..." required />
+        </div>
+        <div class="form-group-item">
+          <label>Catégorie</label>
+          <select [(ngModel)]="newFeedForm.category" name="fCat">
+            <option value="FORAGE_GREEN">Fourrage Vert / Ensilage</option>
+            <option value="FORAGE_DRY">Fourrage Sec & Foins</option>
+            <option value="CONCENTRATE">Concentrés & Tourteaux</option>
+            <option value="MINERALS_VITAMINS">Minéraux & CMV</option>
+          </select>
+        </div>
+        <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group-item">
+            <label>Stock Initial (kg)</label>
+            <input type="number" [(ngModel)]="newFeedForm.initialStockKg" name="fInit" />
+          </div>
+          <div class="form-group-item">
+            <label>Seuil d'Alerte (kg)</label>
+            <input type="number" [(ngModel)]="newFeedForm.alertThresholdKg" name="fAlert" />
+          </div>
+        </div>
+        <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group-item">
+            <label>Prix Unitaire / kg (FCFA)</label>
+            <input type="number" [(ngModel)]="newFeedForm.unitPriceKg" name="fPrice" />
+          </div>
+          <div class="form-group-item">
+            <label>Lieu de Stockage</label>
+            <input type="text" [(ngModel)]="newFeedForm.storageLocation" name="fLoc" />
+          </div>
+        </div>
+        <div class="modal-form-actions" style="display:flex;gap:12px;margin-top:8px">
+          <button type="button" class="btn-secondary" style="flex:1" (click)="isNewFeedStockModalOpen.set(false)">Annuler</button>
+          <button type="submit" class="btn-primary" style="flex:2">Enregistrer l'Aliment</button>
+        </div>
+      </div>
+    </form>
   </div>
-}
+</div>
+
+<div class="modal-overlay" *ngIf="isDistributeModalOpen()" (click)="isDistributeModalOpen.set(false)">
+  <div class="modal-card" style="max-width:500px" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Distribuer une Ration Alimentaire</h3>
+          <p>Consignation au registre d'élevage pastoral</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="isDistributeModalOpen.set(false)">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitDistribute()" style="padding:24px 28px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group-item">
+          <label>Quantité Totale Distribuée (kg) *</label>
+          <input type="number" [(ngModel)]="distributeForm.distributedKg" name="dKg" required />
+        </div>
+        <div class="form-group-item">
+          <label>Bouvier / Opérateur Responsable</label>
+          <input type="text" [(ngModel)]="distributeForm.operator" name="dOp" />
+        </div>
+        <div class="modal-form-actions" style="display:flex;gap:12px;margin-top:8px">
+          <button type="button" class="btn-secondary" style="flex:1" (click)="isDistributeModalOpen.set(false)">Annuler</button>
+          <button type="submit" class="btn-primary" style="flex:2">Valider la Distribution</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,471 +1,348 @@
-<div class="view-panel">
-  <div class="toolbar-header">
-    <div>
-      <h1 class="page-title">Commercialisation & Commandes de Lait Bio</h1>
-      <span class="page-sub">
-        Gestion des commandes, traçabilité des lots de cuve, logistique de livraison et satisfaction client
-      </span>
+<div class="page" style="padding: 0;">
+  
+  <div class="page-header-row">
+    <div class="page-header-text">
+      <h2>Commercialisation, Facturation & Encaissements</h2>
+      <p>Gestion des clients B2B / B2C, facturation professionnelle normalisée, déstockage automatique et lettrage Wave / Orange Money / Espèces.</p>
     </div>
-
-    @if (fermeService.currentPermission().peutCreerCommande) {
-      <button type="button" class="btn-primary" (click)="ouvrirModalCommande()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        Nouvelle commande
+    <div class="header-action-group">
+      <button class="btn-primary" (click)="openNewInvoiceModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        <span>+ Nouvelle Facture / Vente</span>
       </button>
-    }
-  </div>
-
-  <div class="metrics-row" role="region" aria-label="Indicateurs de ventes du jour">
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">Encaissé Réel (Payé)</span>
-        <span class="metric-icon-wrap icon-finance" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric text-success">
-        {{ fermeService.kpiChiffreAffairesEncaisse() | number }}
-        <span class="unit">FCFA</span>
-      </div>
-      <div class="metric-detail">
-        Règlement reçu et vérifié en caisse
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">À Livrer / En Cours</span>
-        <span class="metric-icon-wrap icon-milk" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="1" y="3" width="15" height="13"></rect>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
-            <circle cx="5.5" cy="18.5" r="2.5"></circle>
-            <circle cx="18.5" cy="18.5" r="2.5"></circle>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric">
-        {{ fermeService.kpiCommandesEnAttenteNb() }}
-        <span class="unit">commandes</span>
-      </div>
-      <div class="metric-detail">
-        En préparation ou en cours d'acheminement
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">Satisfaction Clients</span>
-        <span class="metric-icon-wrap icon-stars" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric">
-        {{ fermeService.kpiSatisfactionClientMoyenne() }}
-        <span class="unit">/ 5</span>
-      </div>
-      <div class="metric-detail">
-        Retours qualitatifs hôtels et épiceries bio
-      </div>
-    </div>
-  </div>
-
-  <div class="commercial-filter-bar">
-    <div class="segmented-control" role="group" aria-label="Filtrer les commandes de lait">
-      <button 
-        type="button" 
-        [class.selected]="filtreStatut() === 'tous'" 
-        [attr.aria-pressed]="filtreStatut() === 'tous'"
-        (click)="filtreStatut.set('tous')">
-        Toutes ({{ fermeService.commandesLait().length }})
-      </button>
-      <button 
-        type="button" 
-        [class.selected]="filtreStatut() === 'en_cours'" 
-        [attr.aria-pressed]="filtreStatut() === 'en_cours'"
-        (click)="filtreStatut.set('en_cours')">
-        En cours ({{ fermeService.kpiCommandesEnAttenteNb() }})
-      </button>
-      <button 
-        type="button" 
-        [class.selected]="filtreStatut() === 'termines'" 
-        [attr.aria-pressed]="filtreStatut() === 'termines'"
-        (click)="filtreStatut.set('termines')">
-        Livrées & Payées ({{ fermeService.commandesLait().length - fermeService.kpiCommandesEnAttenteNb() }})
+      <button class="btn-secondary" (click)="openNewCustomerModal()">
+        <span>+ Nouveau Client</span>
       </button>
     </div>
   </div>
 
-  <div class="table-container">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th scope="col">Réf.</th>
-          <th scope="col">Client</th>
-          <th scope="col">Produit</th>
-          <th scope="col">Quantité</th>
-          <th scope="col">N° Lot</th>
-          <th scope="col">Montant</th>
-          <th scope="col">Destination</th>
-          <th scope="col">Statut</th>
-          <th scope="col">Actions statut</th>
-          <th scope="col">Avis client</th>
-          <th scope="col">Contact</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (cmd of commandesFiltrees(); track cmd.id) {
-          <tr>
-            <td data-label="Réf." class="font-bold font-numeric">{{ cmd.reference }}</td>
-            <td data-label="Client">
-              <strong>{{ cmd.clientNom }}</strong>
-              <span class="sub-id">{{ getLibelleClient(cmd.clientType) }} • {{ cmd.clientTelephone }}</span>
-            </td>
-            <td data-label="Produit">
-              {{ cmd.produit === 'lait_bio_frais' ? 'Lait Bio Frais' : 'Lait Caillé Bio' }}
-            </td>
-            <td data-label="Quantité" class="font-numeric">{{ cmd.quantiteUnites }} L ({{ cmd.format }})</td>
-            <td data-label="N° Lot" class="font-numeric">
-              <span class="type-tag">{{ cmd.numeroLotLait }}</span>
-            </td>
-            <td data-label="Montant" class="font-numeric font-bold text-success">{{ cmd.montantTotalFCFA | number }} FCFA</td>
-            <td data-label="Destination">{{ cmd.lieuLivraison }}</td>
-            <td data-label="Statut">
-              <span 
-                class="status-pill" 
-                [class.status-success]="cmd.statut === 'paye'" 
-                [class.status-info]="cmd.statut === 'livre'" 
-                [class.status-warn]="cmd.statut === 'en_livraison'"
-                [class.status-muted]="cmd.statut === 'en_attente'">
-                @if (cmd.statut === 'paye') {
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="status-icon" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                }
-                @if (cmd.statut === 'en_livraison') {
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon" aria-hidden="true">
-                    <rect x="1" y="3" width="15" height="13"></rect>
-                    <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
-                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                  </svg>
-                }
-                @if (cmd.statut === 'livre') {
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon" aria-hidden="true">
-                    <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                  </svg>
-                }
-                @if (cmd.statut === 'en_attente') {
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon" aria-hidden="true">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                }
-                {{ getLibelleStatutCommande(cmd.statut) }}
-              </span>
-            </td>
-            <td data-label="Actions statut">
-              <div class="cmd-quick-actions">
-                @if (cmd.statut === 'en_attente') {
-                  <button type="button" class="btn-statut-step" (click)="changerStatut(cmd, 'en_livraison')">
-                    Démarrer livraison
-                  </button>
-                }
-                @if (cmd.statut === 'en_livraison') {
-                  <button type="button" class="btn-statut-step" (click)="changerStatut(cmd, 'livre')">
-                    Confirmer livraison
-                  </button>
-                }
-                @if (cmd.statut === 'livre') {
-                  <button type="button" class="btn-statut-step btn-statut-pay" (click)="changerStatut(cmd, 'paye')">
-                    Encaisser
-                  </button>
-                }
-                @if (cmd.statut === 'paye') {
-                  <span class="text-sub">Clôturée (Encaissée)</span>
-                }
-              </div>
-            </td>
-            <td data-label="Avis client">
-              @if (cmd.noteSatisfaction) {
-                <div class="rating-display">
-                  <span class="stars font-numeric text-warn">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="star-icon" aria-hidden="true">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                    </svg>
-                    {{ cmd.noteSatisfaction }}/5
-                  </span>
-                  @if (cmd.avisClient) {
-                    <span class="review-quote font-italic">"{{ cmd.avisClient }}"</span>
-                  }
-                </div>
-              } @else {
-                @if (fermeService.currentPermission().peutEvaluerVente && (cmd.statut === 'livre' || cmd.statut === 'paye')) {
-                  <button type="button" class="btn-subtle btn-xs" (click)="ouvrirModalAvis(cmd)">
-                    Recueillir avis
-                  </button>
-                } @else {
-                  <span class="text-sub">En attente retour</span>
-                }
-              }
-            </td>
-            <td data-label="Contact">
-              <a 
-                [href]="genererLienWhatsApp(cmd)" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="btn-whatsapp"
-                [attr.aria-label]="'Ouvrir WhatsApp pour notifier ' + cmd.clientNom + ' pour la commande ' + cmd.reference"
-                title="Ouvrir WhatsApp pour notifier {{ cmd.clientNom }} (ouvre l'application externe)">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" class="whatsapp-icon" aria-hidden="true">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"></path>
-                </svg>
-                <span>WhatsApp</span>
-              </a>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="11" class="empty-cell">Aucune commande correspondant à ce filtre.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Cartes Mobiles Dédiées (Smartphone <= 768px pour éviter le tableau déformé) -->
-  <div class="mobile-commandes-cards" role="region" aria-label="Commandes de lait format mobile">
-    @for (cmd of commandesFiltrees(); track cmd.id) {
-      <article class="m-cmd-card">
-        <!-- En-tête : Référence + Lot + Statut -->
-        <div class="m-cmd-header">
-          <div class="m-cmd-ref-box">
-            <span class="m-cmd-ref font-numeric">{{ cmd.reference }}</span>
-            <span class="type-tag">{{ cmd.numeroLotLait }}</span>
-          </div>
-
-          <span 
-            class="status-pill" 
-            [class.status-success]="cmd.statut === 'paye'" 
-            [class.status-info]="cmd.statut === 'livre'" 
-            [class.status-warn]="cmd.statut === 'en_livraison'"
-            [class.status-muted]="cmd.statut === 'en_attente'">
-            @if (cmd.statut === 'paye') {
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="status-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            }
-            @if (cmd.statut === 'en_livraison') {
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-            }
-            @if (cmd.statut === 'livre') {
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-            }
-            @if (cmd.statut === 'en_attente') {
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            }
-            {{ getLibelleStatutCommande(cmd.statut) }}
-          </span>
-        </div>
-
-        <!-- Informations Client & Livraison -->
-        <div class="m-cmd-client-row">
-          <div class="m-cmd-client-main">
-            <h3 class="m-cmd-client-name">{{ cmd.clientNom }}</h3>
-            <div class="m-cmd-client-sub">
-              <span class="m-cmd-client-badge">{{ getLibelleClient(cmd.clientType) }}</span>
-              <a [href]="'tel:' + cmd.clientTelephone" class="m-cmd-phone-link">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                <span>{{ cmd.clientTelephone }}</span>
-              </a>
-            </div>
-          </div>
-          <div class="m-cmd-destination">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="dest-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>{{ cmd.lieuLivraison }}</span>
-          </div>
-        </div>
-
-        <!-- Bloc Produit & Montant -->
-        <div class="m-cmd-order-box">
-          <div class="m-cmd-prod-info">
-            <span class="m-cmd-prod-title">{{ cmd.produit === 'lait_bio_frais' ? 'Lait Bio Frais' : 'Lait Caillé Bio' }}</span>
-            <span class="m-cmd-prod-format">{{ cmd.quantiteUnites }} L • {{ cmd.format }}</span>
-          </div>
-          <div class="m-cmd-amount">
-            <span class="m-cmd-amount-val text-success font-numeric font-bold">{{ cmd.montantTotalFCFA | number }}</span>
-            <span class="m-cmd-amount-currency">FCFA</span>
-          </div>
-        </div>
-
-        <!-- Avis Client (si présent) -->
-        @if (cmd.noteSatisfaction) {
-          <div class="m-cmd-review">
-            <div class="m-cmd-stars text-warn font-numeric">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" class="star-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-              <strong>{{ cmd.noteSatisfaction }}/5</strong>
-            </div>
-            @if (cmd.avisClient) {
-              <p class="m-cmd-quote">« {{ cmd.avisClient }} »</p>
-            }
-          </div>
-        }
-
-        <!-- Actions : statut + contact -->
-        <div class="m-cmd-actions">
-          <div class="m-cmd-status-action">
-            @if (cmd.statut === 'en_attente') {
-              <button type="button" class="btn-statut-step" (click)="changerStatut(cmd, 'en_livraison')">Démarrer livraison</button>
-            }
-            @if (cmd.statut === 'en_livraison') {
-              <button type="button" class="btn-statut-step" (click)="changerStatut(cmd, 'livre')">Confirmer livraison</button>
-            }
-            @if (cmd.statut === 'livre') {
-              <button type="button" class="btn-statut-step btn-statut-pay" (click)="changerStatut(cmd, 'paye')">Encaisser</button>
-            }
-            @if (cmd.statut === 'paye') {
-              <span class="m-cmd-cloture-text">Clôturée (Encaissée)</span>
-            }
-          </div>
-
-          <div class="m-cmd-contact-action">
-            <a 
-              [href]="genererLienWhatsApp(cmd)" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="btn-whatsapp">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" class="whatsapp-icon">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"></path>
-              </svg>
-              WhatsApp
-            </a>
-          </div>
-        </div>
-      </article>
-    } @empty {
-      <div class="empty-state">
-        <p class="empty-text">Aucune commande pour ce filtre.</p>
+  <section class="kpi-grid">
+    <div class="kpi-card card-green" (click)="navigateToCommercialSubTab('invoices')" title="Cliquer pour voir les Factures">
+      <div class="kpi-header">
+        <span class="kpi-title">Chiffre d'Affaires Global</span>
+        <span class="kpi-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span>
       </div>
-    }
-  </div>
-</div>
-
-@if (modalCommandeOuvert()) {
-  <div class="modal-backdrop" (click)="fermerModalCommande()">
-    <div 
-      class="modal-dialog" 
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="commande-modal-title">
-      
-      <header class="modal-header">
-        <h2 class="modal-title" id="commande-modal-title">Créer un bon de commande de lait bio</h2>
-        <button type="button" class="btn-close" (click)="fermerModalCommande()" aria-label="Fermer la création de commande">✕</button>
-      </header>
-
-      <form [formGroup]="formCommande" (ngSubmit)="soumettreCommande()" class="modal-body">
-        <div class="form-grid-2">
-          <div class="form-field">
-            <label for="cClient">Nom du client ou établissement</label>
-            <input id="cClient" type="text" formControlName="clientNom" class="form-input" placeholder="ex: Terrou-Bi Dakar" />
-          </div>
-
-          <div class="form-field">
-            <label for="cTel">Numéro de téléphone</label>
-            <input id="cTel" type="text" formControlName="clientTelephone" class="form-input" placeholder="+221 77..." />
-          </div>
-        </div>
-
-        <div class="form-grid-2">
-          <div class="form-field">
-            <label for="cTypeCli">Catégorie client</label>
-            <select id="cTypeCli" formControlName="clientType" class="form-input">
-              <option value="restaurant">Restaurant</option>
-              <option value="hotel">Hôtel</option>
-              <option value="marche_local">Marché local</option>
-              <option value="supermarche">Supermarché</option>
-              <option value="particulier">Particulier</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="cProd">Produit laitier</label>
-            <select id="cProd" formControlName="produit" class="form-input">
-              <option value="lait_bio_frais">Lait Bio Frais</option>
-              <option value="lait_caille_bio">Lait Caillé Bio</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-grid-2">
-          <div class="form-field">
-            <label for="cQte">Quantité (Litres)</label>
-            <input id="cQte" type="number" formControlName="quantiteUnites" class="form-input" />
-          </div>
-
-          <div class="form-field">
-            <label for="cPrix">Prix unitaire / L (FCFA)</label>
-            <input id="cPrix" type="number" formControlName="prixUnitaireFCFA" class="form-input" />
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label for="cLieu">Lieu de livraison</label>
-          <input id="cLieu" type="text" formControlName="lieuLivraison" class="form-input" placeholder="ex: Dakar Plateau ou Almadies" />
-        </div>
-
-        <footer class="modal-footer">
-          <button type="button" class="btn-subtle" (click)="fermerModalCommande()">Annuler</button>
-          <button type="submit" class="btn-primary" [disabled]="formCommande.invalid">Créer la commande</button>
-        </footer>
-      </form>
+      <div class="kpi-value">{{ commercialSummary().totalRevenueFcfa.toLocaleString() }} <span class="unit">FCFA</span></div>
+      <div class="kpi-footer trend-up">
+        <span>{{ commercialSummary().totalInvoicesCount }} factures émises</span>
+      </div>
     </div>
+
+    <div class="kpi-card card-blue" (click)="navigateToCommercialSubTab('payments')" title="Cliquer pour voir les Encaissements">
+      <div class="kpi-header">
+        <span class="kpi-title">Total Encaissé Réel</span>
+        <span class="kpi-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c.6.5 1.2.5 1.8 0 1.2-1 2.4-1 3.6 0 1.2 1 2.4 1 3.6 0 1.2-1 2.4-1 3.6 0 1.2 1 2.4 1 3.6 0 .6-.5 1.2-.5 1.8 0"/></svg></span>
+      </div>
+      <div class="kpi-value">{{ commercialSummary().totalCollectedFcfa.toLocaleString() }} <span class="unit">FCFA</span></div>
+      <div class="kpi-footer trend-up">
+        <span>{{ commercialSummary().paidInvoicesCount }} factures soldées</span>
+      </div>
+    </div>
+
+    <div class="kpi-card card-gold" (click)="navigateToCommercialSubTab('invoices')" title="Cliquer pour voir les Créances à Recouvrer">
+      <div class="kpi-header">
+        <span class="kpi-title">Créances à Recouvrer</span>
+        <span class="kpi-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      </div>
+      <div class="kpi-value" style="color:#d97706">{{ commercialSummary().totalOutstandingFcfa.toLocaleString() }} <span class="unit">FCFA</span></div>
+      <div class="kpi-footer">
+        <span>{{ commercialSummary().pendingInvoicesCount }} en attente</span>
+      </div>
+    </div>
+
+    <div class="kpi-card card-purple" (click)="navigateToCommercialSubTab('customers')" title="Cliquer pour voir les Clients">
+      <div class="kpi-header">
+        <span class="kpi-title">Panier Moyen / Vente</span>
+        <span class="kpi-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></span>
+      </div>
+      <div class="kpi-value">{{ commercialSummary().averageOrderValueFcfa.toLocaleString() }} <span class="unit">FCFA</span></div>
+      <div class="kpi-footer">
+        <span>{{ commercialSummary().totalCustomersCount }} clients actifs</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-tabs-header" style="margin:20px 0;border-bottom:1px solid #e2e8f0;background:white;border-radius:12px;padding:6px;">
+    <button class="modal-tab-button" [class.active]="activeCommercialSubTab() === 'invoices'" (click)="navigateToCommercialSubTab('invoices')">
+      Factures & Commandes ({{ invoices().length }})
+    </button>
+    <button class="modal-tab-button" [class.active]="activeCommercialSubTab() === 'customers'" (click)="navigateToCommercialSubTab('customers')">
+      Répertoire Clients ({{ customers().length }})
+    </button>
+    <button class="modal-tab-button" [class.active]="activeCommercialSubTab() === 'payments'" (click)="navigateToCommercialSubTab('payments')">
+      Journal des Encaissements ({{ payments().length }})
+    </button>
   </div>
-}
 
-@if (modalAvisOuvert() && commandePourAvis()) {
-  <div class="modal-backdrop" (click)="fermerModalAvis()">
-    <div 
-      class="modal-dialog modal-sm" 
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="avis-modal-title">
-      
-      <header class="modal-header">
-        <h2 class="modal-title" id="avis-modal-title">Avis client : {{ commandePourAvis()!.clientNom }}</h2>
-        <button type="button" class="btn-close" (click)="fermerModalAvis()" aria-label="Fermer la saisie d'avis">✕</button>
-      </header>
-
-      <form [formGroup]="formAvis" (ngSubmit)="soumettreAvis()" class="modal-body">
-        <div class="form-field">
-          <label for="avNote">Note de satisfaction (sur 5 étoiles)</label>
-          <select id="avNote" formControlName="noteSatisfaction" class="form-input">
-            <option [value]="5">5 étoiles — Excellent (Qualité & ponctualité parfaites)</option>
-            <option [value]="4">4 étoiles — Très bon (Client satisfait)</option>
-            <option [value]="3">3 étoiles — Moyen (Conforme sans plus)</option>
-            <option [value]="2">2 étoiles — Décevant (Remarque client à traiter)</option>
-            <option [value]="1">1 étoile — Insatisfait</option>
+  <div *ngIf="activeCommercialSubTab() === 'invoices'">
+    <div class="content-card">
+      <div class="filter-search-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <label style="font-size:0.82rem;font-weight:700;color:#526658">Statut :</label>
+          <select [ngModel]="invoiceFilterStatus()" (ngModelChange)="filterInvoices($event)" class="filter-select-pro">
+            <option value="ALL">Toutes les factures</option>
+            <option value="PAID">Soldées / Payées</option>
+            <option value="ISSUED">En Attente de Règlement</option>
           </select>
         </div>
 
-        <div class="form-field">
-          <label for="avComment">Commentaire / Feedback client</label>
-          <textarea id="avComment" rows="3" formControlName="avisClient" class="form-input" placeholder="ex: Le lait caillé est très apprécié au restaurant, livraison à l'heure"></textarea>
+        <div class="search-input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" [ngModel]="invoicesSearchTerm()" (ngModelChange)="invoicesSearchTerm.set($event)" placeholder="Rechercher n° facture, client..." />
         </div>
+      </div>
 
-        <footer class="modal-footer">
-          <button type="button" class="btn-subtle" (click)="fermerModalAvis()">Annuler</button>
-          <button type="submit" class="btn-primary" [disabled]="formAvis.invalid">Valider le feedback</button>
-        </footer>
-      </form>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>N° Facture</th>
+              <th>Client & Contact</th>
+              <th>Date / Échéance</th>
+              <th>Articles Commandés</th>
+              <th>Montant Net</th>
+              <th>Encaissé / Reste</th>
+              <th>Règlement</th>
+              <th>Statut</th>
+              <th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let inv of filteredInvoices()">
+              <td>
+                <code style="font-weight:700;color:#0d381e;background:#e8f5e9;padding:3px 6px;border-radius:4px">{{ inv.invoiceNumber }}</code>
+              </td>
+              <td>
+                <div style="font-weight:600;color:#1e293b">{{ inv.customerName }}</div>
+                <div style="font-size:0.75rem;color:#64748b">{{ inv.customerPhone }}</div>
+              </td>
+              <td>
+                <div style="font-size:0.85rem;font-weight:500">{{ inv.issueDate }}</div>
+                <div style="font-size:0.75rem;color:#94a3b8">Éch. {{ inv.dueDate }}</div>
+              </td>
+              <td>
+                <div style="font-size:0.8rem;max-width:240px;color:#334155">
+                  <span *ngFor="let it of inv.items; let last = last">
+                    {{ it.quantity }}x {{ it.productName }}<span *ngIf="!last">, </span>
+                  </span>
+                </div>
+              </td>
+              <td><strong style="font-size:1rem;color:#0d381e">{{ inv.totalAmountFcfa.toLocaleString() }} FCFA</strong></td>
+              <td>
+                <div style="font-size:0.85rem;color:#16a34a">{{ inv.paidAmountFcfa.toLocaleString() }} FCFA</div>
+                <div *ngIf="inv.remainingAmountFcfa > 0" style="font-size:0.75rem;color:#dc2626;font-weight:700">Reste: {{ inv.remainingAmountFcfa.toLocaleString() }} FCFA</div>
+              </td>
+              <td><span class="badge-pill badge-green">{{ inv.paymentMethod }}</span></td>
+              <td>
+                <span class="badge-pill" [class.badge-green]="inv.status === 'PAID'" [class.badge-gold]="inv.status === 'ISSUED'">
+                  {{ inv.status === 'PAID' ? 'Soldée' : 'En Attente' }}
+                </span>
+              </td>
+              <td style="text-align:right">
+                <button *ngIf="inv.status !== 'PAID'" class="btn-primary" style="padding:4px 10px;font-size:0.75rem" (click)="openRecordPaymentModal(inv)">
+                  Encaisser
+                </button>
+                <span *ngIf="inv.status === 'PAID'" class="badge-pill badge-green" style="font-size:0.75rem">
+                  ✓ Payé
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-}
+
+  <div *ngIf="activeCommercialSubTab() === 'customers'">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:18px">
+      <div *ngFor="let c of customers()" class="content-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <h4 style="margin:0;font-size:1.1rem;color:#0d381e">{{ c.name }}</h4>
+            <span class="badge-pill badge-green" style="margin-top:4px">{{ c.type }}</span>
+          </div>
+        </div>
+        <div style="margin:14px 0;display:flex;flex-direction:column;gap:6px;font-size:0.82rem;color:#475569">
+          <div><strong>Téléphone :</strong> {{ c.phone }}</div>
+          <div><strong>Adresse :</strong> {{ c.address }}</div>
+        </div>
+        <div style="border-top:1px solid #e2e8f0;padding-top:10px;display:flex;justify-content:space-between;font-size:0.85rem">
+          <span>Commandes : <strong>{{ c.ordersCount }}</strong></span>
+          <strong style="color:#16a34a">{{ c.totalSpentFcfa.toLocaleString() }} FCFA</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeCommercialSubTab() === 'payments'">
+    <div class="content-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Réf. Transaction</th>
+              <th>Facture Liée</th>
+              <th>Client</th>
+              <th>Montant Encaissé</th>
+              <th>Date Règlement</th>
+              <th>Mode de Paiement</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of payments()">
+              <td><code style="font-weight:700">{{ p.transactionRef }}</code></td>
+              <td><code>{{ p.invoiceNumber }}</code></td>
+              <td><strong>{{ p.customerName }}</strong></td>
+              <td><strong style="color:#16a34a;font-size:1rem">{{ p.amountFcfa.toLocaleString() }} FCFA</strong></td>
+              <td>{{ p.paymentDate }}</td>
+              <td><span class="badge-pill badge-green">{{ p.paymentMethod }}</span></td>
+              <td><span class="badge-pill badge-green">Validé & Rapproché</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="isNewInvoiceModalOpen()" (click)="isNewInvoiceModalOpen.set(false)">
+  <div class="modal-card" style="max-width:540px" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Créer une Facture de Vente</h3>
+          <p>Émission de facture normalisée & déstockage automatique</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="isNewInvoiceModalOpen.set(false)">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitNewInvoice()" style="padding:24px 28px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group-item">
+          <label>Nom du Client *</label>
+          <input type="text" [(ngModel)]="newInvoiceForm.customerName" name="cName" placeholder="Ex: Restaurant Le Jardin, Particulier..." required />
+        </div>
+        <div class="form-group-item">
+          <label>Téléphone Client</label>
+          <input type="text" [(ngModel)]="newInvoiceForm.customerPhone" name="cPhone" placeholder="+221 77 000 00 00" />
+        </div>
+        <div class="form-group-item">
+          <label>Produit Bio Sélectionné</label>
+          <select [(ngModel)]="newInvoiceForm.productName" name="cProd">
+            <option value="Lait Frais Bio Pasteuris\u00e9 (Bouteille 1L)">Lait Frais Bio Pasteuris\u00e9 (1L - 1,200 FCFA)</option>
+            <option value="Lait Cru Bio (Bidon Inox 20L)">Lait Cru Bio (Bidon Inox 20L - 16,000 FCFA)</option>
+            <option value="Fromage Gouda Fermier Bio">Fromage Gouda Fermier Bio (8,500 FCFA)</option>
+            <option value="Fromage Frais Bio Feta">Fromage Frais Bio Feta (4,500 FCFA)</option>
+            <option value="Yaourt Nature Bio (Lot de 4)">Yaourt Nature Bio (Lot de 4 - 2,200 FCFA)</option>
+            <option value="Beurre Traditionnel Bio (250g)">Beurre Traditionnel Bio (2,500 FCFA)</option>
+          </select>
+        </div>
+        <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group-item">
+            <label>Quantité</label>
+            <input type="number" [(ngModel)]="newInvoiceForm.quantity" name="cQty" min="1" />
+          </div>
+          <div class="form-group-item">
+            <label>Prix Unitaire (FCFA)</label>
+            <input type="number" [(ngModel)]="newInvoiceForm.unitPrice" name="cPrice" />
+          </div>
+        </div>
+        <div class="form-group-item">
+          <label>Mode de Règlement</label>
+          <select [(ngModel)]="newInvoiceForm.paymentMethod" name="cPayMethod">
+            <option value="Wave">Wave</option>
+            <option value="Orange Money">Orange Money</option>
+            <option value="Espèces">Espèces Comptant</option>
+            <option value="Virement Bancaire">Virement Bancaire</option>
+          </select>
+        </div>
+
+        <div class="modal-form-actions" style="display:flex;gap:12px;margin-top:8px">
+          <button type="button" class="btn-secondary" style="flex:1" (click)="isNewInvoiceModalOpen.set(false)">Annuler</button>
+          <button type="submit" class="btn-primary" style="flex:2">Valider et Émettre la Facture</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="isNewCustomerModalOpen()" (click)="isNewCustomerModalOpen.set(false)">
+  <div class="modal-card" style="max-width:500px" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Enregistrer un Nouveau Client</h3>
+          <p>Répertoire B2B & Particuliers de la Ferme</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="isNewCustomerModalOpen.set(false)">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitNewCustomer()" style="padding:24px 28px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group-item">
+          <label>Raison Sociale / Nom *</label>
+          <input type="text" [(ngModel)]="newCustomerForm.name" name="custName" required />
+        </div>
+        <div class="form-group-item">
+          <label>Type de Client</label>
+          <select [(ngModel)]="newCustomerForm.type" name="custType">
+            <option value="Particulier">Particulier / Abonné</option>
+            <option value="Épicerie Bio / Revendeur">Épicerie Bio / Revendeur</option>
+            <option value="Hôtellerie & Restauration (B2B)">Hôtellerie & Restauration (B2B)</option>
+          </select>
+        </div>
+        <div class="form-group-item">
+          <label>Téléphone *</label>
+          <input type="text" [(ngModel)]="newCustomerForm.phone" name="custPhone" placeholder="+221 77 000 00 00" required />
+        </div>
+        <div class="form-group-item">
+          <label>Adresse de Livraison</label>
+          <input type="text" [(ngModel)]="newCustomerForm.address" name="custAddr" placeholder="Dakar, Thiès..." />
+        </div>
+        <div class="modal-form-actions" style="display:flex;gap:12px;margin-top:8px">
+          <button type="button" class="btn-secondary" style="flex:1" (click)="isNewCustomerModalOpen.set(false)">Annuler</button>
+          <button type="submit" class="btn-primary" style="flex:2">Créer la Fiche Client</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="isRecordPaymentModalOpen()" (click)="isRecordPaymentModalOpen.set(false)">
+  <div class="modal-card" style="max-width:440px" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Encaisser la Facture : {{ selectedInvoiceForPayment()?.invoiceNumber }}</h3>
+          <p>{{ selectedInvoiceForPayment()?.customerName }}</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="isRecordPaymentModalOpen.set(false)">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitRecordPayment()" style="padding:24px 28px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group-item">
+          <label>Montant à Encaisser (FCFA) :</label>
+          <input type="number" [ngModel]="paymentAmountInput()" (ngModelChange)="paymentAmountInput.set($event)" name="pAmt" style="font-size:1.3rem;font-weight:700" required />
+        </div>
+        <div class="form-group-item">
+          <label>Mode de Règlement :</label>
+          <select [ngModel]="paymentMethodInput()" (ngModelChange)="paymentMethodInput.set($event)" name="pMethod">
+            <option value="Wave">Wave</option>
+            <option value="Orange Money">Orange Money</option>
+            <option value="Espèces">Espèces</option>
+            <option value="Virement">Virement Bancaire</option>
+          </select>
+        </div>
+        <div class="modal-form-actions" style="display:flex;gap:12px;margin-top:8px">
+          <button type="button" class="btn-secondary" style="flex:1" (click)="isRecordPaymentModalOpen.set(false)">Annuler</button>
+          <button type="submit" class="btn-primary" style="flex:2">Valider le Règlement</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

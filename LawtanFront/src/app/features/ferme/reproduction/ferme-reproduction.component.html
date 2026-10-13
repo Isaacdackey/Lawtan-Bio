@@ -1,253 +1,369 @@
-<div class="view-panel">
-  <div class="toolbar-header">
-    <div>
-      <h1 class="page-title">Reproduction & Calendrier de Vêlage</h1>
-      <span class="page-sub">Insémination artificielle (IA), suivi des gestations, génétique et planning des tarissements</span>
+<div class="page">
+  <div class="page-header-row">
+    <div class="page-header-text">
+      <h2>Reproduction — Troupeau LAWTAN</h2>
+      <p>Cycle biologique complet CowMaster : Chaleurs, Inséminations, Gestations, Tarissements & Vêlages automatisés.</p>
     </div>
-
-    @if (fermeService.currentPermission().peutAjouterReproduction) {
-      <button type="button" class="btn-primary" (click)="ouvrirModalReproduction()">
-        + Enregistrer un acte
-      </button>
-    }
+    <button class="btn-primary" (click)="openReproModal()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+      <span>+ Nouvel Acte de Reproduction</span>
+    </button>
   </div>
 
-  <div class="metrics-row" role="region" aria-label="Indicateurs de reproduction">
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">Femelles gestantes</span>
-        <span class="metric-icon-wrap icon-repro" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric">
-        {{ fermeService.kpiVachesGestantesNb() }}
-        <span class="unit">/ 7 laitières</span>
-      </div>
-      <div class="metric-detail">
-        Diagnostics de gestation (DG) confirmés
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">Prochain vêlage</span>
-        <span class="metric-icon-wrap icon-milk" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric">
-        @if (fermeService.kpiProchainsVelages().length > 0) {
-          {{ fermeService.kpiProchainsVelages()[0].joursRestantsAvantVelage }}
-        } @else {
-          0
-        }
-        <span class="unit">jours</span>
-      </div>
-      <div class="metric-detail">
-        @if (fermeService.kpiProchainsVelages().length > 0) {
-          Vache : <strong>{{ fermeService.kpiProchainsVelages()[0].animalNom }}</strong> ({{ fermeService.kpiProchainsVelages()[0].datePrevisionnelleVelage }})
-        } @else {
-          Aucun vêlage programmé
-        }
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <span class="metric-title">Génétique & Semence</span>
-        <span class="metric-icon-wrap icon-herd" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-          </svg>
-        </span>
-      </div>
-      <div class="metric-value font-numeric">
-        100%
-        <span class="unit">Pedigree</span>
-      </div>
-      <div class="metric-detail">
-        Semences sexées certifiées & Taureaux purs
-      </div>
-    </div>
-  </div>
-
-  <div class="card-box">
-    <div class="card-box-header">
+  <div class="repro-alerts-box" *ngIf="reproductionAlerts().length > 0">
+    <div class="repro-alerts-header">
       <div>
-        <h2 class="box-title">Calendrier Prévisionnel des Vêlages & Tarissements</h2>
-        <span class="box-sub">Planification du repos de 60 jours avant la mise bas pour protéger le troupeau</span>
+        <h3>Alertes & Échéances Biologiques Immédiates (Moteur CowMaster)</h3>
+        <p style="font-size:12px;color:#64748b;margin-top:2px;">Surveillance automatisée : Contrôles DG J+45/50, alertes de réforme et échéances de vêlage</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn-secondary" style="font-size:12px;padding:6px 12px;cursor:pointer;" (click)="triggerRecalculateRepro()" title="Recalculer les jours ouverts et alertes">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg> Recalculer Métriques
+        </button>
+        <span class="badge-pill badge-red">{{ reproductionAlerts().length }} Alertes actives</span>
       </div>
     </div>
-
-    <div class="plots-grid">
-      @for (v of fermeService.kpiProchainsVelages(); track v.id) {
-        <div class="plot-card">
-          <div class="plot-card-header">
-            <div>
-              <h3 class="plot-title">{{ v.animalNom }} <span class="mono-id">({{ v.animalBoucle }})</span></h3>
-              <span class="plot-type">Taureau/Semence : {{ v.taureauOuSemence }}</span>
-            </div>
-            <span class="status-pill status-warn">
-              J-{{ v.joursRestantsAvantVelage }} jours
+    <div class="alerts-grid-cards">
+      <div *ngFor="let alert of reproductionAlerts()" class="alert-action-card" [class.alert-card-danger]="alert.severity === 'DANGER'" [class.alert-card-warning]="alert.severity === 'WARNING'" [class.alert-card-info]="alert.severity === 'INFO'">
+        <div class="alert-icon-wrap">
+          <span *ngIf="alert.alertType === 'CALVING_IMMINENT'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg></span>
+          <span *ngIf="alert.alertType === 'DRY_OFF_DUE'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><rect width="8" height="2" x="8" y="11" rx="1"/></svg></span>
+          <span *ngIf="alert.alertType === 'HEAT_ACTIVE'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c0 4-4 6-4 10a6 6 0 0 0 12 0c0-4-4-6-4-10z"/></svg></span>
+          <span *ngIf="alert.alertType === 'PREG_CHECK'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
+          <span *ngIf="alert.alertType === 'CULLING_ALERT'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        </div>
+        <div class="alert-details">
+          <h4>{{ alert.message }}</h4>
+          <div class="alert-meta-line">
+            <span>Échéance : <strong>{{ alert.targetDate }}</strong></span>
+            <span class="countdown-badge" [class.countdown-red]="alert.daysRemaining <= 7 || alert.severity === 'DANGER'" [class.countdown-gold]="alert.daysRemaining > 7 && alert.severity !== 'DANGER'">
+              {{ alert.daysRemaining === 0 ? "Action immédiate !" : "Dans " + alert.daysRemaining + " jours (J-" + alert.daysRemaining + ")" }}
             </span>
           </div>
-
-          <div class="plot-metrics">
-            <div class="plot-stat">
-              <span class="ps-label">Tarissement</span>
-              <strong class="ps-val font-numeric">{{ v.datePrevisionnelleTarissement }}</strong>
-            </div>
-            <div class="plot-stat">
-              <span class="ps-label">Vêlage estimé</span>
-              <strong class="ps-val font-numeric text-success">{{ v.datePrevisionnelleVelage }}</strong>
-            </div>
-            <div class="plot-stat">
-              <span class="ps-label">Praticien</span>
-              <strong class="ps-val">{{ v.technicienNom }}</strong>
-            </div>
-          </div>
-
-          <div class="gestation-progress-block">
-            <div class="gestation-track">
-              <div class="gestation-fill" [style.width.%]="((283 - (v.joursRestantsAvantVelage || 0)) / 283) * 100"></div>
-            </div>
-            <span class="text-sub font-numeric">Progression gestation : {{ Math.round(((283 - (v.joursRestantsAvantVelage || 0)) / 283) * 100) }}% ({{ 283 - (v.joursRestantsAvantVelage || 0) }} / 283 j)</span>
-          </div>
         </div>
-      }
+        <button class="btn-secondary alert-btn-act" (click)="handleAlertAction(alert)">
+          {{ alert.actionLabel || "Planifier / Traiter" }}
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="card-box mt-4">
-    <div class="card-box-header">
+  <div class="kpi-grid">
+    <div class="kpi-card card-sky" (click)="reproFilter.set('gestation')" title="Filtrer les gestations">
+      <div class="kpi-header">
+        <span class="kpi-title">Femelles Gestantes</span>
+        <span class="kpi-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </span>
+      </div>
+      <div class="kpi-value">{{ pregnantCows().length }} <span class="unit">/ {{ femaleCows().length }}</span></div>
+      <div class="kpi-footer trend-up"><span>{{ pregnantCowsLabel() }}</span></div>
+    </div>
+
+    <div class="kpi-card card-gold" (click)="reproFilter.set('velage')" title="Filtrer les vêlages à venir">
+      <div class="kpi-header">
+        <span class="kpi-title">Prochains Vêlages</span>
+        <span class="kpi-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+        </span>
+      </div>
+      <div class="kpi-value">{{ upcomingCalvings().length }} <span class="unit">Prévus</span></div>
+      <div class="kpi-footer trend-neutral"><span>{{ upcomingCalvingsLabel() }}</span></div>
+    </div>
+
+    <div class="kpi-card" (click)="reproFilter.set('ia')" title="Filtrer les inséminations">
+      <div class="kpi-header">
+        <span class="kpi-title">Inséminations & Saillies</span>
+        <span class="kpi-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        </span>
+      </div>
+      <div class="kpi-value">{{ countEventsByType('INSEMINATION') }} <span class="unit">actes</span></div>
+      <div class="kpi-footer trend-up"><span>Semence sexée & saillies</span></div>
+    </div>
+
+    <div class="kpi-card" (click)="reproFilter.set('all')" title="Afficher tous les événements">
+      <div class="kpi-header">
+        <span class="kpi-title">Total Actes Enregistrés</span>
+        <span class="kpi-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </span>
+      </div>
+      <div class="kpi-value">{{ reproductionEvents().length }} <span class="unit">événements</span></div>
+      <div class="kpi-footer trend-up"><span>Historique officiel CowMaster</span></div>
+    </div>
+  </div>
+
+  <div class="content-card" style="margin-top:20px">
+    <div class="content-card-header" style="flex-wrap:wrap;gap:12px">
       <div>
-        <h2 class="box-title">Registre des Actes de Reproduction</h2>
-        <span class="box-sub">Chaleurs observées, inséminations artificielles et diagnostics de gestation</span>
+        <h3>Registre des Actes de Reproduction ({{ filteredReproEvents().length }})</h3>
+        <p style="font-size:0.75rem;color:#526658">Historique des inséminations, échographies, vêlages et tarissements</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <select class="filter-select-pro" [ngModel]="reproFilter()" (ngModelChange)="filterRepro($event)">
+          <option value="all">Tous les actes ({{ filteredReproEvents().length }})</option>
+          <option value="ia">Inséminations / Saillies</option>
+          <option value="gestation">Gestations & Constats</option>
+          <option value="velage">Vêlages</option>
+          <option value="tarissement">Tarissements</option>
+          <option value="chaleur">Chaleurs détectées</option>
+        </select>
       </div>
     </div>
 
-    <div class="table-container">
+    <div class="table-responsive">
       <table class="data-table">
         <thead>
           <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Animal</th>
-            <th scope="col">Type d'acte</th>
-            <th scope="col">Géniteur / Semence</th>
-            <th scope="col">Diagnostic / Résultat</th>
-            <th scope="col">Opérateur</th>
-            <th scope="col">Observations</th>
+            <th>Date</th>
+            <th>Animal</th>
+            <th>Type d'Acte</th>
+            <th>Taureau / Semence</th>
+            <th>Praticien / Technicien</th>
+            <th>Tarissement prévu</th>
+            <th>Vêlage prévu</th>
+            <th>Observations</th>
+            <th>Statut</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          @for (rep of fermeService.suivisReproduction(); track rep.id) {
-            <tr>
-              <td data-label="Date" class="cell-date font-numeric">{{ rep.date }}</td>
-              <td data-label="Animal">
-                <strong>{{ rep.animalNom }}</strong>
-                <span class="sub-id">{{ rep.animalBoucle }}</span>
-              </td>
-              <td data-label="Type d'acte"><span class="type-tag">{{ getLibelleActe(rep.typeActe) }}</span></td>
-              <td data-label="Géniteur / Semence">{{ rep.taureauOuSemence || 'Non spécifié' }}</td>
-              <td data-label="Résultat">
-                @if (rep.resultatGestation === 'gestante') {
-                  <span class="status-pill status-success">Gestante confirmée</span>
-                } @else if (rep.resultatGestation === 'non_gestante') {
-                  <span class="status-pill status-danger">Non gestante</span>
-                } @else {
-                  <span class="status-pill status-info">En attente DG</span>
-                }
-              </td>
-              <td data-label="Opérateur">{{ rep.technicienNom }}</td>
-              <td data-label="Observations">{{ rep.observations || '—' }}</td>
-            </tr>
-          }
+          <tr *ngFor="let evt of paginatedReproEvents()">
+            <td><strong>{{ evt.eventDate }}</strong></td>
+            <td>
+              <strong>{{ evt.animalName || evt.animalInternalId }}</strong>
+              <span style="font-size:0.72rem;color:#526658;display:block">{{ evt.animalInternalId }}</span>
+            </td>
+            <td>
+              <span class="badge-pill" 
+                    [class.badge-gold]="evt.eventType === 'HEAT_DETECTION'"
+                    [class.badge-blue]="evt.eventType === 'ARTIFICIAL_INSEMINATION' || evt.eventType === 'NATURAL_MATING'"
+                    [class.badge-green]="evt.eventType === 'PREGNANCY_DIAGNOSIS'"
+                    [class.badge-purple]="evt.eventType === 'CALVING'"
+                    [class.badge-red]="evt.eventType === 'DRY_OFF'">
+                {{ evt.eventTypeLabel || evt.eventType }}
+              </span>
+            </td>
+            <td>{{ evt.bullOrSemenUsed || '—' }}</td>
+            <td>{{ evt.operatorName || '—' }}</td>
+            <td>
+              <span *ngIf="evt.expectedDryOffDate" style="color:#b45309;font-weight:700">{{ evt.expectedDryOffDate }} (Tarissement)</span>
+              <span *ngIf="!evt.expectedDryOffDate">—</span>
+            </td>
+            <td>
+              <span *ngIf="evt.expectedCalvingDate" style="color:#15803d;font-weight:700">{{ evt.expectedCalvingDate }} (Vêlage)</span>
+              <span *ngIf="!evt.expectedCalvingDate">—</span>
+            </td>
+            <td style="max-width:240px;font-size:0.75rem;color:#475569">{{ evt.observations || '—' }}</td>
+            <td>
+              <span class="badge-pill badge-green" *ngIf="evt.isConfirmed">Confirmé</span>
+              <span class="badge-pill badge-gold" *ngIf="!evt.isConfirmed">En attente</span>
+            </td>
+            <td>
+              <button class="table-icon-btn" title="Supprimer cet acte" (click)="deleteReproEntry(evt.id)" style="color:#dc2626">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredReproEvents().length === 0">
+            <td colspan="10" style="text-align:center;padding:24px;color:#64748b">
+              Aucun événement de reproduction correspondant au filtre sélectionné.
+            </td>
+          </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="pagination-bar" *ngIf="filteredReproEvents().length > 0" style="margin-top:16px">
+      <button class="pagination-btn" (click)="prevReproPage()" [disabled]="reproCurrentPage() === 1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+        <span>Précédent</span>
+      </button>
+      
+      <div class="pagination-pages-wrapper">
+        <button *ngFor="let p of reproPageNumbers()" class="page-number-btn" [class.active]="p === reproCurrentPage()" (click)="setReproPage(p)">
+          {{ p }}
+        </button>
+      </div>
+
+      <div class="pagination-info-pill">
+        <span>Page <strong>{{ reproCurrentPage() }}</strong> / {{ totalReproPages() }}</span>
+        <span style="opacity:0.4">•</span>
+        <span><strong>{{ filteredReproEvents().length }}</strong> actes</span>
+      </div>
+
+      <button class="pagination-btn" (click)="nextReproPage()" [disabled]="reproCurrentPage() === totalReproPages()">
+        <span>Suivant</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="content-card" style="margin-top:20px">
+    <div class="content-card-header">
+      <h3>Mâles Reproducteurs du Cheptel</h3>
+      <span class="badge-pill" [class.badge-green]="breedingBulls().length > 0" [class.badge-gold]="breedingBulls().length === 0">
+        {{ breedingBulls().length }} mâle(s)
+      </span>
+    </div>
+
+    <div *ngIf="breedingBulls().length === 0" style="padding:24px;text-align:center;color:#64748b">
+      <p style="font-weight:700;margin-bottom:6px">Aucun mâle reproducteur au registre</p>
+      <p style="font-size:0.85rem">Les fiches apparaîtront dès qu'un taureau ou un jeune mâle sera enregistré dans le troupeau.</p>
+    </div>
+
+    <div class="two-columns-grid" *ngIf="breedingBulls().length > 0">
+      <div class="semen-analysis-card" *ngFor="let bull of breedingBulls()" style="border:1px solid #e2e8f0;border-radius:12px;padding:14px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:44px;height:44px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;display:grid;place-items:center;color:#15803d">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 4v6c0 5.5-3.8 10.7-7 12-3.2-1.3-7-6.5-7-12V6l7-4z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div>
+            <h4 style="font-size:1.05rem;font-weight:800;color:#0d381e">{{ bull.name }} ({{ bull.internalId }})</h4>
+            <p style="font-size:0.75rem;color:#526658">
+              {{ bull.breed }}
+              <span *ngIf="bull.weight"> &bull; {{ bull.weight }} kg</span>
+              <span *ngIf="bull.pedigree.fatherName"> &bull; Père : {{ bull.pedigree.fatherName }}</span>
+              <span *ngIf="bull.pedigree.motherName"> &bull; Mère : {{ bull.pedigree.motherName }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="semen-metric-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0">
+          <div class="semen-stat-box">
+            <p class="lbl">Mobilité</p>
+            <strong class="val">{{ bull.pedigree.semenMobilityPercentage != null ? bull.pedigree.semenMobilityPercentage + ' %' : 'Non analysé' }}</strong>
+          </div>
+          <div class="semen-stat-box">
+            <p class="lbl">Concentration</p>
+            <strong class="val">{{ bull.pedigree.semenConcentration != null ? bull.pedigree.semenConcentration + ' /mL' : 'Non analysé' }}</strong>
+          </div>
+          <div class="semen-stat-box">
+            <p class="lbl">Morphologie</p>
+            <strong class="val">{{ bull.pedigree.semenMorphologyOkPercentage != null ? bull.pedigree.semenMorphologyOkPercentage + ' % OK' : 'Non analysé' }}</strong>
+          </div>
+          <div class="semen-stat-box">
+            <p class="lbl">Stock Doses</p>
+            <strong class="val">{{ bull.pedigree.semenDosesAvailable != null ? bull.pedigree.semenDosesAvailable + ' doses' : 'Aucune dose' }}</strong>
+          </div>
+        </div>
+
+        <p style="font-size:0.75rem;color:#526658" *ngIf="bull.reproStatus">{{ bull.reproStatus }}</p>
+      </div>
     </div>
   </div>
 </div>
 
-@if (modalReproductionOuvert()) {
-  <div class="modal-backdrop" (click)="fermerModalReproduction()">
-    <div 
-      class="modal-dialog" 
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="repro-modal-title">
-      
-      <header class="modal-header">
-        <h2 class="modal-title" id="repro-modal-title">Enregistrer un acte de reproduction</h2>
-        <button type="button" class="btn-close" (click)="fermerModalReproduction()" aria-label="Fermer la reproduction">✕</button>
-      </header>
-
-      <form [formGroup]="formReproduction" (ngSubmit)="soumettreReproduction()" class="modal-body">
-        <div class="form-grid-2">
-          <div class="form-field">
-            <label for="repAnim">Femelle concernée</label>
-            <select id="repAnim" formControlName="animalId" class="form-input">
-              @for (a of fermeService.animaux(); track a.id) {
-                @if (a.sexe === 'femelle') {
-                  <option [value]="a.id">{{ a.nom }} ({{ a.boucleId }}) — {{ a.race }}</option>
-                }
-              }
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="repType">Type d'acte</label>
-            <select id="repType" formControlName="typeActe" class="form-input">
-              <option value="chaleur">Détection de chaleur</option>
-              <option value="insemination_ia">Insémination Artificielle (IA)</option>
-              <option value="saillie_naturelle">Saillie Naturelle</option>
-              <option value="diagnostic_gestation">Diagnostic de Gestation (Échographie / DG)</option>
-              <option value="tarissement">Mise au repos / Tarissement</option>
-              <option value="velage">Mise bas / Vêlage</option>
-            </select>
-          </div>
+<div class="modal-overlay" *ngIf="isReproModalOpen()" (click)="isReproModalOpen.set(false)">
+  <div class="modal-card modal-card-lg" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div class="modal-title-icon-box" style="background:#f1f5f9;color:#0f2417"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <div>
+          <h3>Enregistrer un Acte de Reproduction</h3>
+          <p>Cycle biologique CowMaster : IA, Gestation, Tarissement & Vêlage</p>
         </div>
-
-        <div class="form-field">
-          <label for="repGeni">Géniteur / Semence & Qualité</label>
-          <input id="repGeni" type="text" formControlName="taureauOuSemence" class="form-input" placeholder="ex: Maximus du Jura (Semence Sexée 90%)" />
-        </div>
-
-        @if (formReproduction.get('typeActe')?.value === 'diagnostic_gestation') {
-          <div class="form-field">
-            <label for="repRes">Résultat du diagnostic de gestation</label>
-            <select id="repRes" formControlName="resultatGestation" class="form-input">
-              <option value="gestante">Gestante confirmée (Fœtus viable)</option>
-              <option value="non_gestante">Non gestante (Vide - À réinséminer)</option>
-              <option value="incertain">Incertain (Contrôle à J+15)</option>
-            </select>
-          </div>
-        }
-
-        <div class="form-field">
-          <label for="repTech">Praticien / Technicien</label>
-          <input id="repTech" type="text" formControlName="technicienNom" class="form-input" />
-        </div>
-
-        <div class="form-field">
-          <label for="repObs">Observations cliniques & tonus utérin</label>
-          <input id="repObs" type="text" formControlName="observations" class="form-input" placeholder="ex: Col bien dilaté, glaire filante, insémination réussie" />
-        </div>
-
-        <footer class="modal-footer">
-          <button type="button" class="btn-subtle" (click)="fermerModalReproduction()">Annuler</button>
-          <button type="submit" class="btn-primary" [disabled]="formReproduction.invalid">Enregistrer l'acte</button>
-        </footer>
-      </form>
+      </div>
+      <button class="modal-close-btn" (click)="isReproModalOpen.set(false)">✕</button>
     </div>
+
+    <form (ngSubmit)="submitReproEntry()" style="padding:24px 28px;overflow-y:auto;max-height:calc(90vh - 80px)">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        
+        <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group-item">
+            <label>Vache Concernée (Femelle) *</label>
+            <select [(ngModel)]="reproForm.animalInternalId" name="reproCow" required (change)="updateReproCalculations()">
+              <option *ngFor="let cow of femaleCows()" [value]="cow.internalId">
+                {{ cow.name }} ({{ cow.internalId }}) • {{ cow.category === 'HEIFER_YOUNG' ? 'Génisse' : 'Vache Laitière' }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group-item">
+            <label>Type d'Acte Biologique *</label>
+            <select [(ngModel)]="reproForm.eventType" name="reproType" (change)="updateReproCalculations()">
+              <option value="HEAT_DETECTION">Détection de Chaleurs</option>
+              <option value="ARTIFICIAL_INSEMINATION">Insémination Artificielle (IA)</option>
+              <option value="NATURAL_MATING">Saillie Naturelle (Taureau)</option>
+              <option value="PREGNANCY_DIAGNOSIS">Diagnostic Gestation (Échographie)</option>
+              <option value="DRY_OFF">Mise au Tarissement (Dry-off)</option>
+              <option value="CALVING">Vêlage & Enregistrement Veau</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group-item">
+            <label>Date de l'Acte *</label>
+            <input type="date" [(ngModel)]="reproForm.eventDate" name="reproDate" required (change)="updateReproCalculations()" />
+          </div>
+
+          <div class="form-group-item" *ngIf="reproForm.eventType === 'ARTIFICIAL_INSEMINATION' || reproForm.eventType === 'NATURAL_MATING' || reproForm.eventType === 'PREGNANCY_DIAGNOSIS'">
+            <label>Taureau / Semence Utilisée</label>
+            <select [(ngModel)]="reproForm.bullOrSemenUsed" name="reproBull">
+              <optgroup label="Taureaux Géniteurs de la Ferme">
+                <option *ngFor="let b of bullsList()" [value]="b.name + ' (' + b.internalId + ')'">
+                  {{ b.name }} ({{ b.internalId }}) — {{ b.breed }}
+                </option>
+              </optgroup>
+              <optgroup label="Doses IA & Semences Certifiées">
+                <option value="Semence IA Montbéliarde Pure (Fallou)">Semence IA Montbéliarde Pure (Fallou)</option>
+                <option value="Semence IA Holstein Pure USA">Semence IA Holstein Pure USA</option>
+                <option value="Semence IA Jersiaise Pure">Semence IA Jersiaise Pure</option>
+                <option value="Semence IA Croisement Viande (Bleu Blanc Belge)">Semence IA Croisement Viande (Bleu Blanc Belge)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="form-group-item" *ngIf="reproForm.eventType !== 'ARTIFICIAL_INSEMINATION' && reproForm.eventType !== 'NATURAL_MATING' && reproForm.eventType !== 'PREGNANCY_DIAGNOSIS'">
+            <label>Opérateur / Technicien</label>
+            <input type="text" [(ngModel)]="reproForm.operatorName" name="reproOperator" placeholder="Dr. Fall / Technicien" />
+          </div>
+        </div>
+
+        <div class="projections-calc-box" *ngIf="reproForm.expectedCalvingDate || reproForm.expectedDryOffDate">
+          <div class="calc-box-title">
+            <span><strong>Calculs Automatiques du Cycle (Moteur CowMaster)</strong></span>
+          </div>
+          <div class="calc-grid-preview" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px">
+            <div class="calc-item" *ngIf="reproForm.expectedDryOffDate">
+              <span class="lbl" style="font-size:0.75rem;color:#64748b;display:block">Date de Tarissement Prévue (J-60) :</span>
+              <strong class="val" style="color:#b45309;font-size:0.95rem">{{ reproForm.expectedDryOffDate }}</strong>
+            </div>
+            <div class="calc-item" *ngIf="reproForm.expectedCalvingDate">
+              <span class="lbl" style="font-size:0.75rem;color:#64748b;display:block">Date de Vêlage Prévue (~282j) :</span>
+              <strong class="val" style="color:#15803d;font-size:0.95rem">{{ reproForm.expectedCalvingDate }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group-item">
+          <label>Observations & Diagnostic</label>
+          <textarea rows="2" [(ngModel)]="reproForm.observations" name="reproObs" placeholder="Détails du constat (ex: glaires franches, col bien ouvert, battement cardiaque fœtal...)"></textarea>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" id="confirmRepro" [(ngModel)]="reproForm.isConfirmed" name="reproConfirm" style="width:18px;height:18px;accent-color:#16a34a" />
+          <label for="confirmRepro" style="font-size:0.85rem;font-weight:600;color:#0d381e;cursor:pointer">
+            Acte confirmé et validé par le responsable d'élevage
+          </label>
+        </div>
+
+        <div class="modal-form-actions" style="display:flex;gap:12px;margin-top:8px">
+          <button type="button" class="btn-secondary" style="flex:1;justify-content:center" (click)="isReproModalOpen.set(false)">
+            Annuler
+          </button>
+          <button type="submit" class="btn-primary" style="flex:2;justify-content:center">
+            Valider & Enregistrer l'Acte
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
-}
+</div>

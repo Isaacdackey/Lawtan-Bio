@@ -1,402 +1,453 @@
-<div class="farm-app">
-  <header class="farm-header">
-    <div class="header-left">
-      <a routerLink="/" class="header-logo-link" title="Retour au portail d'accueil">
-        <div class="header-logo">
-          @if (!logoError()) {
-            <img 
-              src="/images/Logo.png" 
-              alt="Logo LAWTAN Agro-Industries" 
-              class="logo-img" 
-              (error)="onLogoError()" />
-          } @else {
-            <span class="logo-monogram" aria-label="Logo LAWTAN">L</span>
-          }
+<div class="app-layout" *ngIf="authService.isAuthenticated()">
+
+  <aside class="sidebar" id="sidebar" [class.mobile-open]="isSidebarOpen()" [class.open]="isSidebarOpen()">
+    <div class="sidebar-brand-wrapper">
+      <a href="javascript:void(0)" class="logo-badge-container" (click)="showPage('dashboard')" title="LAWTAN Agro Industries">
+        <div class="logo-svg-wrap">
+          <svg viewBox="0 0 160 140" width="100%" height="100%">
+            <path d="M 80 8 C 125 8, 155 35, 155 75 C 155 110, 120 132, 80 132 C 38 132, 5 110, 5 75 C 5 35, 35 8, 80 8 Z" fill="#0d4a22" stroke="#f59e0b" stroke-width="4"/>
+            <path d="M 80 28 C 65 10, 48 18, 52 35 C 56 46, 75 42, 80 44 C 85 42, 104 46, 108 35 C 112 18, 95 10, 80 28 Z" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/>
+            <path d="M 80 28 Q 78 38 68 40" stroke="#86efac" stroke-width="1.5" fill="none"/>
+            <path d="M 80 28 Q 82 38 92 40" stroke="#86efac" stroke-width="1.5" fill="none"/>
+            <path d="M 20 88 C 55 78, 105 78, 140 92 C 145 94, 135 102, 110 102 C 60 102, 35 98, 20 88 Z" fill="#dc2626"/>
+            <path d="M 115 54 C 110 50, 118 42, 124 45 C 128 48, 125 56, 120 58 Z" fill="#1e293b"/>
+            <ellipse cx="120" cy="42" rx="14" ry="5" fill="#fef08a" stroke="#d97706" stroke-width="1"/>
+            <path d="M 112 58 L 126 58 L 132 80 L 106 80 Z" fill="#eab308"/>
+            <path d="M 114 68 L 128 68 L 130 82 L 110 82 Z" fill="#38bdf8"/>
+            <text x="72" y="74" text-anchor="middle" font-family="'Outfit', cursive, sans-serif" font-weight="900" font-size="34" fill="#ffffff" stroke="#14532d" stroke-width="1.5" letter-spacing="1">Lawtan</text>
+            <text x="80" y="98" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="10.5" fill="#ffffff" letter-spacing="0.5">Agro Industries</text>
+            <path d="M 28 114 Q 80 128 132 114" stroke="#f59e0b" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          </svg>
         </div>
-        <div class="header-titles">
-          <div class="brand-badge-line">
-            <span class="app-brand">LAWTAN</span>
-            <span class="brand-tag-bio">BIO SÉNÉGAL</span>
-          </div>
-          <span class="app-scope">Ferme Pilote Agro-Industries • Thiès / Niayes</span>
+        <div class="brand-text-block">
+          <div class="brand-title">LAWTAN <span class="tag-bio">BIO</span></div>
+          <div class="brand-subtitle">Agro Industries • Sénégal</div>
         </div>
       </a>
+      <button class="sidebar-close-btn" (click)="toggleSidebar()" aria-label="Fermer le menu">✕</button>
     </div>
 
-    <div class="header-center-infra" role="region" aria-label="État des infrastructures de la ferme">
-      <div class="infra-chip" [title]="'Dernière synchronisation locale à ' + fermeService.derniereSynchronisation()">
-        @if (fermeService.statutSynchro() === 'en_cours') {
-          <span class="status-dot dot-syncing" aria-hidden="true"></span>
-          <span class="infra-label">Synchro en cours...</span>
-        } @else {
-          <span class="status-dot dot-online" aria-hidden="true"></span>
-          <span class="infra-label">Synchro : {{ fermeService.derniereSynchronisation() }}</span>
-        }
-      </div>
-      <div class="infra-chip" title="Connexion réseau cellulaire terrain 4G">
-        <span class="status-dot dot-online" aria-hidden="true"></span>
-        <span class="infra-label">4G Terrain</span>
-      </div>
-      <div class="infra-chip" title="Centrale photovoltaïque et groupe froid autonome">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="infra-icon-sun" aria-hidden="true">
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-        </svg>
-        <span class="infra-label">Solaire ({{ fermeService.etatSysteme().batteriePct }}%)</span>
-      </div>
-    </div>
-
-    <div class="header-right">
-      <div class="user-menu-wrapper">
-        <button 
-          type="button" 
-          class="user-btn-trigger" 
-          (click)="toggleMenuUtilisateur()"
-          [attr.aria-expanded]="menuUtilisateurOuvert()"
-          aria-haspopup="menu"
-          aria-label="Menu utilisateur : changer de profil ou vue">
-          <span class="user-avatar-badge" aria-hidden="true">{{ fermeService.profilActif().avatar }}</span>
-          <div class="user-meta-summary">
-            <span class="user-name">{{ fermeService.profilActif().nom }}</span>
-            <span class="user-current-role">
-              <span class="role-caption">Vue :</span> {{ fermeService.profilActif().roleTitre }}
-            </span>
-          </div>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="chevron-icon" [class.rotated]="menuUtilisateurOuvert()" aria-hidden="true">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </button>
-
-        @if (menuUtilisateurOuvert()) {
-          <div class="user-dropdown" role="menu" aria-label="Changer de vue">
-            <div class="dropdown-header">
-              <span class="dropdown-title">Vues opérationnelles disponibles</span>
-            </div>
-            @for (p of fermeService.profilsDisponibles; track p.id) {
-              <button 
-                type="button" 
-                role="menuitem"
-                class="dropdown-item" 
-                [class.active]="p.id === fermeService.profilActif().id"
-                (click)="selectionnerRole(p.id)">
-                <span class="item-avatar" aria-hidden="true">{{ p.avatar }}</span>
-                <div class="item-info">
-                  <strong class="item-title">{{ p.roleTitre }}</strong>
-                  <span class="item-desc">{{ fermeService.permissionsParRole[p.role].description }}</span>
-                </div>
-                @if (p.id === fermeService.profilActif().id) {
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="check-mark" aria-label="Profil actif">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                }
-              </button>
-            }
-            <div class="dropdown-footer">
-              <a routerLink="/login" class="dropdown-logout-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                Se déconnecter
-              </a>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  </header>
-
-  <!-- Sélecteur Déroulant Tactile Mobile (remplace le défilement horizontal sur smartphone) -->
-  <div class="mobile-module-selector" role="region" aria-label="Sélecteur de module mobile">
-    <button 
-      type="button" 
-      class="mobile-selector-btn" 
-      (click)="toggleMenuMobileModule()"
-      [attr.aria-expanded]="menuMobileModuleOuvert()"
-      aria-haspopup="listbox"
-      aria-label="Changer de section ou module de la ferme">
-      <div class="mobile-selector-info">
-        <span class="mobile-selector-sub">Module actif</span>
-        <div class="mobile-selector-current">
-          <span class="current-icon">
-            @switch (moduleActif().id) {
-              @case ('dashboard') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-              }
-              @case ('troupeau') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-              }
-              @case ('production') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
-              }
-              @case ('sante') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-              }
-              @case ('alimentation') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>
-              }
-              @case ('commercial') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-              }
-              @case ('reproduction') {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              }
-            }
-          </span>
-          <span class="current-label">{{ moduleActif().titre }}</span>
-          @if (moduleActif().id === 'troupeau') {
-            <span class="count-tag">{{ fermeService.kpiTotalAnimaux() }}</span>
-          }
-          @if (moduleActif().id === 'sante' && fermeService.kpiVachesSousAlerte() > 0) {
-            <span class="alert-dot" title="Alerte active"></span>
-          }
-          @if (moduleActif().id === 'reproduction' && fermeService.kpiVachesGestantesNb() > 0) {
-            <span class="count-tag">{{ fermeService.kpiVachesGestantesNb() }}</span>
-          }
-        </div>
-      </div>
-
-      <div class="mobile-selector-action">
-        <span class="action-caption">Changer</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="selector-chevron" [class.rotated]="menuMobileModuleOuvert()">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </div>
-    </button>
-
-    @if (menuMobileModuleOuvert()) {
-      <div class="mobile-selector-dropdown" role="listbox">
-        <div class="dropdown-tip">
-          <span>Sections d'exploitation</span>
-          <span class="tip-badge">{{ modulesAutorises().length }}</span>
-        </div>
-        <div class="dropdown-items-grid">
-          @for (m of modulesAutorises(); track m.id) {
-            <a 
-              [routerLink]="m.route" 
-              (click)="fermerMenuMobile()"
-              class="mobile-dropdown-link" 
-              [class.active]="moduleActif().id === m.id"
-              role="option"
-              [attr.aria-selected]="moduleActif().id === m.id">
-              <span class="link-icon">
-                @switch (m.id) {
-                  @case ('dashboard') {
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                  }
-                  @case ('troupeau') {
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                  }
-                  @case ('production') {
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
-                  }
-                  @case ('sante') {
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-                  }
-                  @case ('alimentation') {
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>
-                  }
-                  @case ('commercial') {
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-                  }
-                  @case ('reproduction') {
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  }
-                }
-              </span>
-              <span class="link-label">{{ m.titre }}</span>
-
-              <span class="link-badges">
-                @if (m.id === 'troupeau') {
-                  <span class="count-tag">{{ fermeService.kpiTotalAnimaux() }}</span>
-                }
-                @if (m.id === 'sante' && fermeService.kpiVachesSousAlerte() > 0) {
-                  <span class="alert-dot" title="Alerte active"></span>
-                }
-                @if (m.id === 'reproduction' && fermeService.kpiVachesGestantesNb() > 0) {
-                  <span class="count-tag">{{ fermeService.kpiVachesGestantesNb() }}</span>
-                }
-                @if (moduleActif().id === m.id) {
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="link-check">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                }
-              </span>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-title">Pilotage Global</div>
+        <ul>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" [class.active]="activePage() === 'dashboard'" (click)="showPage('dashboard')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              <span>Tableau de bord</span>
             </a>
-          }
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-group" *ngIf="authService.canAccessTab('animaux') || authService.canAccessTab('sante') || authService.canAccessTab('reproduction')">
+        <div class="nav-group-title">Troupeau & Élevage</div>
+        <ul>
+          <li *ngIf="authService.canAccessTab('animaux')">
+            <a href="javascript:void(0)" class="nav-link" [class.active]="activePage() === 'animaux'" (click)="showPage('animaux')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              <span>Fiches Troupeau ({{ animals().length }})</span>
+            </a>
+          </li>
+          <li *ngIf="authService.canAccessTab('sante')">
+            <a href="javascript:void(0)" class="nav-link" [class.active]="activePage() === 'sante'" (click)="showPage('sante')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <span>Santé & Vétérinaire</span>
+              <span class="nav-badge-count badge-alert" *ngIf="dashboardStats()?.healthAlertsCount">1 Alerte</span>
+            </a>
+          </li>
+          <li *ngIf="authService.canAccessTab('reproduction')">
+            <a href="javascript:void(0)" class="nav-link" [class.active]="activePage() === 'reproduction'" (click)="showPage('reproduction')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              <span>Reproduction</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-group" *ngIf="authService.canAccessTab('lait') || authService.canAccessTab('transformation') || authService.canAccessTab('alimentation')">
+        <div class="nav-group-title">Production & Terroir</div>
+        <ul>
+          <li class="nav-item-accordion" *ngIf="authService.canAccessTab('lait')">
+            <div class="nav-link-wrapper" [class.active]="activePage() === 'lait'">
+              <a href="javascript:void(0)" class="nav-link nav-link-parent" [class.active]="activePage() === 'lait'" (click)="navigateToMilkSubTab('milking')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2h8l1 6H7L8 2z"/><path d="M7 8c0 10 2 12 5 12s5-2 5-12"/></svg>
+                <span>Production Laitière</span>
+                <span class="nav-badge-count badge-success" *ngIf="milkProductions().length">{{ milkProductions().length }}</span>
+              </a>
+              <button type="button" class="nav-expand-btn nav-expand-btn-right" (click)="toggleMilkMenu($event)" title="Dérouler / Replier les sous-menus" aria-label="Dérouler">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" [style.transform]="isMilkMenuOpen() ? 'rotate(180deg)' : 'rotate(0deg)'" style="transition:transform 0.2s ease"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+
+            <ul class="nav-sub-menu" *ngIf="isMilkMenuOpen()">
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'lait' && activeMilkSubTab() === 'milking'" (click)="navigateToMilkSubTab('milking')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Traite & Cuves</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'lait' && activeMilkSubTab() === 'journal'" (click)="navigateToMilkSubTab('journal')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Journal des Récoltes ({{ milkProductions().length }})</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'lait' && activeMilkSubTab() === 'stocks'" (click)="navigateToMilkSubTab('stocks')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Gestion des Stocks de Lait</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item-accordion" *ngIf="authService.canAccessTab('transformation')">
+            <div class="nav-link-wrapper" [class.active]="activePage() === 'transformation'">
+              <a href="javascript:void(0)" class="nav-link nav-link-parent" [class.active]="activePage() === 'transformation'" (click)="navigateToTransformationSubTab('batches')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                <span>Atelier Transformation</span>
+                <span class="nav-badge-count badge-success" *ngIf="transformationBatches().length">{{ transformationBatches().length }}</span>
+              </a>
+              <button type="button" class="nav-expand-btn nav-expand-btn-right" (click)="toggleTransformationMenu($event)" title="Dérouler / Replier les sous-menus" aria-label="Dérouler">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" [style.transform]="isTransformationMenuOpen() ? 'rotate(180deg)' : 'rotate(0deg)'" style="transition:transform 0.2s ease"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+
+            <ul class="nav-sub-menu" *ngIf="isTransformationMenuOpen()">
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'transformation' && activeTransformationSubTab() === 'batches'" (click)="navigateToTransformationSubTab('batches')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Lots de Fabrication ({{ transformationBatches().length }})</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'transformation' && activeTransformationSubTab() === 'recipes'" (click)="navigateToTransformationSubTab('recipes')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Fiches Recettes ({{ recipes().length }})</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'transformation' && activeTransformationSubTab() === 'stocks'" (click)="navigateToTransformationSubTab('stocks')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Stock Produits Finis ({{ productStocks().length }})</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item-accordion" *ngIf="authService.canAccessTab('alimentation')">
+            <div class="nav-link-wrapper" [class.active]="activePage() === 'alimentation'">
+              <a href="javascript:void(0)" class="nav-link nav-link-parent" [class.active]="activePage() === 'alimentation'" (click)="navigateToFeedSubTab('stocks')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <span>Alimentation & Fourrage</span>
+                <span class="nav-badge-count badge-success" *ngIf="feedStocks().length">{{ feedStocks().length }}</span>
+              </a>
+              <button type="button" class="nav-expand-btn nav-expand-btn-right" (click)="toggleFeedMenu($event)" title="Dérouler / Replier les sous-menus" aria-label="Dérouler">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" [style.transform]="isFeedMenuOpen() ? 'rotate(180deg)' : 'rotate(0deg)'" style="transition:transform 0.2s ease"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+
+            <ul class="nav-sub-menu" *ngIf="isFeedMenuOpen()">
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'alimentation' && activeFeedSubTab() === 'stocks'" (click)="navigateToFeedSubTab('stocks')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Stocks Fourrages ({{ feedStocks().length }})</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'alimentation' && activeFeedSubTab() === 'rations'" (click)="navigateToFeedSubTab('rations')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Fiches Rations ({{ feedRations().length }})</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'alimentation' && activeFeedSubTab() === 'distributions'" (click)="navigateToFeedSubTab('distributions')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Journal des Distributions ({{ feedDistributions().length }})</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="activePage() === 'alimentation' && activeFeedSubTab() === 'suppliers'" (click)="navigateToFeedSubTab('suppliers')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Fournisseurs & Intrants ({{ suppliers().length }})</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li *ngIf="authService.canAccessTab('tracabilite')">
+            <a href="javascript:void(0)" class="nav-link" [class.active]="activePage() === 'tracabilite'" (click)="showPage('tracabilite')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              <span>Traçabilité & Lots Bio</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-group" *ngIf="authService.canAccessTab('commercial') || authService.canAccessTab('finance') || authService.canAccessTab('settings')">
+        <div class="nav-group-title">Commercial & Finance</div>
+        <ul>
+          <li class="nav-item-accordion" *ngIf="authService.canAccessTab('commercial')">
+            <div class="nav-link-wrapper" [class.active]="activePage() === 'commercial' || activePage() === 'ventes'">
+              <a href="javascript:void(0)" class="nav-link nav-link-parent" [class.active]="activePage() === 'commercial' || activePage() === 'ventes'" (click)="navigateToCommercialSubTab('invoices')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                <span>Ventes & Facturation</span>
+                <span class="nav-badge-count badge-success" *ngIf="invoices().length">{{ invoices().length }}</span>
+              </a>
+              <button type="button" class="nav-expand-btn nav-expand-btn-right" (click)="toggleCommercialMenu($event)" title="Dérouler / Replier les sous-menus" aria-label="Dérouler">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" [style.transform]="isCommercialMenuOpen() ? 'rotate(180deg)' : 'rotate(0deg)'" style="transition:transform 0.2s ease"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+
+            <ul class="nav-sub-menu" *ngIf="isCommercialMenuOpen()">
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="(activePage() === 'commercial' || activePage() === 'ventes') && activeCommercialSubTab() === 'invoices'" (click)="navigateToCommercialSubTab('invoices')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Factures & Ventes ({{ invoices().length }})</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="(activePage() === 'commercial' || activePage() === 'ventes') && activeCommercialSubTab() === 'customers'" (click)="navigateToCommercialSubTab('customers')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Répertoire Clients ({{ customers().length }})</span>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="nav-sub-link" [class.active]="(activePage() === 'commercial' || activePage() === 'ventes') && activeCommercialSubTab() === 'payments'" (click)="navigateToCommercialSubTab('payments')">
+                  <span class="nav-sub-dot"></span>
+                  <span>Encaissements & Caisse ({{ payments().length }})</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li *ngIf="authService.canAccessTab('finance')">
+            <a href="javascript:void(0)" class="nav-link" [class.active]="activePage() === 'finance'" (click)="showPage('finance')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              <span>Finances & Coûts</span>
+            </a>
+          </li>
+          <li *ngIf="authService.canAccessTab('settings')">
+            <a href="javascript:void(0)" class="nav-link" [class.active]="activePage() === 'settings'" (click)="showPage('settings')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+              <span>Paramètres & Solaire</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-group" *ngIf="authService.hasRole(['manager'])">
+        <div class="nav-group-title">Administration</div>
+        <ul>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" [class.active]="activePage() === 'administration'" (click)="showPage('administration')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Équipe & Utilisateurs</span>
+              <span class="nav-badge-count badge-success" *ngIf="usersList().length">{{ usersList().length }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="sidebar-user-footer" *ngIf="authService.currentUser() as user">
+      <div class="sidebar-user-card" (click)="openProfileModal()" style="cursor:pointer" title="Cliquez pour gérer votre profil et mot de passe">
+        <div class="sidebar-user-avatar" [style.background-color]="user.roleBadgeColor">
+          {{ user.initials }}
+        </div>
+        <div class="sidebar-user-details">
+          <span class="sidebar-user-name">{{ user.name }}</span>
+          <span class="sidebar-user-role" [style.color]="user.roleBadgeColor">{{ user.roleLabel }}</span>
+        </div>
+        <button class="sidebar-logout-btn" (click)="$event.stopPropagation(); logout()" title="Se déconnecter de la session" aria-label="Se déconnecter">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="sidebar-backdrop" [class.visible]="isSidebarOpen()" [class.open]="isSidebarOpen()" (click)="toggleSidebar()"></div>
+
+  <div class="main-wrapper">
+    
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle-btn" (click)="toggleSidebar()" aria-label="Ouvrir le menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="topbar-heading-group">
+          <h1 class="page-title">
+            <ng-container [ngSwitch]="activePage()">
+              <span *ngSwitchCase="'dashboard'">Tableau de bord Général</span>
+              <span *ngSwitchCase="'animaux'">Registre du Troupeau & Pedigree</span>
+              <span *ngSwitchCase="'sante'">Santé Animale & Vétérinaire</span>
+              <span *ngSwitchCase="'reproduction'">Reproduction</span>
+              <span *ngSwitchCase="'lait'">Production Laitière Bio</span>
+              <span *ngSwitchCase="'transformation'">Atelier Transformation & Recettes (Fromagerie)</span>
+              <span *ngSwitchCase="'alimentation'">Alimentation & Fourrages</span>
+              <span *ngSwitchCase="'tracabilite'">Traçabilité & Lots Bio</span>
+              <span *ngSwitchCase="'ventes'">Ventes & Distribution</span>
+              <span *ngSwitchCase="'commercial'">Ventes & Facturation</span>
+              <span *ngSwitchCase="'finance'">Finances, Coûts & Rentabilité</span>
+              <span *ngSwitchCase="'settings'">Paramètres & Solaire</span>
+              <span *ngSwitchCase="'administration'">Gestion de l'Équipe & Utilisateurs</span>
+            </ng-container>
+          </h1>
+          <p class="sub-context"><span class="sub-context-dot"></span> Ferme LAWTAN • Région de Dakar, Sénégal</p>
         </div>
       </div>
-    }
+
+      <div class="topbar-right">
+        <div class="infra-tags-group">
+          <span class="infra-tag tag-network" (click)="toggleOffline()" style="cursor:pointer" title="Cliquez pour basculer le mode hors-ligne">
+            <span *ngIf="!isOffline()" style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> 4G Connectée</span>
+            <span *ngIf="isOffline()" style="display:inline-flex;align-items:center;gap:6px;color:#dc2626"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> Mode Hors-ligne</span>
+          </span>
+          <span class="infra-tag tag-solar" title="Centrale photovoltaïque et groupe froid autonome">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+            </svg>
+            Solaire ({{ fermeService.etatSysteme().batteriePct }}%)
+          </span>
+        </div>
+
+        <div class="user-profile-menu-container" *ngIf="authService.currentUser() as user">
+          <button class="user-profile-top-btn" (click)="toggleUserMenu()" [title]="user.name + ' (' + user.roleLabel + ')'">
+            <div class="user-avatar-circle" [style.background-color]="user.roleBadgeColor">
+              {{ user.initials }}
+            </div>
+            <div class="user-meta-info">
+              <span class="user-meta-name">{{ user.name }}</span>
+              <span class="user-meta-role" [style.color]="user.roleBadgeColor">{{ user.roleLabel }}</span>
+            </div>
+            <svg class="chevron-arrow" [class.rotated]="isUserMenuOpen()" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <div class="user-dropdown-popover" *ngIf="isUserMenuOpen()">
+            <div class="popover-user-header">
+              <div class="popover-avatar-large" [style.background-color]="user.roleBadgeColor">
+                {{ user.initials }}
+              </div>
+              <div class="popover-user-text">
+                <strong class="popover-fullname">{{ user.name }}</strong>
+                <span class="popover-email-sub">{{ user.email }}</span>
+                <span class="popover-role-badge" [style.background-color]="user.roleBadgeColor + '18'" [style.color]="user.roleBadgeColor" [style.border-color]="user.roleBadgeColor + '40'">
+                  {{ user.roleLabel }}
+                </span>
+              </div>
+            </div>
+
+            <div class="popover-divider"></div>
+
+            <div class="popover-meta-list">
+              <div class="popover-meta-row">
+                <span class="popover-meta-label">Titre :</span>
+                <span class="popover-meta-val">{{ user.title }}</span>
+              </div>
+              <div class="popover-meta-row">
+                <span class="popover-meta-label">Département :</span>
+                <span class="popover-meta-val">{{ user.department }}</span>
+              </div>
+              <div class="popover-meta-row" *ngIf="user.phone">
+                <span class="popover-meta-label">Contact :</span>
+                <span class="popover-meta-val">{{ user.phone }}</span>
+              </div>
+            </div>
+
+            <div class="popover-divider"></div>
+
+            <div class="popover-meta-list" style="margin-bottom:8px">
+              <span class="popover-meta-label" style="font-weight:700">Changer de vue opérationnelle :</span>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
+                <button 
+                  *ngFor="let p of fermeService.profilsDisponibles"
+                  type="button"
+                  class="btn-secondary"
+                  style="font-size:0.7rem;padding:3px 7px;border-radius:6px"
+                  [style.borderColor]="p.id === fermeService.profilActif().id ? '#15803d' : '#e2e8f0'"
+                  [style.background]="p.id === fermeService.profilActif().id ? '#f0fdf4' : '#ffffff'"
+                  (click)="selectionnerRole(p.id)">
+                  {{ p.avatar }} ({{ p.roleTitre }})
+                </button>
+              </div>
+            </div>
+
+            <div class="popover-actions-group">
+              <button class="popover-action-btn" (click)="openProfileModal(); isUserMenuOpen.set(false)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Mon Profil & Sécurité</span>
+              </button>
+              <button class="popover-logout-btn" (click)="logout()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Fermer la session & Se déconnecter</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button class="icon-action-btn" (click)="toggleNotif()" aria-label="Notifications">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="badge-dot" *ngIf="farmNotifications().length > 0"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="notif-dropdown-box" *ngIf="isNotifOpen()">
+      <div class="notif-dropdown-header">
+        <h4>Alertes &amp; Notifications Ferme</h4>
+        <span class="badge-pill" [class.badge-red]="farmNotifications().length > 0" [class.badge-green]="farmNotifications().length === 0">
+          {{ farmNotifications().length }} Active(s)
+        </span>
+      </div>
+      <ul class="notif-items-list">
+        <li class="notif-item-row" *ngFor="let n of farmNotifications()">
+          <span class="notif-dot-type" [style.background]="n.color"></span>
+          <div class="notif-item-content">
+            <h5>{{ n.title }}</h5>
+            <p>{{ n.message }}</p>
+            <time>{{ n.time }}</time>
+          </div>
+        </li>
+        <li class="notif-item-row" *ngIf="farmNotifications().length === 0">
+          <span class="notif-dot-type" style="background:#16a34a"></span>
+          <div class="notif-item-content">
+            <h5>Aucune alerte en cours</h5>
+            <p>Aucune alerte de reproduction, soin en cours ni stock sous le seuil.</p>
+            <time>À jour</time>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <main class="page-container">
+
+      <div class="content-card" *ngIf="dataLoadErrors().length > 0"
+           style="border-left:5px solid #dc2626;margin-bottom:18px;padding:14px 18px;background:#fef2f2">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div>
+            <strong style="color:#b91c1c">Données non chargées depuis la base</strong>
+            <p style="margin:4px 0 0;font-size:0.84rem;color:#7f1d1d">
+              {{ dataLoadErrors().join(', ') }} — ces sections restent vides tant que le serveur n'a pas répondu.
+            </p>
+          </div>
+          <button class="btn-secondary" style="padding:6px 12px;font-size:0.8rem" (click)="refreshAndSyncAllData()">Réessayer</button>
+        </div>
+      </div>
+
+      <router-outlet></router-outlet>
+
+    </main>
+
   </div>
 
-  <nav class="farm-nav" aria-label="Navigation principale du module ferme">
-    <div class="nav-container">
-      @if (fermeService.currentPermission().ongletsAutorises.includes('dashboard')) {
-        <a 
-          routerLink="/ferme/dashboard"
-          routerLinkActive="active"
-          class="nav-item"
-          title="Tableau de bord global">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
-            <line x1="18" y1="20" x2="18" y2="10"></line>
-            <line x1="12" y1="20" x2="12" y2="4"></line>
-            <line x1="6" y1="20" x2="6" y2="14"></line>
-          </svg>
-          <span>Tableau de bord</span>
-        </a>
-      }
-
-      @if (fermeService.currentPermission().ongletsAutorises.includes('troupeau') || fermeService.currentPermission().ongletsAutorises.includes('cheptel')) {
-        <a 
-          routerLink="/ferme/troupeau"
-          routerLinkActive="active"
-          class="nav-item"
-          title="Troupeau & Fiches bovines">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-          </svg>
-          <span>Troupeau</span>
-          <span class="count-tag" [attr.aria-label]="fermeService.kpiTotalAnimaux() + ' animaux'">{{ fermeService.kpiTotalAnimaux() }}</span>
-        </a>
-      }
-
-      @if (fermeService.currentPermission().ongletsAutorises.includes('production') || fermeService.currentPermission().ongletsAutorises.includes('traite')) {
-        <a 
-          routerLink="/ferme/production"
-          routerLinkActive="active"
-          class="nav-item"
-          title="Production laitière & Traite">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
-            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-          </svg>
-          <span>Production & Traite</span>
-        </a>
-      }
-
-      @if (fermeService.currentPermission().ongletsAutorises.includes('sante')) {
-        <a 
-          routerLink="/ferme/sante"
-          routerLinkActive="active"
-          class="nav-item"
-          title="Santé vétérinaire & Soins">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-          </svg>
-          <span>Santé</span>
-          @if (fermeService.kpiVachesSousAlerte() > 0) {
-            <span class="alert-dot" title="Alerte sanitaire active"></span>
-          }
-        </a>
-      }
-
-      @if (fermeService.currentPermission().ongletsAutorises.includes('alimentation')) {
-        <a 
-          routerLink="/ferme/alimentation"
-          routerLinkActive="active"
-          class="nav-item"
-          title="Alimentation & Fourrage">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
-            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
-            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
-          </svg>
-          <span>Alimentation</span>
-        </a>
-      }
-
-      @if (fermeService.currentPermission().ongletsAutorises.includes('commercial') || fermeService.currentPermission().ongletsAutorises.includes('ventes')) {
-        <a 
-          routerLink="/ferme/commercial"
-          routerLinkActive="active"
-          class="nav-item"
-          title="Commercial, commandes & expéditions">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
-            <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-          </svg>
-          <span>Commercial</span>
-        </a>
-      }
-
-      @if (fermeService.currentPermission().ongletsAutorises.includes('reproduction')) {
-        <a 
-          routerLink="/ferme/reproduction"
-          routerLinkActive="active"
-          class="nav-item"
-          title="Reproduction & Vêlage">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-          <span>Reproduction</span>
-          @if (fermeService.kpiVachesGestantesNb() > 0) {
-            <span class="count-tag" [attr.aria-label]="fermeService.kpiVachesGestantesNb() + ' gestations en cours'">{{ fermeService.kpiVachesGestantesNb() }}</span>
-          }
-        </a>
-      }
-    </div>
-  </nav>
-
-  <main class="farm-content">
-    <router-outlet></router-outlet>
-  </main>
-
-  <nav class="mobile-bottom-bar" aria-label="Navigation rapide sur mobile">
-    <a routerLink="/ferme/dashboard" routerLinkActive="active" class="mbb-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <line x1="18" y1="20" x2="18" y2="10"></line>
-        <line x1="12" y1="20" x2="12" y2="4"></line>
-        <line x1="6" y1="20" x2="6" y2="14"></line>
-      </svg>
-      <span>Bord</span>
-    </a>
-    <a routerLink="/ferme/production" routerLinkActive="active" class="mbb-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-      </svg>
-      <span>Traite</span>
-    </a>
-    <a routerLink="/ferme/troupeau" routerLinkActive="active" class="mbb-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-      </svg>
-      <span>Troupeau</span>
-    </a>
-    <a routerLink="/ferme/sante" routerLinkActive="active" class="mbb-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-      </svg>
-      <span>Santé</span>
-      @if (fermeService.kpiVachesSousAlerte() > 0) {
-        <span class="mbb-alert-badge" aria-label="Alerte active">!</span>
-      }
-    </a>
-    <a routerLink="/ferme/commercial" routerLinkActive="active" class="mbb-item">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-      </svg>
-      <span>Ventes</span>
-    </a>
-  </nav>
-
-  @if (notificationService.toastMessage()) {
-    <div class="toast-box" role="status" aria-live="polite">
+  <div class="lawtan-toast toast-success" *ngIf="notificationService.toastMessage()">
+    <div class="toast-body">
       <span class="toast-text">{{ notificationService.toastMessage() }}</span>
-      <button 
-        type="button" 
-        class="toast-close-btn" 
-        (click)="notificationService.fermerToast()" 
-        aria-label="Fermer la notification">✕</button>
     </div>
-  }
+    <button class="toast-close-btn" (click)="notificationService.fermerToast()">✕</button>
+  </div>
+
 </div>
