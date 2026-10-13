@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PublicHeaderComponent } from '../../../shared/components/public-header/public-header.component';
 import { PublicFooterComponent } from '../../../shared/components/public-footer/public-footer.component';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
 
 export type DevisNature = 'prestation' | 'laitier';
 
@@ -15,18 +16,32 @@ export type DevisNature = 'prestation' | 'laitier';
     RouterLink,
     ReactiveFormsModule,
     PublicHeaderComponent,
-    PublicFooterComponent
+    PublicFooterComponent,
+    RevealDirective
   ],
   templateUrl: './devis.component.html',
   styleUrl: './devis.component.css'
 })
-export class DevisComponent {
+export class DevisComponent implements OnInit {
   devisCategory = signal<DevisNature>('prestation');
   isSubmitting = signal<boolean>(false);
   isSubmitted = signal<boolean>(false);
   submittedData = signal<any>(null);
 
   devisForm: FormGroup;
+
+  ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 50);
+    }
+  }
 
   readonly servicesAgricoles = [
     { id: 'labour', label: 'Labour mécanisé profond', unit: 'Hectare' },

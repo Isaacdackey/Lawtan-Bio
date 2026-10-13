@@ -1,278 +1,483 @@
-<div class="view-panel">
-  <div class="toolbar-header">
-    <div>
-      <h1 class="page-title">Production Laitière & Traite du {{ fermeService.traiteAujourdhui().date }}</h1>
-      <span class="page-sub">
-        Collecteur : <strong>{{ fermeService.traiteAujourdhui().enregistrePar }}</strong> • 
-        7 vaches traites matin et soir
-      </span>
-    </div>
+<div class="page" style="padding: 0;">
+  
+  <div class="modal-tabs-header" style="margin-bottom:20px;border-bottom:1px solid #e2e8f0;background:white;border-radius:12px;padding:6px;">
+    <button class="modal-tab-button" [class.active]="activeMilkSubTab() === 'milking'" (click)="navigateToMilkSubTab('milking')">
+      Traite & Cuves Réfrigérées
+    </button>
+    <button class="modal-tab-button" [class.active]="activeMilkSubTab() === 'journal'" (click)="navigateToMilkSubTab('journal')">
+      Journal des Récoltes ({{ filteredMilkProductions().length }})
+    </button>
+    <button class="modal-tab-button" [class.active]="activeMilkSubTab() === 'stocks'" (click)="navigateToMilkSubTab('stocks')">
+      Gestion & Ventilation des Stocks
+    </button>
+  </div>
 
-    <div class="summary-stats">
-      <div class="stat-box" title="Volume total récolté à la salle de traite">
-        <span class="stat-title">Récolte Totale</span>
-        <span class="stat-number font-numeric">{{ fermeService.traiteAujourdhui().totalJourLitres }} L</span>
+  <div *ngIf="activeMilkSubTab() === 'milking'">
+    <div class="page-header-row">
+      <div class="page-header-text">
+        <h2>Poste de Traite & Supervision Cuve Laitière</h2>
+        <p>Saisie individuelle instantanée par vache et surveillance en temps réel de la cuve réfrigérée de collecte bio.</p>
       </div>
-      <div class="stat-box stat-box-success" title="Lait propre conforme introduit dans la cuve réfrigérée">
-        <span class="stat-title">En Cuve (Propre)</span>
-        <span class="stat-number font-numeric text-success">{{ fermeService.kpiProductionJourCommercialisable() }} L</span>
+      <div class="header-action-group">
+        <button class="btn-primary" (click)="isMilkModalOpen.set(true)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+          <span>+ Saisie Manuelle Traite</span>
+        </button>
+        <button class="btn-secondary" (click)="navigateToMilkSubTab('journal')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <span>Journal des Récoltes</span>
+        </button>
       </div>
-      @if (fermeService.traiteAujourdhui().litresConsignesQualite > 0) {
-        <div class="stat-box stat-box-alert" title="Lait écarté sous rémanence antibiotique (non vendu)">
-          <span class="stat-title">Écarté (Retrait)</span>
-          <span class="stat-number font-numeric text-danger">{{ fermeService.traiteAujourdhui().litresConsignesQualite }} L</span>
+    </div>
+
+    <div class="tank-supervision-card">
+      <div class="tank-header-row">
+        <div class="tank-title-wrap">
+          <div class="tank-icon-shield">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2h8l1 6H7L8 2z"/><path d="M7 8c0 10 2 12 5 12s5-2 5-12"/></svg>
+          </div>
+          <div>
+            <h3>{{ tankStatus().tankName }}</h3>
+            <p>Stockage isotherme connecté • Température 3.8°C sous consigne</p>
+          </div>
         </div>
-      }
-    </div>
-  </div>
+        <div class="tank-badge-status">
+          <span class="tank-status-badge" style="background:#dcfce7;color:#166534">
+            {{ tankStatus().qualityStatus }}
+          </span>
+          <span class="tank-lot-badge">Lot : {{ tankStatus().targetBatch }}</span>
+        </div>
+      </div>
 
-  <div class="tank-quick-strip" role="region" aria-label="État de la cuve réfrigérée lors de la traite">
-    <div class="tqs-icon" aria-hidden="true">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M8 2h8l1 6H7L8 2z"></path>
-        <path d="M7 8c0 10 2 12 5 12s5-2 5-12"></path>
-      </svg>
-    </div>
-    <div class="tqs-info">
-      <span class="tqs-title">Cuve Réfrigérée N°1 (Lait Bio Conforme) :</span>
-      <span class="tqs-desc">
-        <strong>{{ cuveVolumeActuel() }} L</strong> versés sur {{ cuveCapaciteMax }} L utiles ({{ cuvePourcentage() }}%) • 
-        {{ fermeService.traiteAujourdhui().litresConsignesQualite }} L de lait sous soin isolés en bidon séparé.
-      </span>
-    </div>
-    <div class="tqs-track">
-      <div class="tqs-fill" [style.width.%]="cuvePourcentage()"></div>
-    </div>
-    <div class="tqs-badge-group">
-      <span class="tqs-badge">Froid Solaire : {{ cuveTemperature() }} °C</span>
-      <span class="tqs-sync-pill">
-        @if (fermeService.statutSynchro() === 'en_cours') {
-          <span class="sync-spinner" aria-hidden="true"></span> Enregistrement...
-        } @else {
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-          Synchro locale
-        }
-      </span>
-    </div>
-  </div>
+      <div class="tank-body-grid">
+        <div class="tank-gauge-col">
+          <div class="tank-cylinder">
+            <div class="tank-liquid" [style.height]="unallocatedMilkPercentage() + '%'">
+              <div class="liquid-wave"></div>
+            </div>
+            <div class="tank-gauge-label">
+              <strong>{{ unallocatedMilkVolume() }} L</strong>
+              <span>/ {{ tankStatus().maxCapacity }} L</span>
+            </div>
+          </div>
+          <div class="tank-fill-info">
+            <span>Lait en attente de répartition : <strong>{{ unallocatedMilkVolume() }} L</strong> ({{ unallocatedMilkPercentage() }}%)</span>
+          </div>
+          <div *ngIf="unallocatedMilkVolume() <= 0" class="tank-empty-alert" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0">
+            ✓ Tout le lait collecté est réparti. Il reste du stock en cuve pour la transformation et la vente.
+          </div>
+        </div>
 
-  <div class="traite-filter-bar">
-    <div class="segmented-control" role="group" aria-label="Filtrer les vaches en traite">
-      <button 
-        type="button" 
-        [class.selected]="filtreLot() === 'toutes'" 
-        [attr.aria-pressed]="filtreLot() === 'toutes'"
-        (click)="filtreLot.set('toutes')">
-        Toutes les laitières (7)
-      </button>
-      <button 
-        type="button" 
-        [class.selected]="filtreLot() === 'lactation_saine'" 
-        [attr.aria-pressed]="filtreLot() === 'lactation_saine'"
-        (click)="filtreLot.set('lactation_saine')">
-        Conformes cuve (6)
-      </button>
-      <button 
-        type="button" 
-        [class.selected]="filtreLot() === 'sous_retrait'" 
-        [attr.aria-pressed]="filtreLot() === 'sous_retrait'"
-        (click)="filtreLot.set('sous_retrait')">
-        Sous retrait sanitaire (1)
-      </button>
-    </div>
-  </div>
+        <div class="tank-metrics-col">
+          <div class="tank-stat-quad" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+            <div class="tank-kpi-box">
+              <span class="lbl">Collecte Brute (Jour)</span>
+              <strong class="val" style="color:#16a34a">{{ tankStatus().grossVolumeCollected }} L</strong>
+              <span class="sub-lbl">Matin {{ tankStatus().morningVolume }}L • Soir {{ tankStatus().eveningVolume }}L</span>
+            </div>
+            <div class="tank-kpi-box">
+              <span class="lbl">Lait en Attente</span>
+              <strong class="val" [style.color]="unallocatedMilkVolume() > 0 ? '#b45309' : '#15803d'">{{ unallocatedMilkVolume() }} L</strong>
+              <span class="sub-lbl">{{ unallocatedMilkVolume() > 0 ? 'Non réparti' : 'Totalité répartie' }}</span>
+            </div>
+            <div class="tank-kpi-box">
+              <span class="lbl">Stock à Vendre</span>
+              <strong class="val" style="color:#0284c7">{{ milkStockAllocation().directSaleAvailable }} L</strong>
+              <span class="sub-lbl">Bouteilles & vrac</span>
+            </div>
+            <div class="tank-kpi-box">
+              <span class="lbl">Stock Transformation</span>
+              <strong class="val" style="color:#7c3aed">{{ milkStockAllocation().productionAvailable }} L</strong>
+              <span class="sub-lbl">Fromages & yaourts</span>
+            </div>
+          </div>
 
-  <div class="traite-list">
-    @for (item of traitesFiltrees(); track item.animalId) {
-      <div class="traite-row" [class.row-warn]="item.qualiteNote === 'suspecte'">
-        <div class="traite-cow-col">
-          <div class="cow-badge-line">
-            <span class="row-tag">{{ item.boucleId }}</span>
-            @if (item.qualiteNote === 'suspecte') {
-              <span class="pill-retrait">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                  <line x1="12" y1="9" x2="12" y2="13"></line>
-                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
-                Lait écarté (Soin)
+          <div class="tank-bottom-row" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div class="tank-session-pill">
+              <span>Session active : </span>
+              <strong>{{ isCurrentMorningSession() ? 'Session Matin' : 'Session Soir' }}</strong>
+            </div>
+            <div class="tank-temp-check">
+              <span>Alimentation groupe froid : Solaire 45 kWc (Autonome)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card" style="margin-top:20px">
+      <div class="content-card-header" style="border-bottom:none;padding-bottom:12px">
+        <div>
+          <h3 style="margin:0;font-size:1.15rem;color:#0d381e">Enregistrement Rapide par Vache Laitière</h3>
+          <p style="margin:2px 0 0 0;font-size:0.8rem;color:#526658">Cliquez sur « Matin » ou « Soir » sous chaque vache pour saisir la traite</p>
+        </div>
+        <span class="badge-pill badge-green">{{ milkingCows().length }} Vaches en lactation</span>
+      </div>
+
+      <div class="quick-milk-grid">
+        <div *ngFor="let cow of paginatedMilkingCows()" class="quick-cow-card" [class.cow-fever]="cow.status === 'FEVER_TREATMENT'">
+          <div class="quick-cow-top">
+            <div class="quick-cow-avatar">
+              <img *ngIf="cow.imageUrl" [src]="cow.imageUrl" [alt]="cow.name" />
+              <svg *ngIf="!cow.imageUrl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="6 3 18 3 20 14 12 21 4 14"/>
+                <circle cx="12" cy="8" r="2"/>
+              </svg>
+            </div>
+            <div class="quick-cow-info">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                <strong class="quick-cow-name">{{ cow.name }}</strong>
+                <span class="badge-pill badge-green" style="font-size:0.62rem;padding:2px 6px;">{{ cow.breed }}</span>
+              </div>
+              <span class="quick-cow-id">Boucle : {{ cow.earTagNumber }}</span>
+            </div>
+          </div>
+
+          <div class="quick-cow-yield-row">
+            <span class="yield-lbl">Rendement estimé :</span>
+            <strong class="yield-val">{{ cow.dailyMilkYield }} L/j</strong>
+          </div>
+
+          <div class="quick-cow-actions" *ngIf="cow.status !== 'FEVER_TREATMENT'">
+            <button 
+              class="btn-quick-milk btn-morn" 
+              [class.btn-milked]="isMilkedToday(cow.internalId, 'MORNING')"
+              [disabled]="isMilkedToday(cow.internalId, 'MORNING')"
+              (click)="openQuickMilkingModal(cow, 'MORNING')">
+              <span *ngIf="!isMilkedToday(cow.internalId, 'MORNING')" style="display:inline-flex;align-items:center;gap:4px">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2"/></svg>
+                Matin
               </span>
-            } @else {
-              <span class="pill-conforme">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                Conforme
+              <span *ngIf="isMilkedToday(cow.internalId, 'MORNING')" style="display:inline-flex;align-items:center;gap:4px">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Matin Fait
               </span>
-            }
-          </div>
-          <span class="row-cow-name">{{ item.nomAnimal }}</span>
-          @if (item.observation) {
-            <span class="row-obs">{{ item.observation }}</span>
-          }
-        </div>
+            </button>
 
-        <div class="traite-input-group">
-          <div class="stepper-item">
-            <span class="stepper-lbl">Matin</span>
-            <div class="stepper-controls">
-              <button 
-                type="button" 
-                class="btn-step" 
-                (click)="ajusterTraiteRapide(item, 'matin', -0.5)" 
-                [disabled]="enregistrementEnCours()"
-                [attr.aria-label]="'Diminuer traite matin pour ' + item.nomAnimal + ' de 0.5 L'">−</button>
-              <span class="stepper-val font-numeric">{{ item.traiteMatinLitres }} <span class="unit-xs">L</span></span>
-              <button 
-                type="button" 
-                class="btn-step" 
-                (click)="ajusterTraiteRapide(item, 'matin', +0.5)" 
-                [disabled]="enregistrementEnCours()"
-                [attr.aria-label]="'Augmenter traite matin pour ' + item.nomAnimal + ' de 0.5 L'">+</button>
-            </div>
-            <div class="presets-row">
-              <button type="button" class="preset-pill" (click)="appliquerPreset(item, 'matin', 8)">8L</button>
-              <button type="button" class="preset-pill" (click)="appliquerPreset(item, 'matin', 10)">10L</button>
-              <button type="button" class="preset-pill" (click)="appliquerPreset(item, 'matin', 12)">12L</button>
-            </div>
+            <button 
+              class="btn-quick-milk btn-eve" 
+              [class.btn-milked]="isMilkedToday(cow.internalId, 'EVENING')"
+              [disabled]="isMilkedToday(cow.internalId, 'EVENING')"
+              (click)="openQuickMilkingModal(cow, 'EVENING')">
+              <span *ngIf="!isMilkedToday(cow.internalId, 'EVENING')" style="display:inline-flex;align-items:center;gap:4px">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                Soir
+              </span>
+              <span *ngIf="isMilkedToday(cow.internalId, 'EVENING')" style="display:inline-flex;align-items:center;gap:4px">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Soir Fait
+              </span>
+            </button>
           </div>
 
-          <div class="stepper-item">
-            <span class="stepper-lbl">Soir</span>
-            <div class="stepper-controls">
-              <button 
-                type="button" 
-                class="btn-step" 
-                (click)="ajusterTraiteRapide(item, 'soir', -0.5)" 
-                [disabled]="enregistrementEnCours()"
-                [attr.aria-label]="'Diminuer traite soir pour ' + item.nomAnimal + ' de 0.5 L'">−</button>
-              <span class="stepper-val font-numeric">{{ item.traiteSoirLitres }} <span class="unit-xs">L</span></span>
-              <button 
-                type="button" 
-                class="btn-step" 
-                (click)="ajusterTraiteRapide(item, 'soir', +0.5)" 
-                [disabled]="enregistrementEnCours()"
-                [attr.aria-label]="'Augmenter traite soir pour ' + item.nomAnimal + ' de 0.5 L'">+</button>
-            </div>
-            <div class="presets-row">
-              <button type="button" class="preset-pill" (click)="appliquerPreset(item, 'soir', 5)">5L</button>
-              <button type="button" class="preset-pill" (click)="appliquerPreset(item, 'soir', 6.5)">6.5L</button>
-              <button type="button" class="preset-pill" (click)="appliquerPreset(item, 'soir', 8)">8L</button>
-            </div>
-          </div>
-
-          <div class="total-item">
-            <span class="stepper-lbl">Total Jour</span>
-            <span class="total-num font-numeric">{{ item.totalLitres }} <span class="unit-sm">L</span></span>
+          <div *ngIf="cow.status === 'FEVER_TREATMENT'" class="quick-cow-blocked">
+            <span style="color:#dc2626;font-size:0.75rem;font-weight:700">Traitement en cours (Lait écarté)</span>
           </div>
         </div>
+      </div>
 
-        <div class="traite-status-col">
-          <button 
-            type="button" 
-            class="btn-edit-sm" 
-            (click)="ouvrirModalTraite(item)"
-            [attr.aria-label]="'Saisie manuelle directe et note pour ' + item.nomAnimal">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M12 20h9"></path>
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-            </svg>
-            Saisie & Note
+      <div class="pagination-bar" *ngIf="milkingCows().length > milkingCowsPageSize()" style="margin-top:18px">
+        <button class="pagination-btn" (click)="prevMilkingCowsPage()" [disabled]="milkingCowsCurrentPage() === 1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+          <span>Précédent</span>
+        </button>
+
+        <div class="pagination-pages-wrapper">
+          <button *ngFor="let page of milkingCowsPageNumbers()"
+                  class="page-number-btn"
+                  [class.active]="milkingCowsCurrentPage() === page"
+                  (click)="setMilkingCowsPage(page)">
+            {{ page }}
           </button>
         </div>
+
+        <button class="pagination-btn" (click)="nextMilkingCowsPage()" [disabled]="milkingCowsCurrentPage() === totalMilkingCowsPages()">
+          <span>Suivant</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
       </div>
-    } @empty {
-      <div class="empty-state">
-        <p class="empty-text">Aucun animal ne correspond à ce filtre.</p>
-        <button type="button" class="btn-subtle" (click)="filtreLot.set('toutes')">Afficher toutes les vaches</button>
+    </div>
+
+    <div class="chart-box" style="margin-top:20px">
+      <div class="chart-box-header">
+        <div>
+          <h3>Évolution de la Collecte Journalière & Moyenne par Vache</h3>
+          <p>Suivi comparatif des traites Matin vs Soir</p>
+        </div>
       </div>
-    }
+      <div class="chart-canvas-wrap" style="height:240px;position:relative">
+        <canvas id="monthlyMilkChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeMilkSubTab() === 'journal'">
+    <div class="page-header-row">
+      <div class="page-header-text">
+        <h2>Journal des Récoltes & Traites Laitières</h2>
+        <p>Historique exhaustif des traites individuelles avec recherche par date, animal, session et volume.</p>
+      </div>
+      <div class="header-action-group">
+        <button class="btn-primary" (click)="isMilkModalOpen.set(true)">
+          <span>+ Nouvelle Saisie Traite</span>
+        </button>
+      </div>
+    </div>
+
+    <section class="kpi-grid" style="margin-bottom:20px">
+      <div class="kpi-card card-green">
+        <div class="kpi-header">
+          <span class="kpi-title">Volume Total Filtré</span>
+          <span class="kpi-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2h8l1 6H7L8 2z"/><path d="M7 8c0 10 2 12 5 12s5-2 5-12"/></svg>
+          </span>
+        </div>
+        <div class="kpi-value">{{ filteredMilkTotalVolume() }} <span class="unit">Litres</span></div>
+        <div class="kpi-footer trend-up">
+          <span>Sur {{ filteredMilkProductions().length }} traites enregistrées</span>
+        </div>
+      </div>
+
+      <div class="kpi-card card-blue">
+        <div class="kpi-header">
+          <span class="kpi-title">Moyenne par Traite</span>
+          <span class="kpi-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </span>
+        </div>
+        <div class="kpi-value">{{ filteredMilkAverageYield() }} <span class="unit">L / traite</span></div>
+        <div class="kpi-footer">
+          <span>Rendement conforme bio</span>
+        </div>
+      </div>
+
+      <div class="kpi-card card-purple">
+        <div class="kpi-header">
+          <span class="kpi-title">Cheptel Actif à la Traite</span>
+          <span class="kpi-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </span>
+        </div>
+        <div class="kpi-value">{{ milkingCows().length }} <span class="unit">vaches</span></div>
+        <div class="kpi-footer trend-up">
+          <span>100% traçabilité RFID</span>
+        </div>
+      </div>
+
+      <div class="kpi-card card-gold">
+        <div class="kpi-header">
+          <span class="kpi-title">Conformité Qualité</span>
+          <span class="kpi-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+        </div>
+        <div class="kpi-value">{{ organicComplianceToday() }} <span class="unit">% Bio</span></div>
+        <div class="kpi-footer trend-up">
+          <span>Sur les traites du jour</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-card">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date Traite</th>
+              <th>Session</th>
+              <th>Vache & Identifiant</th>
+              <th>Volume (Litres)</th>
+              <th>Température</th>
+              <th>Qualité Bio</th>
+              <th>Destination Cuve</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of paginatedMilkProductions()">
+              <td><strong>{{ p.productionDate }}</strong></td>
+              <td>
+                <span class="badge-pill" [class.badge-gold]="p.session === 'MORNING'" [class.badge-purple]="p.session === 'EVENING'">
+                  {{ p.session === 'MORNING' ? 'Matin' : 'Soir' }}
+                </span>
+              </td>
+              <td><strong>{{ p.animalName }} ({{ p.animalInternalId }})</strong></td>
+              <td><strong style="color:#15803d">{{ p.volumeLiters }} L</strong></td>
+              <td>{{ p.milkTemperature }} °C</td>
+              <td><span class="badge-pill badge-green">100% Conforme Bio</span></td>
+              <td><code>{{ p.destinationTank }}</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeMilkSubTab() === 'stocks'">
+    <div class="page-header-row">
+      <div class="page-header-text">
+        <h2>Gestion & Répartition des Stocks de Lait</h2>
+        <p>Ventilation dynamique de la collecte journalière entre vente directe en bouteille/vrac, atelier de transformation et veaux.</p>
+      </div>
+      <div class="header-action-group">
+        <button class="btn-primary" (click)="openVentilationModal()">
+          <span>+ Ventiler la Collecte Laitière</span>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="unallocatedMilkVolume() > 0"
+         style="background:#fef3c7;border:1px solid #fde047;border-radius:10px;padding:12px 18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <div>
+        <strong style="color:#92400e;font-size:0.92rem">
+          {{ unallocatedMilkVolume() }} litres de lait collecté attendent d'être répartis dans la cuve.
+        </strong>
+        <p style="margin:2px 0 0;font-size:0.8rem;color:#b45309">
+          Répartissez ce volume vers la vente directe, l'atelier de fabrication ou l'allaitement des veaux.
+        </p>
+      </div>
+      <button class="btn-primary" style="background:#d97706;border-color:#b45309;padding:7px 15px;font-size:0.82rem"
+              (click)="openVentilationModal()">
+        Répartir maintenant
+      </button>
+    </div>
+
+    <section class="kpi-grid" style="margin-bottom:20px;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px">
+      <div class="kpi-card card-green">
+        <div class="kpi-header"><span class="kpi-title">Collecte Cumulée</span></div>
+        <div class="kpi-value">{{ milkStockAllocation().grossVolumeCollected }} <span class="unit">L</span></div>
+      </div>
+      <div class="kpi-card card-blue">
+        <div class="kpi-header"><span class="kpi-title">Stock Vente Directe</span></div>
+        <div class="kpi-value" style="color:#0284c7">{{ milkStockAllocation().directSaleAvailable }} <span class="unit">L dispo</span></div>
+      </div>
+      <div class="kpi-card card-purple">
+        <div class="kpi-header"><span class="kpi-title">Stock Transformation</span></div>
+        <div class="kpi-value" style="color:#7c3aed">{{ milkStockAllocation().productionAvailable }} <span class="unit">L dispo</span></div>
+      </div>
+      <div class="kpi-card card-gold">
+        <div class="kpi-header"><span class="kpi-title">Allaitement Veaux</span></div>
+        <div class="kpi-value">{{ milkStockAllocation().calfFeedingVolume }} <span class="unit">L servis</span></div>
+      </div>
+    </section>
   </div>
 </div>
 
-@if (modalTraiteOuvert() && traiteEnEdition()) {
-  <div class="modal-backdrop" (click)="fermerModalTraite()">
-    <div 
-      class="modal-dialog modal-sm" 
-      (click)="$event.stopPropagation()"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="traite-modal-title">
-      
-      <header class="modal-header">
+<div class="modal-overlay" *ngIf="isMilkModalOpen()" (click)="isMilkModalOpen.set(false)">
+  <div class="modal-card" style="max-width:540px" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
         <div>
-          <span class="modal-pretag">{{ traiteEnEdition()!.boucleId }}</span>
-          <h2 class="modal-title" id="traite-modal-title">Traite : {{ traiteEnEdition()!.nomAnimal }}</h2>
+          <h3>Saisie Manuelle d'une Traite</h3>
+          <p>Consignation du volume récolté au poste de traite</p>
         </div>
-        <button type="button" class="btn-close" (click)="fermerModalTraite()" aria-label="Fermer la saisie de traite">✕</button>
-      </header>
+      </div>
+      <button class="modal-close-btn" (click)="isMilkModalOpen.set(false)">✕</button>
+    </div>
 
-      <form [formGroup]="formTraite" (ngSubmit)="soumettreTraite()" class="modal-body">
-        <div class="form-grid-2">
-          <div class="form-field">
-            <label for="mLitres">Matin (Litres)</label>
-            <input 
-              id="mLitres" 
-              type="number" 
-              step="0.1" 
-              min="0"
-              max="50"
-              formControlName="traiteMatinLitres" 
-              class="form-input" 
-              required />
-          </div>
-
-          <div class="form-field">
-            <label for="sLitres">Soir (Litres)</label>
-            <input 
-              id="sLitres" 
-              type="number" 
-              step="0.1" 
-              min="0"
-              max="50"
-              formControlName="traiteSoirLitres" 
-              class="form-input" 
-              required />
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label for="qNote">Destination & Sécurité sanitaire</label>
-          <select id="qNote" formControlName="qualiteNote" class="form-input">
-            <option value="excellente">Conforme (Lait bio certifié destiné à la cuve)</option>
-            <option value="normale">Normale (Conforme)</option>
-            <option value="suspecte">Non conforme / Soin (Écarter hors de la cuve)</option>
+    <form (ngSubmit)="submitManualMilkEntry()" style="padding:24px 28px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group-item">
+          <label>Vache Laitière *</label>
+          <select [(ngModel)]="manualMilkForm.cowId" name="mCow" required>
+            <option *ngFor="let c of milkingCows()" [value]="c.internalId">{{ c.name }} ({{ c.internalId }})</option>
           </select>
-          <small class="field-hint">Si non conforme, le lait est consigné hors cuve pour garantir la sécurité microbiologique.</small>
         </div>
 
-        <div class="form-field">
-          <label for="obs">Observation terrain (comportement, santé mamelle)</label>
-          <input 
-            id="obs" 
-            type="text" 
-            formControlName="observation" 
-            class="form-input" 
-            placeholder="ex: Comportement calme, quartier souple, bon débit" />
+        <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group-item">
+            <label>Session de Traite</label>
+            <select [(ngModel)]="manualMilkForm.session" name="mSession">
+              <option value="MORNING">Traite Matin (06h00)</option>
+              <option value="EVENING">Traite Soir (17h00)</option>
+            </select>
+          </div>
+          <div class="form-group-item">
+            <label>Volume Récolté (Litres) *</label>
+            <input type="number" step="0.5" [(ngModel)]="manualMilkForm.volumeLiters" name="mVol" required />
+          </div>
         </div>
 
-        <footer class="modal-footer">
-          <button type="button" class="btn-subtle" (click)="fermerModalTraite()">Annuler</button>
-          <button 
-            type="submit" 
-            class="btn-primary" 
-            [disabled]="formTraite.invalid || enregistrementEnCours()">
-            @if (enregistrementEnCours()) {
-              Enregistrement...
-            } @else {
-              Valider la traite
-            }
-          </button>
-        </footer>
-      </form>
+        <div class="form-grid-layout" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group-item">
+            <label>Qualité du Lait</label>
+            <select [(ngModel)]="manualMilkForm.quality" name="mQual">
+              <option value="CONFORME_BIO">Conforme Bio (Cuve Inox)</option>
+              <option value="ECARTE_SOIN">Écarté (Antibiotique / Bidon)</option>
+            </select>
+          </div>
+          <div class="form-group-item">
+            <label>Température au Trayeur (°C)</label>
+            <input type="number" step="0.1" [(ngModel)]="manualMilkForm.temperature" name="mTemp" />
+          </div>
+        </div>
+
+        <div class="modal-form-actions" style="display:flex;gap:12px;margin-top:8px">
+          <button type="button" class="btn-secondary" style="flex:1" (click)="isMilkModalOpen.set(false)">Annuler</button>
+          <button type="submit" class="btn-primary" style="flex:2">Valider la Traite</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="isQuickMilkingModalOpen()" (click)="isQuickMilkingModalOpen.set(false)">
+  <div class="modal-card" style="max-width:440px" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Validation Traite : {{ quickCowTarget()?.name }}</h3>
+          <p>Session {{ quickSessionTarget() === 'MORNING' ? 'Matin' : 'Soir' }}</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="isQuickMilkingModalOpen.set(false)">✕</button>
+    </div>
+
+    <div style="padding:24px 28px">
+      <div class="form-group-item">
+        <label>Volume récolté pour cette session (Litres) :</label>
+        <input type="number" step="0.5" [(ngModel)]="quickVolume" style="font-size:1.4rem;font-weight:700;text-align:center" />
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:20px">
+        <button type="button" class="btn-secondary" style="flex:1" (click)="isQuickMilkingModalOpen.set(false)">Annuler</button>
+        <button type="button" class="btn-primary" style="flex:2" (click)="confirmQuickMilking()">Confirmer la Traite</button>
+      </div>
     </div>
   </div>
-}
+</div>
 
+<div class="modal-overlay" *ngIf="isVentilationModalOpen()" (click)="isVentilationModalOpen.set(false)">
+  <div class="modal-card" style="max-width:540px" (click)="$event.stopPropagation()">
+    <div class="modal-top-header">
+      <div class="modal-title-wrap">
+        <div>
+          <h3>Ventilation & Répartition de la Collecte</h3>
+          <p>Affectation du lait récolté vers les ateliers et la vente</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="isVentilationModalOpen.set(false)">✕</button>
+    </div>
+
+    <form (ngSubmit)="submitVentilation()" style="padding:24px 28px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group-item">
+          <label>Alloué à la Vente Directe (Bouteilles / Vrac - Litres)</label>
+          <input type="number" [(ngModel)]="ventilationForm.directSale" name="vSale" />
+        </div>
+        <div class="form-group-item">
+          <label>Alloué à la Transformation Fromagère & Lait Caillé (Litres)</label>
+          <input type="number" [(ngModel)]="ventilationForm.transformation" name="vTrans" />
+        </div>
+        <div class="form-group-item">
+          <label>Alloué à l'Allaitement Naturel des Veaux (Litres)</label>
+          <input type="number" [(ngModel)]="ventilationForm.calves" name="vCalf" />
+        </div>
+
+        <div class="modal-form-actions" style="display:flex;gap:12px;margin-top:8px">
+          <button type="button" class="btn-secondary" style="flex:1" (click)="isVentilationModalOpen.set(false)">Annuler</button>
+          <button type="submit" class="btn-primary" style="flex:2">Valider la Répartition</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

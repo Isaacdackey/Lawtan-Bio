@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PublicHeaderComponent } from '../../../shared/components/public-header/public-header.component';
 import { PublicFooterComponent } from '../../../shared/components/public-footer/public-footer.component';
+import { RevealDirective } from '../../../shared/directives/reveal.directive';
 
 @Component({
   selector: 'app-contact',
@@ -13,7 +14,8 @@ import { PublicFooterComponent } from '../../../shared/components/public-footer/
     RouterLink,
     ReactiveFormsModule,
     PublicHeaderComponent,
-    PublicFooterComponent
+    PublicFooterComponent,
+    RevealDirective
   ],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css'

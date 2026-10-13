@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -20,10 +21,11 @@ export class LoginComponent {
   loginError = signal<string | null>(null);
   loginSuccess = signal<boolean>(false);
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router
-  ) {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+
+  constructor() {
     this.loginForm = this.fb.group({
       identifier: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(4)]],
@@ -45,21 +47,24 @@ export class LoginComponent {
 
     this.isLoading.set(true);
 
-    // Simulation de connexion sécurisée
-    setTimeout(() => {
-      this.isLoading.set(false);
-      const identifier = this.loginForm.get('identifier')?.value?.trim();
-      
-      // Démonstration : validation positive
-      if (identifier) {
+    const identifier = this.loginForm.get('identifier')?.value?.trim();
+    const password = this.loginForm.get('password')?.value;
+    const rememberMe = this.loginForm.get('rememberMe')?.value ?? false;
+
+    this.authService.login(identifier, password, rememberMe).subscribe({
+      next: () => {
+        this.isLoading.set(false);
         this.loginSuccess.set(true);
         setTimeout(() => {
           this.router.navigate(['/ferme']);
-        }, 1200);
-      } else {
-        this.loginError.set('Identifiant ou mot de passe incorrect.');
+        }, 800);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        const msg = err?.message || this.authService.authError() || 'Identifiant ou mot de passe incorrect.';
+        this.loginError.set(msg);
       }
-    }, 800);
+    });
   }
 
   isFieldInvalid(field: string): boolean {

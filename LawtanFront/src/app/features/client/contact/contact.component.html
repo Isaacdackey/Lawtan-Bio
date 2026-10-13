@@ -3,22 +3,22 @@
 <section class="contact-page">
   <header class="page-hero">
     <div class="container hero-inner">
-      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane" appReveal="fade">
         <a routerLink="/">Accueil</a>
         <span class="sep">/</span>
         <span class="current">Contact</span>
       </nav>
 
-      <div class="hero-badge">
+      <div class="hero-badge" appReveal="slide-right" [revealDelay]="60">
         Équipe disponible & Écoute active
       </div>
 
-      <h1 class="page-title">Contactez l'Équipe du GIE LAWTAN</h1>
-      <p class="page-subtitle">
+      <h1 class="page-title" appReveal="words">Contactez l'Équipe du GIE LAWTAN</h1>
+      <p class="page-subtitle" appReveal="slide-right" [revealDelay]="120">
         Une question sur nos produits laitiers, un projet de partenariat ou une visite d'exploitation dans la vallée du Fleuve ? Nos conseillers vous répondent rapidement.
       </p>
 
-      <div class="hero-highlights">
+      <div class="hero-highlights" appReveal="slide-right" [revealDelay]="180">
         <div class="hl-item">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
@@ -46,11 +46,18 @@
   <div class="container content-container">
     <div class="contact-grid">
       <main class="contact-main">
-        <div class="form-container">
+        <div class="form-container" appReveal="wipe-right">
           @if (isSubmitted()) {
-            <div class="success-screen">
+            <div class="success-screen" appReveal="fade">
+              <div class="success-cow-badge">
+                <svg width="56" height="38" viewBox="0 0 64 44" fill="currentColor">
+                  <path d="M10 22 C10 16 14 13 22 13 L44 13 C52 13 56 16 56 22 L56 30 C56 32 54 34 52 34 L50 34 L50 41 C50 42 48 43 47 43 L44 43 C43 43 42 42 42 41 L42 34 L36 34 L36 41 C36 42 35 43 34 43 L31 43 C30 43 29 42 29 41 L29 34 L21 34 L21 41 C21 42 20 43 19 43 L16 43 C15 43 14 42 14 41 L14 34 L12 34 C10 34 10 32 10 30 Z" fill="#1E5E3A"/>
+                  <path d="M52 18 C55 16 59 16 61 19 C63 22 62 26 59 27 L55 27 Z" fill="#1E5E3A"/>
+                  <circle cx="58" cy="20" r="1.5" fill="#FFFFFF"/>
+                </svg>
+              </div>
               <div class="success-icon-wrapper">
-                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg class="success-check-svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
@@ -92,13 +99,16 @@
                     <label for="contactFullName" class="form-label">
                       Nom complet <span class="required-star">*</span>
                     </label>
-                    <input
-                      id="contactFullName"
-                      type="text"
-                      formControlName="fullName"
-                      class="form-input"
-                      [class.input-error]="isFieldInvalid('fullName')"
-                      placeholder="Ex: Ibrahima Diallo" />
+                    <div class="input-wrap">
+                      <input
+                        id="contactFullName"
+                        type="text"
+                        formControlName="fullName"
+                        class="form-input"
+                        [class.input-error]="isFieldInvalid('fullName')"
+                        placeholder="Ex: Ibrahima Diallo" />
+                      <span class="focus-line"></span>
+                    </div>
                     @if (isFieldInvalid('fullName')) {
                       <p class="error-msg">Veuillez renseigner votre nom complet.</p>
                     }
@@ -106,12 +116,15 @@
 
                   <div class="form-group">
                     <label for="contactOrg" class="form-label">Entreprise / Exploitation / GIE</label>
-                    <input
-                      id="contactOrg"
-                      type="text"
-                      formControlName="organization"
-                      class="form-input"
-                      placeholder="Ex: Coopérative de Dagana (optionnel)" />
+                    <div class="input-wrap">
+                      <input
+                        id="contactOrg"
+                        type="text"
+                        formControlName="organization"
+                        class="form-input"
+                        placeholder="Ex: Coopérative de Dagana (optionnel)" />
+                      <span class="focus-line"></span>
+                    </div>
                   </div>
                 </div>
 
@@ -119,13 +132,16 @@
                   <label for="contactLocality" class="form-label">
                     Localité / Commune <span class="required-star">*</span>
                   </label>
-                  <input
-                    id="contactLocality"
-                    type="text"
-                    formControlName="locality"
-                    class="form-input"
-                    [class.input-error]="isFieldInvalid('locality')"
-                    placeholder="Ex: Saint-Louis, Richard-Toll, Dagana, Dakar..." />
+                  <div class="input-wrap">
+                    <input
+                      id="contactLocality"
+                      type="text"
+                      formControlName="locality"
+                      class="form-input"
+                      [class.input-error]="isFieldInvalid('locality')"
+                      placeholder="Ex: Saint-Louis, Richard-Toll, Dagana, Dakar..." />
+                    <span class="focus-line"></span>
+                  </div>
                   @if (isFieldInvalid('locality')) {
                     <p class="error-msg">Veuillez préciser votre localité.</p>
                   }
@@ -136,13 +152,16 @@
                     <label for="contactPhone" class="form-label">
                       Numéro de Téléphone <span class="required-star">*</span>
                     </label>
-                    <input
-                      id="contactPhone"
-                      type="tel"
-                      formControlName="phone"
-                      class="form-input"
-                      [class.input-error]="isFieldInvalid('phone')"
-                      placeholder="Ex: +221 77 123 45 67" />
+                    <div class="input-wrap">
+                      <input
+                        id="contactPhone"
+                        type="tel"
+                        formControlName="phone"
+                        class="form-input"
+                        [class.input-error]="isFieldInvalid('phone')"
+                        placeholder="Ex: +221 77 123 45 67" />
+                      <span class="focus-line"></span>
+                    </div>
                     @if (isFieldInvalid('phone')) {
                       <p class="error-msg">Numéro de téléphone requis.</p>
                     }
@@ -152,13 +171,16 @@
                     <label for="contactEmail" class="form-label">
                       Adresse E-mail <span class="required-star">*</span>
                     </label>
-                    <input
-                      id="contactEmail"
-                      type="email"
-                      formControlName="email"
-                      class="form-input"
-                      [class.input-error]="isFieldInvalid('email')"
-                      placeholder="nom@exemple.com" />
+                    <div class="input-wrap">
+                      <input
+                        id="contactEmail"
+                        type="email"
+                        formControlName="email"
+                        class="form-input"
+                        [class.input-error]="isFieldInvalid('email')"
+                        placeholder="nom@exemple.com" />
+                      <span class="focus-line"></span>
+                    </div>
                     @if (isFieldInvalid('email')) {
                       <p class="error-msg">Adresse e-mail valide requise.</p>
                     }
@@ -176,13 +198,16 @@
                   <label for="contactSubject" class="form-label">
                     Objet du message <span class="required-star">*</span>
                   </label>
-                  <input
-                    id="contactSubject"
-                    type="text"
-                    formControlName="subject"
-                    class="form-input"
-                    [class.input-error]="isFieldInvalid('subject')"
-                    placeholder="Ex: Partenariat distribution, commande de lait, visite de la ferme..." />
+                  <div class="input-wrap">
+                    <input
+                      id="contactSubject"
+                      type="text"
+                      formControlName="subject"
+                      class="form-input"
+                      [class.input-error]="isFieldInvalid('subject')"
+                      placeholder="Ex: Partenariat distribution, commande de lait, visite de la ferme..." />
+                    <span class="focus-line"></span>
+                  </div>
                   @if (isFieldInvalid('subject')) {
                     <p class="error-msg">Veuillez indiquer l'objet de votre démarche.</p>
                   }
@@ -199,13 +224,16 @@
                   <label for="contactMessage" class="form-label">
                     Précisions / Commentaires <span class="required-star">*</span>
                   </label>
-                  <textarea
-                    id="contactMessage"
-                    rows="4"
-                    formControlName="message"
-                    class="form-textarea"
-                    [class.input-error]="isFieldInvalid('message')"
-                    placeholder="Décrivez vos besoins, volumes recherchés, questions ou spécificités..."></textarea>
+                  <div class="input-wrap">
+                    <textarea
+                      id="contactMessage"
+                      rows="4"
+                      formControlName="message"
+                      class="form-textarea"
+                      [class.input-error]="isFieldInvalid('message')"
+                      placeholder="Décrivez vos besoins, volumes recherchés, questions ou spécificités..."></textarea>
+                    <span class="focus-line"></span>
+                  </div>
                   @if (isFieldInvalid('message')) {
                     <p class="error-msg">Veuillez renseigner un message d'au moins 10 caractères.</p>
                   }
@@ -226,18 +254,21 @@
               <div class="form-actions">
                 <button
                   type="submit"
-                  class="btn btn-primary-green"
+                  class="btn btn-primary-green btn-submit-motion"
                   [disabled]="isSubmitting()">
-                  @if (isSubmitting()) {
-                    <span class="spinner"></span>
-                    Envoi en cours...
-                  } @else {
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="22" y1="2" x2="11" y2="13"></line>
-                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                    Envoyer mon message
-                  }
+                  <span class="btn-progress-fill" [class.active]="isSubmitting()"></span>
+                  <span class="btn-content-inner">
+                    @if (isSubmitting()) {
+                      <span class="spinner"></span>
+                      <span>Envoi en cours...</span>
+                    } @else {
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                      </svg>
+                      <span>Envoyer mon message</span>
+                    }
+                  </span>
                 </button>
               </div>
             </form>
@@ -246,7 +277,7 @@
       </main>
 
       <aside class="contact-sidebar">
-        <div class="sidebar-card">
+        <div class="sidebar-card" appReveal="slide-right" [revealDelay]="80">
           <h3 class="sidebar-card-title">Nos Engagements Visiteurs</h3>
           <div class="engagements-list">
             @for (eng of engagements; track eng.titre) {
@@ -266,7 +297,7 @@
           </div>
         </div>
 
-        <div class="sidebar-card whatsapp-direct-card">
+        <div class="sidebar-card whatsapp-direct-card" appReveal="slide-right" [revealDelay]="140">
           <div class="wdc-header">
             <span class="wdc-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -284,22 +315,25 @@
           </a>
         </div>
 
-        <div class="sidebar-card">
+        <div class="sidebar-card" appReveal="slide-right" [revealDelay]="200">
           <h3 class="sidebar-card-title">Foire Aux Questions</h3>
           <div class="faq-list">
             @for (faq of faqs; track faq.question; let idx = $index) {
               <div class="faq-item" [class.open]="faqOuverte() === idx">
                 <button type="button" class="faq-q-btn" (click)="toggleFaq(idx)">
                   <span>{{ faq.question }}</span>
-                  <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
+                  <span class="faq-toggle-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" class="vert-line"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                  </span>
                 </button>
-                @if (faqOuverte() === idx) {
-                  <div class="faq-a-content">
-                    {{ faq.reponse }}
+                <div class="faq-accordion-body">
+                  <div class="faq-a-inner">
+                    <p class="faq-a-content">{{ faq.reponse }}</p>
                   </div>
-                }
+                </div>
               </div>
             }
           </div>
