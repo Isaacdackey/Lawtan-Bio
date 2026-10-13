@@ -7,7 +7,10 @@ Thumbs.db
 
 # Fichiers de backup temporaires
 .backup_full_lawtanfront/
+.backup_lawtanback_old/
+.backup_lawtanback_in_progress/
 src_backup_monolith/
+~$*
 
 # Node & Build
 node_modules/

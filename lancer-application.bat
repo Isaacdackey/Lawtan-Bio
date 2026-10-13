@@ -7,11 +7,11 @@ echo            🌾 FERME LAWTAN AGRO INDUSTRIES - SYSTÈME DE GESTION 🌾
 echo ===============================================================================
 echo.
 echo [1/2] Démarrage du serveur Backend Spring Boot (API & PostgreSQL sur le port 8080)...
-start "LAWTAN BACKEND (Spring Boot :8080)" cmd /k "cd /d "%~dp0LawtanBack" && if exist "%~dp0.env" (for /f "usebackq tokens=1,* eol=# delims==" %%A in ("%~dp0.env") do set "%%A=%%B") && mvnw.cmd spring-boot:run"
+start "LAWTAN BACKEND (Spring Boot :8080)" /D "%~dp0LawtanBack" cmd /k "if not exist target\lawtan-back-0.0.1-SNAPSHOT.jar call mvnw.cmd package -DskipTests & java -jar target\lawtan-back-0.0.1-SNAPSHOT.jar"
 
 echo.
 echo [2/2] Démarrage du Frontend Angular (Interface Web sur le port 4200)...
-start "LAWTAN FRONTEND (Angular :4200)" cmd /k "cd /d "%~dp0LawtanFront" && npm start"
+start "LAWTAN FRONTEND (Angular :4200)" /D "%~dp0LawtanFront" cmd /k "npm start"
 
 echo.
 echo ===============================================================================
