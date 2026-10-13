@@ -94,12 +94,13 @@
   color: #9CA3AF;
   text-decoration: none;
   font-size: 0.88rem;
-  transition: color 0.2s ease, padding-left 0.2s ease;
+  display: inline-block;
+  transition: color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out-expo);
 }
 
 .footer-links a:hover {
   color: #FFFFFF;
-  padding-left: 4px;
+  transform: translateX(6px);
 }
 
 .footer-contact li {

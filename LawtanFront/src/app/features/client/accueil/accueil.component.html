@@ -1,240 +1,955 @@
 <app-public-header activePage="accueil"></app-public-header>
 
 <main class="accueil-main">
-  <section class="hero-section">
-    <div class="hero-container">
-      <div class="hero-content">
-        
-        <h1 class="hero-title animate-fade-in-up delay-1">
-          Le meilleur de la terre et du lait frais, <span class="highlight">au cœur du terroir.</span>
-        </h1>
-        
-        <p class="hero-description animate-fade-in-up delay-2">
-          Le GIE LAWTAN développe une agriculture durable et un élevage bovin d'excellence. 
-          Nous garantissons des produits laitiers purs, tracés du pré à la bouteille, avec une chaîne du froid irréprochable.
-        </p>
 
-        <div class="hero-cta-group animate-fade-in-up delay-3">
-          <a routerLink="/devis" class="btn-primary-hero">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
+  <section class="hero-slider-section" (mouseenter)="setSliderPaused(true)" (mouseleave)="setSliderPaused(false)">
+    <div class="slider-container">
+      @for (slide of slides; track slide.id; let idx = $index) {
+        <div class="slide-item" [class.active]="currentSlide() === idx">
+          <div class="slide-bg" [style.backgroundImage]="'url(' + slide.image + ')'"></div>
+          <div class="slide-overlay"></div>
+          <div class="slide-grid-pattern"></div>
+
+          <div class="slide-content-wrap">
+            <div class="container slide-content-grid">
+              
+              <div class="slide-text-col">
+                <h1 class="slide-main-title" [appReveal]="'words'">
+                  {{ slide.title }} {{ slide.titleHighlight }}
+                </h1>
+
+                <p class="slide-lead-desc" [appReveal]="'slide-right'" [stagger]="1">
+                  {{ slide.description }}
+                </p>
+
+                <div class="slide-actions-row" [appReveal]="'slide-right'" [stagger]="2">
+                  <a (click)="scrollTo(slide.ctaTarget, $event)" role="button" tabindex="0" class="btn-primary-glow" style="cursor: pointer;">
+                    <span>{{ slide.ctaText }}</span>
+                  </a>
+
+                  <a (click)="scrollTo(slide.secondaryCtaTarget, $event)" role="button" tabindex="0" class="btn-secondary-glass" style="cursor: pointer;">
+                    <span>{{ slide.secondaryCtaText }}</span>
+                  </a>
+                </div>
+
+                <div class="slide-metrics-strip" [appReveal]="'slide-right'" [stagger]="3">
+                  <div class="slide-metric-card">
+                    <span class="sm-value stat-number">{{ slide.metricValue }}</span>
+                    <span class="sm-label">{{ slide.metricLabel }}</span>
+                  </div>
+                  <div class="slide-metric-card">
+                    <span class="sm-value stat-number">{{ countTetes() > 0 ? countTetes() : 9 }} Têtes d'Élite</span>
+                    <span class="sm-label">Suivi Individualisé</span>
+                  </div>
+                  <div class="slide-metric-card">
+                    <span class="sm-value stat-number">{{ countLait() > 0 ? (countLait() | number:'1.0-0':'fr-FR') : '1 250' }} L/j</span>
+                    <span class="sm-label">Traite du Jour Certifiée</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      }
+
+      <button class="slider-nav-btn prev-btn" (click)="prevSlide()" aria-label="Slide Précédent">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="slider-nav-btn next-btn" (click)="nextSlide()" aria-label="Slide Suivant">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <div class="slider-indicators" aria-label="Progression des slides">
+        @for (slide of slides; track slide.id; let idx = $index) {
+          <button 
+            class="bottle-indicator" 
+            [class.active]="currentSlide() === idx" 
+            (click)="goToSlide(idx)"
+            [attr.aria-label]="'Aller au slide ' + (idx + 1)">
+            
+            <svg class="milk-bottle-svg" viewBox="0 0 26 52" fill="none">
+              <defs>
+                <clipPath [id]="'bottleClip-' + idx">
+                  <path d="M 10 7 H 16 V 14 C 16 18, 23.5 19, 23.5 23 V 47 C 23.5 49.5, 21.5 50.5, 18.5 50.5 H 7.5 C 4.5 50.5, 2.5 49.5, 2.5 47 V 23 C 2.5 19, 10 18, 10 14 Z"/>
+                </clipPath>
+              </defs>
+
+              <path d="M 10 7 H 16 V 14 C 16 18, 23.5 19, 23.5 23 V 47 C 23.5 49.5, 21.5 50.5, 18.5 50.5 H 7.5 C 4.5 50.5, 2.5 49.5, 2.5 47 V 23 C 2.5 19, 10 18, 10 14 Z"
+                    fill="rgba(255, 255, 255, 0.16)"/>
+
+              <g [attr.clip-path]="'url(#bottleClip-' + idx + ')'">
+                <g class="milk-liquid-clip">
+                  <rect x="0" y="0" width="26" height="52" fill="#FFFFFF"/>
+                  <rect x="0" y="7" width="26" height="2.5" fill="#F4F8F4"/>
+                </g>
+              </g>
+
+              <path d="M 5 24 V 45" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M 7.5 25 V 36" stroke="rgba(255, 255, 255, 0.3)" stroke-width="0.8" stroke-linecap="round"/>
+
+              <path d="M 10 7 H 16 V 14 C 16 18, 23.5 19, 23.5 23 V 47 C 23.5 49.5, 21.5 50.5, 18.5 50.5 H 7.5 C 4.5 50.5, 2.5 49.5, 2.5 47 V 23 C 2.5 19, 10 18, 10 14 Z"
+                    stroke="rgba(255, 255, 255, 0.85)" stroke-width="1.6" stroke-linejoin="round"/>
+
+              <rect x="8.5" y="2" width="9" height="4.5" rx="1.2" fill="#D4AF37" stroke="#A8821B" stroke-width="0.8"/>
+              <line x1="7.5" y1="6.5" x2="18.5" y2="6.5" stroke="#D4AF37" stroke-width="1.2" stroke-linecap="round"/>
+              
+              <circle cx="13" cy="34" r="3.2" fill="none" stroke="#D4AF37" stroke-width="0.7"/>
+              <path d="M 11.5 34 L 13 32.5 L 14.5 34" stroke="#D4AF37" stroke-width="0.6"/>
             </svg>
-            <span>Commander / Demander un Devis</span>
-          </a>
-          <a routerLink="/contact" class="btn-secondary-hero">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            <span>Nous Contacter</span>
-          </a>
+
+            <span class="bottle-slide-num">0{{ idx + 1 }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  </section>
+
+  <ng-template #cowIcon>
+    <span class="ticker-sep" aria-hidden="true">
+      <svg class="ticker-cow" viewBox="0 0 24 18" width="18" height="14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 8C3 10 2 12 2.5 13" stroke="#FEF08A" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="2.5" cy="13.2" r="0.8" fill="#D9A441"/>
+        <line x1="6" y1="11" x2="6" y2="16" stroke="#FEF08A" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="8" y1="11" x2="8" y2="16" stroke="#FEF08A" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="14" y1="11" x2="14" y2="16" stroke="#FEF08A" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="16" y1="11" x2="16" y2="16" stroke="#FEF08A" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M4 8C4 6 7 5.5 12 5.5C15 5.5 17 6 18 8C19 9.5 18 12 16 12C13 12.5 7 12.5 5 11.5C4 10.5 4 9 4 8Z" fill="#FAF8F5"/>
+        <path d="M8 6.5C10 6 11 7.5 10 9C9 9.5 7.5 9 8 6.5Z" fill="#0D4A22"/>
+        <path d="M13 7C14.5 7 15 8.5 14 9.5C13 9.5 12.5 8.5 13 7Z" fill="#0D4A22"/>
+        <path d="M17 7.5C18 6 19.5 5 21.5 5C23 5 23.5 6.5 23 7.5C22.5 8.5 20.5 9.5 19 9.5C18 9.5 17 8.5 17 7.5Z" fill="#FAF8F5"/>
+        <path d="M22 6C23 6.5 23.5 7 23 7.8C22.5 8.2 21.5 8 21 7.5Z" fill="#FDE68A"/>
+        <path d="M19 5.5C19.5 3.5 20.5 2.5 21 2C20.5 3 20 4.2 19.5 5.5Z" fill="#D9A441"/>
+        <circle cx="20" cy="6.5" r="0.6" fill="#0D4A22"/>
+        <circle cx="18.5" cy="10" r="1" fill="#D9A441"/>
+      </svg>
+    </span>
+  </ng-template>
+
+  <div class="motion-ticker-strip">
+    <div class="ticker-track">
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> 100% ÉNERGIE SOLAIRE AUTONOME</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> 9 BOVINS D'EXCEPTION EN SUIVI DIGITAL</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> CHAÎNE DU FROID 4°C VERROUILLÉE</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> LAIT CAILLÉ ARTISANAL SOW TRADITIONNEL</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> 0% POUDRE IMPORTÉE • 100% PUR TERROIR</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> CONTRÔLE VÉTÉRINAIRE PRÉVENTIF QUOTIDIEN</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> 100% ÉNERGIE SOLAIRE AUTONOME</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> 9 BOVINS D'EXCEPTION EN SUIVI DIGITAL</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> CHAÎNE DU FROID 4°C VERROUILLÉE</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> LAIT CAILLÉ ARTISANAL SOW TRADITIONNEL</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> 0% POUDRE IMPORTÉE • 100% PUR TERROIR</div>
+      <div class="ticker-item"><ng-container *ngTemplateOutlet="cowIcon"></ng-container> CONTRÔLE VÉTÉRINAIRE PRÉVENTIF QUOTIDIEN</div>
+    </div>
+  </div>
+
+  <section id="apropos" class="section-apropos">
+    <div class="ambient-glow glow-top-left"></div>
+    <div class="ambient-glow glow-bottom-right"></div>
+    <div class="container">
+      
+      <ng-template #pouringMilkPillar let-flipped="flipped">
+        <div class="pouring-milk-pillar" [class.flipped]="flipped" aria-hidden="true">
+          <svg class="milk-pillar-svg" viewBox="0 0 34 160" width="34" height="150" fill="none" preserveAspectRatio="xMidYMid meet">
+            <g class="carton-pack" [attr.transform]="flipped ? 'translate(16, 20) scale(-1, 1) rotate(-26)' : 'translate(18, 20) rotate(-26)'">
+              <rect x="-10" y="-14" width="20" height="26" rx="2" fill="#1E5E3A" stroke="#123b24" stroke-width="1.2"/>
+              <path d="M-10 -14 L0 -23 L10 -14 Z" fill="#FAF8F5" stroke="#1E5E3A" stroke-width="1.2"/>
+              <path d="M-2 -23 L-2 -26 L2 -26 L2 -23 Z" fill="#D9A441"/>
+              <circle cx="5" cy="-19" r="2.8" fill="#D9A441" stroke="#92400E" stroke-width="0.8"/>
+              <rect x="-10" y="-5" width="20" height="9" fill="#FAF8F5"/>
+              <text x="0" y="2" font-family="'Outfit', sans-serif" font-size="5.5" font-weight="900" fill="#1E5E3A" text-anchor="middle">BIO</text>
+            </g>
+            <path d="M8 26 C8 45, 17 55, 17 85 L17 140" stroke="#FAF8F5" stroke-width="6.5" stroke-linecap="round"/>
+            <path d="M8 26 C8 45, 17 55, 17 85 L17 140" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+            <path class="milk-flow-shine" d="M10 32 C10 48, 18 58, 18 85 L18 135" stroke="#E2EBE5" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="17" cy="148" r="2.8" fill="#FFFFFF"/>
+            <circle cx="17" cy="156" r="2" fill="#FFFFFF"/>
+          </svg>
+        </div>
+      </ng-template>
+
+      <div class="history-master-grid">
+
+        <div class="history-left-col" [appReveal]="'slide-right'" [stagger]="0">
+          <div class="history-header-block">
+            <span class="history-italic-tag">Une aventure agropastorale</span>
+            <h2 class="history-hero-title">
+              NOTRE<br>
+              <span class="history-title-highlight">HISTOIRE.</span>
+            </h2>
+            <h3 class="history-lead-subtitle">
+              Une exploitation agropastorale modèle, au cœur du terroir sénégalais.
+            </h3>
+            <p class="history-narrative-text">
+              Née de la volonté d'offrir un lait d'une pureté absolue sans compromis, la Ferme LAWTAN BIO concilie 
+              respect du savoir-faire pastoral traditionnel et innovations numériques de pointe.
+            </p>
+          </div>
+
+          <div class="history-photo-frame-wrapper">
+            <div class="history-photo-accent-backdrop"></div>
+
+            <div class="history-photo-card" [title]="'Survolez l\'image pour révéler ses couleurs !'">
+              <img 
+                [src]="activeHistoryPhoto()" 
+                alt="Ferme LAWTAN BIO - Notre Histoire" 
+                class="history-photo-img" 
+              />
+              
+              <div class="history-photo-overlay-tag">
+                <span class="hpo-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+                  {{ activeHistoryBadge() }}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="hero-stats-strip animate-fade-in-up delay-4">
-          @for (stat of stats; track stat.label) {
-            <div class="stat-item">
-              <span class="stat-number">{{ stat.value }}</span>
-              <span class="stat-label">{{ stat.label }}</span>
+        <div class="history-right-col" [appReveal]="'slide-right'" [stagger]="1">
+          <div class="history-accordion-list">
+
+            <div class="history-accordion-item" [class.is-expanded]="activeAboutTab() === 'histoire'">
+              <button 
+                class="chapter-toggle-btn" 
+                (click)="toggleAboutChapter('histoire')"
+                [attr.aria-expanded]="activeAboutTab() === 'histoire'"
+              >
+                <div class="chapter-btn-titles">
+                  <span class="chapter-num-tag">CHAPITRE 1 — 2024</span>
+                  <span class="chapter-main-name">GENÈSE & VISION</span>
+                </div>
+                <span class="chapter-icon-marker">{{ activeAboutTab() === 'histoire' ? '✕' : '+' }}</span>
+              </button>
+
+              @if (activeAboutTab() === 'histoire') {
+                <div class="chapter-expanded-wrapper">
+                  <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: false }"></ng-container>
+
+                  <div class="chapter-body-content">
+                    <h4 class="chapter-content-lead">
+                      Valoriser le lait local sénégalais face aux poudres d'importation.
+                    </h4>
+                    <p class="chapter-p">
+                      Face à la prédominance des produits laitiers industriels importés, la <strong>Ferme LAWTAN BIO</strong> s'est fixé une mission claire : 
+                      produire localement un lait noble, frais et riche en matière grasse, issu de vaches choyées et nourries sainement.
+                    </p>
+                    <p class="chapter-p">
+                      Installée sur un site agricole préservé à Dagana, notre ferme a intégré la digitalisation dès sa conception pour assurer une 
+                      traçabilité totale du fourrage cultivé jusqu'au consommateur final.
+                    </p>
+
+                    <div class="chapter-bullets-grid">
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Zéro additif, zéro conservateur chimique ni épaississant.</span>
+                      </div>
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Valorisation du savoir-faire local des éleveurs et bouviers.</span>
+                      </div>
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Engagement ferme pour la souveraineté alimentaire nationale.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: true }"></ng-container>
+                </div>
+              }
+            </div>
+
+            <div class="history-accordion-item" [class.is-expanded]="activeAboutTab() === 'cheptel'">
+              <button 
+                class="chapter-toggle-btn" 
+                (click)="toggleAboutChapter('cheptel')"
+                [attr.aria-expanded]="activeAboutTab() === 'cheptel'"
+              >
+                <div class="chapter-btn-titles">
+                  <span class="chapter-num-tag">CHAPITRE 2 — PATRIMOINE & GÉNÉTIQUE</span>
+                  <span class="chapter-main-name">CHEPTEL D'ÉLITE & GÉNÉTIQUE</span>
+                </div>
+                <span class="chapter-icon-marker">{{ activeAboutTab() === 'cheptel' ? '✕' : '+' }}</span>
+              </button>
+
+              @if (activeAboutTab() === 'cheptel') {
+                <div class="chapter-expanded-wrapper">
+                  <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: false }"></ng-container>
+
+                  <div class="chapter-body-content">
+                    <h4 class="chapter-content-lead">
+                      Un cheptel de 9 bovins d'exception suivi à la loupe numérique.
+                    </h4>
+                    <p class="chapter-p">
+                      Notre troupeau est composé de <strong>7 vaches laitières de haut rang</strong> (croisements Montbéliarde x Guzerá, Holstein), 
+                      reconnues pour leur rusticité face au climat sahélien et leur rendement riche en protéines nobles, 
+                      ainsi que de 2 jeunes génisses et 4 taureaux reproducteurs d'élite.
+                    </p>
+                    <p class="chapter-p">
+                      Chaque vache porte une boucle d'identification officielle avec son pedigree complet, son historique de gestation, 
+                      son poids et sa courbe de lactation enregistrés sur notre système numérique.
+                    </p>
+
+                    <div class="chapter-bullets-grid">
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Fiche génétique et arbre généalogique jusqu'aux grands-parents.</span>
+                      </div>
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Suivi de la traite biquotidienne (matin et soir) individualisé.</span>
+                      </div>
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Bien-être animal certifié : stabulation libre et pâturage aéré.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: true }"></ng-container>
+                </div>
+              }
+            </div>
+
+            <div class="history-accordion-item" [class.is-expanded]="activeAboutTab() === 'solaire'">
+              <button 
+                class="chapter-toggle-btn" 
+                (click)="toggleAboutChapter('solaire')"
+                [attr.aria-expanded]="activeAboutTab() === 'solaire'"
+              >
+                <div class="chapter-btn-titles">
+                  <span class="chapter-num-tag">CHAPITRE 3 — ÉNERGIE VERTE & DURABILITÉ</span>
+                  <span class="chapter-main-name">AUTONOMIE SOLAIRE & ÉCOLOGIE</span>
+                </div>
+                <span class="chapter-icon-marker">{{ activeAboutTab() === 'solaire' ? '✕' : '+' }}</span>
+              </button>
+
+              @if (activeAboutTab() === 'solaire') {
+                <div class="chapter-expanded-wrapper">
+                  <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: false }"></ng-container>
+
+                  <div class="chapter-body-content">
+                    <h4 class="chapter-content-lead">
+                      100% Autonome grâce au soleil généreux du Sénégal.
+                    </h4>
+                    <p class="chapter-p">
+                      La Ferme LAWTAN fonctionne au quotidien sur une <strong>centrale solaire photovoltaïque autonome</strong>. 
+                      De la salle de traite mécanique au pompage d'eau pour l'abreuvement et l'irrigation du fourrage, 
+                      l'énergie solaire couvre l'intégralité des besoins opérationnels.
+                    </p>
+                    <p class="chapter-p">
+                      Nos tanks à lait isothermes refroidissent le lait à 4°C immédiatement après la traite, sans jamais subir 
+                      les aléas ou coupures du réseau électrique national.
+                    </p>
+
+                    <div class="chapter-bullets-grid">
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Chaîne du froid 100% sécurisée par énergie solaire ininterrompue.</span>
+                      </div>
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Pompage solaire pour des abreuvoirs toujours tempérés et propres.</span>
+                      </div>
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Bilan carbone exemplaire : une empreinte écologique minimale.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: true }"></ng-container>
+                </div>
+              }
+            </div>
+
+            <div class="history-accordion-item" [class.is-expanded]="activeAboutTab() === 'equipe'">
+              <button 
+                class="chapter-toggle-btn" 
+                (click)="toggleAboutChapter('equipe')"
+                [attr.aria-expanded]="activeAboutTab() === 'equipe'"
+              >
+                <div class="chapter-btn-titles">
+                  <span class="chapter-num-tag">CHAPITRE 4 — COMPÉTENCES & PASSION</span>
+                  <span class="chapter-main-name">ÉQUIPE PASTORALE DÉVOUÉE</span>
+                </div>
+                <span class="chapter-icon-marker">{{ activeAboutTab() === 'equipe' ? '✕' : '+' }}</span>
+              </button>
+
+              @if (activeAboutTab() === 'equipe') {
+                <div class="chapter-expanded-wrapper">
+                  <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: false }"></ng-container>
+
+                  <div class="chapter-body-content">
+                    <h4 class="chapter-content-lead">
+                      8 professionnels permanents au service de l'excellence laitière.
+                    </h4>
+                    <p class="chapter-p">
+                      La réussite de la ferme repose sur des femmes et des hommes d'expérience : 
+                      <strong>1 Manager Général</strong>, <strong>1 Docteur Vétérinaire référent</strong>, <strong>1 Technicien d'Élevage expert</strong>, 
+                      1 Responsable Commerciale et 3 Bouviers dévoués aux soins quotidiens.
+                    </p>
+                    <p class="chapter-p">
+                      Chaque membre applique un protocole d'hygiène rigoureux pour garantir un produit sain, conforme 
+                      aux exigences les plus strictes de la sécurité sanitaire des aliments.
+                    </p>
+
+                    <div class="chapter-bullets-grid">
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Visite vétérinaire préventive quotidienne sur chaque animal.</span>
+                      </div>
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Nettoyage et stérilisation automatique des lignes de traite.</span>
+                      </div>
+                      <div class="chapter-bullet">
+                        <span class="cb-check">✓</span>
+                        <span>Formation continue aux bonnes pratiques agropastorales modernes.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: true }"></ng-container>
+                </div>
+              }
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <app-pastoral-divider [variant]="'sheep'"></app-pastoral-divider>
+
+  <section id="pourquoi" class="section-pourquoi">
+    <div class="container">
+      
+      <div class="section-tag-center" [appReveal]="'slide-right'" [stagger]="0">
+        <span class="section-badge-green">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Nos 4 Piliers d'Excellence
+        </span>
+      </div>
+      <h2 class="section-title-center" [appReveal]="'words'">
+        Pourquoi exiger le lait et les produits de la Ferme LAWTAN BIO ?
+      </h2>
+      <p class="section-sub-center" [appReveal]="'slide-right'" [stagger]="1">
+        Un cahier des charges strict pensé pour votre santé, le respect de la nature et le soutien de l'élevage local.
+      </p>
+
+      <div class="piliers-grid-wrap">
+        <div class="piliers-timeline-connector" [appReveal]="'wipe-right'" aria-hidden="true"></div>
+
+        <div class="piliers-grid">
+          <div class="pilier-card-premium" [appReveal]="'slide-right'" [stagger]="0">
+            <div class="pilier-icon-box">
+              <span class="p-num">01</span>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+            </div>
+            <h3 class="pilier-card-title">Suivi Vétérinaire & Santé Animale</h3>
+            <p class="pilier-card-text">
+              Chaque animal est examiné quotidiennement par notre vétérinaire. En cas de soin, le délai d'attente lait est rigoureusement respecté : zéro résidu antibiotique dans vos verres.
+            </p>
+            <div class="pilier-badge-row">
+              <span class="pilier-tag">Zéro Antibiotique</span>
+              <span class="pilier-tag">Vaccins à jour</span>
+            </div>
+          </div>
+
+          <div class="pilier-card-premium" [appReveal]="'slide-right'" [stagger]="1">
+            <div class="pilier-icon-box">
+              <span class="p-num">02</span>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a10 10 0 0 0-7.07 17.07L12 22l7.07-2.93A10 10 0 0 0 12 2z"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+            </div>
+            <h3 class="pilier-card-title">Alimentation Fourragère Saine</h3>
+            <p class="pilier-card-text">
+              Fourrages verts et secs cultivés sur nos parcelles sans pesticides. Rations équilibrées calculées au gramme près en matière sèche, protéines et minéraux essentiels.
+            </p>
+            <div class="pilier-badge-row">
+              <span class="pilier-tag">Fourrage Local</span>
+              <span class="pilier-tag">Rations Équilibrées</span>
+            </div>
+          </div>
+
+          <div class="pilier-card-premium" [appReveal]="'slide-right'" [stagger]="2">
+            <div class="pilier-icon-box">
+              <span class="p-num">03</span>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <h3 class="pilier-card-title">Traite Hygiénique & Froid 4°C</h3>
+            <p class="pilier-card-text">
+              Salle de traite mécanisée avec désinfection automatique des faisceaux. Refroidissement instantané en tank inox isotherme pour préserver intacte la flore lactique bienfaisante.
+            </p>
+            <div class="pilier-badge-row">
+              <span class="pilier-tag">Inox 316L Alimentaire</span>
+              <span class="pilier-tag">4°C Verrouillé</span>
+            </div>
+          </div>
+
+          <div class="pilier-card-premium" [appReveal]="'slide-right'" [stagger]="3">
+            <div class="pilier-icon-box">
+              <span class="p-num">04</span>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+            </div>
+            <h3 class="pilier-card-title">Traçabilité Totale & Circuit Court</h3>
+            <p class="pilier-card-text">
+              De la vache trayée jusqu'au conditionnement final, chaque bouteille est identifiée par son lot de collecte. Vente directe sans intermédiaires pour une fraîcheur maximale.
+            </p>
+            <div class="pilier-badge-row">
+              <span class="pilier-tag">Numéro de Lot</span>
+              <span class="pilier-tag">Vente Directe</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <app-pastoral-divider [variant]="'cows'"></app-pastoral-divider>
+
+  <section id="produits" class="section-gamme">
+    <div class="container">
+      
+      <div class="section-tag-center" [appReveal]="'slide-right'" [stagger]="0">
+        <span class="section-badge-gold">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 2h8l2 5H6l2-5z"/><rect x="6" y="7" width="12" height="14" rx="2"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+          Notre Gamme Laitière
+        </span>
+      </div>
+      <h2 class="section-title-center" [appReveal]="'words'">
+        Des produits laitiers frais, purs et sains
+      </h2>
+      <p class="section-sub-center" [appReveal]="'slide-right'" [stagger]="1">
+        Destinés aux distributeurs, supermarchés, hôtels-restaurants, écoles et aux familles exigeantes en quête de goût authentique.
+      </p>
+
+      <div class="gamme-hint-row" [appReveal]="'slide-right'" [stagger]="2">
+        <span class="gamme-hint-pill">
+          <span class="desktop-hint">Survolez une carte pour l'arrêter</span>
+          <span class="mobile-hint">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            Glissez pour découvrir les produits
+          </span>
+        </span>
+      </div>
+
+    </div>
+
+    <div class="gamme-marquee-wrapper" aria-label="Défilement continu de la gamme laitière">
+      <div class="gamme-edge-fade fade-left" aria-hidden="true"></div>
+      <div class="gamme-edge-fade fade-right" aria-hidden="true"></div>
+
+      <div class="gamme-marquee-track">
+        <div class="gamme-track-half">
+          <ng-container *ngTemplateOutlet="gammeCards"></ng-container>
+        </div>
+        <div class="gamme-track-half" aria-hidden="true">
+          <ng-container *ngTemplateOutlet="gammeCards"></ng-container>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #gammeCards>
+      <div class="gamme-feature-card">
+        <div class="gfc-img-wrap">
+          <img src="/images/product-lait-frais.jpg" alt="Lait Frais Pasteurisé LAWTAN" class="gfc-img" loading="lazy" />
+          <span class="gfc-badge">Pur Terroir</span>
+        </div>
+        <div class="gfc-info">
+          <h3 class="gfc-title">Lait Frais Entier Pasteurisé</h3>
+          <p class="gfc-desc">
+            Un lait non écrémé, crémeux et riche, pasteurisé à température douce pour éliminer tout germe tout en conservant les ferments vivants et les vitamines originelles.
+          </p>
+          <ul class="gfc-list">
+            <li><strong>Conditionnements :</strong> Bouteilles verre 1L & Bidons 5L</li>
+            <li><strong>Richesse :</strong> 38 g/L matière grasse moyenne</li>
+            <li><strong>Conservation :</strong> 5 jours à 4°C</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="gamme-feature-card">
+        <div class="gfc-img-wrap">
+          <img src="/images/product-lait-caille.jpg" alt="Lait Caillé Traditionnel Sow" class="gfc-img" loading="lazy" />
+          <span class="gfc-badge gold">Savoir-Faire Pastoral</span>
+        </div>
+        <div class="gfc-info">
+          <h3 class="gfc-title">Lait Caillé Artisanal (Sow)</h3>
+          <p class="gfc-desc">
+            Le joyau des traditions pastorales sénégalaises. Fermenté avec douceur, il développe une consistance veloutée onctueuse et une acidité subtilement équilibrée.
+          </p>
+          <ul class="gfc-list">
+            <li><strong>Conditionnements :</strong> Pots 500g, Pots 1kg & Seaux 2L/5L</li>
+            <li><strong>Usage :</strong> Dégustation pure, Thiakry, couscous au lait</li>
+            <li><strong>Bénéfice :</strong> 100% probiotiques vivants pour le confort digestif</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="gamme-feature-card">
+        <div class="gfc-img-wrap">
+          <img src="/images/product-beurre.jpg" alt="Beurre Fermier LAWTAN" class="gfc-img" loading="lazy" />
+          <span class="gfc-badge">Baratté à la Ferme</span>
+        </div>
+        <div class="gfc-info">
+          <h3 class="gfc-title">Beurre Fermier & Crème Noble</h3>
+          <p class="gfc-desc">
+            Issu du barattage de la crème fraîche recueillie après la traite. Couleur dorée naturelle due à l'alimentation riche en bêtacarotène de nos vaches au pâturage.
+          </p>
+          <ul class="gfc-list">
+            <li><strong>Conditionnements :</strong> Pains de 250g et 500g</li>
+            <li><strong>Saveur :</strong> Délicat arôme de noisette, sans sel ajouté</li>
+            <li><strong>Usage :</strong> Tartines matinales et haute gastronomie</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="gamme-feature-card coming-soon">
+        <div class="gfc-img-wrap">
+          <img src="/images/product-fromage.jpg" alt="Fromage Fermier LAWTAN" class="gfc-img" loading="lazy" />
+          <span class="gfc-badge warning">Bientôt Disponible</span>
+        </div>
+        <div class="gfc-info">
+          <h3 class="gfc-title">Fromages Fermiers & Yaourts Frais</h3>
+          <p class="gfc-desc">
+            Notre nouvelle ligne de transformation laitière artisanale. Tommes fermières fraîches, fromages affinés et yaourts brassés aux fruits naturels du Sénégal.
+          </p>
+          <ul class="gfc-list">
+            <li><strong>Lancement :</strong> Phase d'affinage et tests qualité en cours</li>
+            <li><strong>Gamme :</strong> Fromages frais aux herbes, yaourts fermiers</li>
+            <li><strong>Pré-commande :</strong> Disponible pour restaurateurs et épiceries fines</li>
+          </ul>
+        </div>
+      </div>
+    </ng-template>
+  </section>
+
+  <app-pastoral-divider [variant]="'sheep'"></app-pastoral-divider>
+
+  <section id="marketplace" class="section-marketplace">
+    <div class="container">
+      
+      <div class="marketplace-header-row">
+        <div>
+          <span class="section-badge-green" [appReveal]="'slide-right'" [stagger]="0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            Boutique Directe & Vente Fermière
+          </span>
+          <h2 class="section-title-left" [appReveal]="'words'">
+            Commandez en direct de la ferme, livré à votre porte ou en point relais.
+          </h2>
+          <p class="section-sub-left" [appReveal]="'slide-right'" [stagger]="1">
+            Sélectionnez vos produits laitiers frais du jour. Vos commandes sont préparées le matin même de la traite.
+          </p>
+        </div>
+
+        <div class="cart-pill-top" (click)="toggleCartDrawer()" [appReveal]="'slide-right'" [stagger]="2">
+          <div class="cart-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            @if (totalCartCount() > 0) {
+              <span class="cart-badge-count">{{ totalCartCount() }}</span>
+            }
+          </div>
+          <div class="cart-pill-text">
+            <span class="cpt-label">Mon Panier</span>
+            <span class="cpt-total">{{ totalCartAmountFcfa().toLocaleString('fr-FR') }} FCFA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="market-filters-bar" [appReveal]="'slide-right'" [stagger]="2">
+        <button class="mfilter-btn" [class.active]="selectedCategory() === 'all'" (click)="selectedCategory.set('all')">
+          Tous les Produits ({{ products.length }})
+        </button>
+        <button class="mfilter-btn" [class.active]="selectedCategory() === 'lait'" (click)="selectedCategory.set('lait')">
+          Lait Frais Pasteurisé
+        </button>
+        <button class="mfilter-btn" [class.active]="selectedCategory() === 'caille'" (click)="selectedCategory.set('caille')">
+          Lait Caillé Artisanal (Sow)
+        </button>
+        <button class="mfilter-btn" [class.active]="selectedCategory() === 'beurre'" (click)="selectedCategory.set('beurre')">
+          Beurre & Crème
+        </button>
+        <button class="mfilter-btn" [class.active]="selectedCategory() === 'fromage'" (click)="selectedCategory.set('fromage')">
+          Fromages & Nouveautés
+        </button>
+      </div>
+
+      <div class="market-products-grid">
+        @for (prod of filteredProducts(); track prod.id; let pIdx = $index) {
+          <div class="product-market-card" [class.unavailable]="!prod.available" [appReveal]="'slide-right'" [stagger]="pIdx % 4">
+            <div class="pmc-media">
+              <img [src]="prod.image" [alt]="prod.name" class="pmc-img" loading="lazy" />
+              <span class="pmc-badge" [class.gold]="prod.badge.includes('Traditionnelle') || prod.badge.includes('Bestseller')">
+                {{ prod.badge }}
+              </span>
+              @if (!prod.available) {
+                <div class="pmc-soldout-overlay">
+                  <span>En Préparation</span>
+                </div>
+              }
+            </div>
+
+            <div class="pmc-details">
+              <span class="pmc-category">{{ prod.categoryLabel }}</span>
+              <h3 class="pmc-name">{{ prod.name }}</h3>
+              <p class="pmc-desc">{{ prod.description }}</p>
+
+              <div class="pmc-specs">
+                <span class="spec-unit">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                  {{ prod.unit }}
+                </span>
+                <span class="spec-nutri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+                  {{ prod.nutrition }}
+                </span>
+              </div>
+
+              <div class="pmc-action-bar">
+                <div class="pmc-price">
+                  <span class="price-val">{{ prod.priceFcfa.toLocaleString('fr-FR') }}</span>
+                  <span class="price-cur">FCFA</span>
+                </div>
+
+                @if (prod.available) {
+                  <button class="btn-add-cart" (click)="addToCart(prod)" title="Ajouter à ma commande">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Commander</span>
+                  </button>
+                } @else {
+                  <button class="btn-notify-stock" routerLink="/contact">
+                    <span>Être Notifié</span>
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="market-wholesale-banner" [appReveal]="'slide-right'">
+        <div class="mwb-content">
+          <span class="mwb-tag">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="8" y1="6" x2="10" y2="6"/><line x1="14" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/></svg>
+            Hôtels, Supermarchés, Collectivités & Écoles
+          </span>
+          <h3 class="mwb-title">Besoin d'un approvisionnement régulier ou en gros volume ?</h3>
+          <p class="mwb-desc">
+            Nous proposons des contrats de livraison quotidienne ou hebdomadaire avec tarification dégressive, 
+            facturation normalisée et chaîne du froid garantie sur tout l'axe Dakar - Thiès - Mbour.
+          </p>
+        </div>
+        <div class="mwb-actions">
+          <a routerLink="/devis" class="btn-mwb-devis">
+            <span>Demander un Devis Professionnel</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <app-pastoral-divider [variant]="'mixed'"></app-pastoral-divider>
+
+  <div class="cart-drawer-backdrop" [class.open]="isCartDrawerOpen()" (click)="closeCartDrawer()"></div>
+  <div class="cart-drawer-panel" [class.open]="isCartDrawerOpen()">
+    <div class="cart-drawer-header">
+      <div class="cdh-title-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <h3>Mon Panier</h3>
+        <span class="cdh-count-badge">{{ totalCartCount() }}</span>
+      </div>
+      <button class="cdh-close-btn" (click)="closeCartDrawer()">✕</button>
+    </div>
+
+    <div class="cart-drawer-body">
+      @if (cart().length === 0) {
+        <div class="cart-empty-state">
+          <div class="empty-icon-wrap">
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.75">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <h4>Votre panier est encore vide</h4>
+          <p>Ajoutez nos bouteilles de lait frais du jour ou nos pots de Sow artisanal pour lancer votre commande.</p>
+          <button class="btn-browse-empty" (click)="closeCartDrawer()">
+            Découvrir les produits
+          </button>
+        </div>
+      } @else {
+        <div class="cart-items-list">
+          @for (item of cart(); track item.product.id) {
+            <div class="cart-item-row">
+              <img [src]="item.product.image" [alt]="item.product.name" class="ci-img" />
+              <div class="ci-info">
+                <span class="ci-name">{{ item.product.name }}</span>
+                <span class="ci-unit-price">{{ item.product.priceFcfa.toLocaleString('fr-FR') }} FCFA / {{ item.product.unit }}</span>
+                
+                <div class="ci-controls">
+                  <div class="qty-stepper">
+                    <button class="qty-btn" (click)="updateQuantity(item.product.id, -1)">-</button>
+                    <span class="qty-val">{{ item.quantity }}</span>
+                    <button class="qty-btn" (click)="updateQuantity(item.product.id, 1)">+</button>
+                  </div>
+                  <span class="ci-line-total">{{ (item.quantity * item.product.priceFcfa).toLocaleString('fr-FR') }} FCFA</span>
+                </div>
+              </div>
+              <button class="ci-remove-btn" (click)="removeFromCart(item.product.id)" title="Retirer du panier">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  <line x1="10" y1="11" x2="10" y2="17"/>
+                  <line x1="14" y1="11" x2="14" y2="17"/>
+                </svg>
+              </button>
             </div>
           }
         </div>
-      </div>
+      }
+    </div>
 
-      <div class="hero-visual animate-float">
-        <div class="visual-card">
-          <div class="visual-badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+    @if (cart().length > 0) {
+      <div class="cart-drawer-footer">
+        <div class="cdf-summary">
+          <div class="cdf-line">
+            <span>Sous-total produits :</span>
+            <span class="cdf-bold">{{ totalCartAmountFcfa().toLocaleString('fr-FR') }} FCFA</span>
+          </div>
+          <div class="cdf-line">
+            <span>Préparation & Conditionnement :</span>
+            <span class="cdf-free">Offert (À la ferme)</span>
+          </div>
+          <div class="cdf-total-line">
+            <span>Total estimé :</span>
+            <span class="cdf-total-val">{{ totalCartAmountFcfa().toLocaleString('fr-FR') }} FCFA</span>
+          </div>
+        </div>
+
+        <div class="cdf-actions">
+          <a [href]="getWhatsAppOrderLink()" target="_blank" class="btn-whatsapp-order">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm.01 18.06c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31c-.82-1.31-1.26-2.83-1.26-4.4 0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.25-8.23 8.25zm4.52-6.17c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.07-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.16 0-.43.06-.66.31-.23.25-.87.85-.87 2.08 0 1.22.89 2.41 1.02 2.58.12.17 1.76 2.68 4.26 3.76.6.26 1.06.41 1.42.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.16-.48-.28z"/>
             </svg>
-            <span>Garantie 100% Locale</span>
-          </div>
+            <span>Commander via WhatsApp</span>
+          </a>
 
-          <div class="visual-illustration">
-            <div class="visual-crest">
-              <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="crest-svg">
-                <path d="M4 8l3-5 5 2 5-2 3 5v7a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6V8z"/>
-                <circle cx="8" cy="11" r="1.5" fill="currentColor"/>
-                <circle cx="16" cy="11" r="1.5" fill="currentColor"/>
-                <path d="M9 16c1.5 1 4.5 1 6 0"/>
-                <path d="M12 2v4"/>
-              </svg>
-            </div>
-          </div>
-
-          <div class="visual-caption">
-            <h3>Ferme Laitière LAWTAN</h3>
-            <p>Contrôle sanitaire continu, bien-être animal et traite du jour certifiée conforme.</p>
-          </div>
-
-          <div class="visual-metrics">
-            <div class="metric-box">
-              <span class="m-val">4°C</span>
-              <span class="m-lbl">Chaîne du froid</span>
-            </div>
-            <div class="metric-box">
-              <span class="m-val">0%</span>
-              <span class="m-lbl">Additifs</span>
-            </div>
-            <div class="metric-box">
-              <span class="m-val">A+</span>
-              <span class="m-lbl">Qualité certifiée</span>
-            </div>
-          </div>
+          <button type="button" (click)="goToDevis()" class="btn-devis-order">
+            <span>Valider via Devis Formel</span>
+          </button>
         </div>
       </div>
-    </div>
-  </section>
+    }
+  </div>
 
-  <section id="produits" class="section-produits">
-    <div class="container">
-      <div class="section-header reveal-on-scroll">
-        <span class="section-tag">Notre Gamme Laitière</span>
-        <h2 class="section-title">Des produits laitiers frais, purs et sains</h2>
-        <p class="section-subtitle">
-          Destinés aux distributeurs, restaurateurs, écoles, supermarchés et aux familles à la recherche d'une qualité authentique.
-        </p>
-      </div>
+  @if (totalCartCount() > 0) {
+    <button 
+      class="pastoral-churn-launcher" 
+      (click)="toggleCartDrawer()" 
+      title="Ouvrir mon bidon fermier"
+      aria-label="Mon panier de lait fermier"
+    >
+      <div class="churn-visual-wrap">
+        <svg class="churn-svg" viewBox="0 0 54 68" width="46" height="58" fill="none">
+          <defs>
+            <clipPath id="churnLiquidClip">
+              <path d="M12 24 C12 20, 16 18, 20 18 L34 18 C38 18, 42 20, 42 24 L45 54 C45 61, 40 64, 27 64 C14 64, 9 61, 9 54 Z" />
+            </clipPath>
+            <linearGradient id="churnMetalGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#E2E8F0" />
+              <stop offset="25%" stop-color="#FFFFFF" />
+              <stop offset="60%" stop-color="#CBD5E1" />
+              <stop offset="85%" stop-color="#94A3B8" />
+              <stop offset="100%" stop-color="#64748B" />
+            </linearGradient>
+            <linearGradient id="churnGoldGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FEF08A" />
+              <stop offset="50%" stop-color="#D9A441" />
+              <stop offset="100%" stop-color="#92400E" />
+            </linearGradient>
+          </defs>
 
-      <div class="produits-grid">
-        @for (p of produits; track p.id; let i = $index) {
-          <div class="product-card reveal-on-scroll" [style.transition-delay]="(i * 120) + 'ms'" [class.is-upcoming]="!p.disponible">
-            <div class="card-badge" [class.badge-gold]="p.disponible" [class.badge-blue]="!p.disponible">
-              {{ p.badge }}
-            </div>
+          <path d="M10 24 C10 8, 44 8, 44 24" stroke="url(#churnGoldGrad)" stroke-width="3" stroke-linecap="round" fill="none" class="churn-handle" />
+          <circle cx="10" cy="24" r="2.5" fill="url(#churnGoldGrad)" />
+          <circle cx="44" cy="24" r="2.5" fill="url(#churnGoldGrad)" />
 
-            <div class="product-icon-wrap">
-              @if (p.id === 'lait-frais') {
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M8 2h8l1 4H7L8 2z"/>
-                  <path d="M7 6v14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6"/>
-                  <line x1="10" y1="12" x2="14" y2="12"/>
-                  <line x1="10" y1="16" x2="14" y2="16"/>
-                </svg>
-              } @else if (p.id === 'lait-caille') {
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M2 12h20"/>
-                  <path d="M20 12v4a7 7 0 0 1-7 7H11a7 7 0 0 1-7-7v-4"/>
-                  <path d="M6 7c1.5 2 4.5 2 6 0s4.5-2 6 0"/>
-                </svg>
-              } @else if (p.id === 'beurre-artisanal') {
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="8" width="18" height="12" rx="3"/>
-                  <path d="M3 13h18"/>
-                  <path d="M7 8V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/>
-                </svg>
-              } @else {
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                  <line x1="12" y1="22.08" x2="12" y2="12"/>
-                </svg>
-              }
-            </div>
+          <path d="M12 24 C12 20, 16 18, 20 18 L34 18 C38 18, 42 20, 42 24 L45 54 C45 61, 40 64, 27 64 C14 64, 9 61, 9 54 Z" fill="#0B2014" />
 
-            <div class="product-body">
-              <span class="product-category">{{ p.categorie }}</span>
-              <h3 class="product-name">{{ p.titre }}</h3>
-              <p class="product-desc">{{ p.description }}</p>
-              
-              <div class="product-format">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                  <line x1="9" y1="3" x2="9" y2="21"/>
-                </svg>
-                <span>Format : {{ p.format }}</span>
-              </div>
-            </div>
+          <g clip-path="url(#churnLiquidClip)">
+            <g [style.transform]="'translateY(' + (64 - (churnMilkLevelPercent() * 0.46)) + 'px)'" class="milk-liquid-group">
+              <path class="milk-wave-crest wave-back" d="M-60 0 Q-30 -4, 0 0 T60 0 T120 0 V64 H-60 Z" fill="#E2EBE5" />
+              <path class="milk-wave-crest wave-front" d="M-60 0 Q-30 4, 0 0 T60 0 T120 0 V64 H-60 Z" fill="#FFFFFF" />
+              <circle cx="22" cy="14" r="1.6" fill="#FFFFFF" opacity="0.8" />
+              <circle cx="32" cy="22" r="2.2" fill="#FFFFFF" opacity="0.6" />
+            </g>
+          </g>
 
-            <div class="product-footer">
-              @if (p.disponible) {
-                <a routerLink="/devis" class="btn-product-order">
-                  <span>Commander ce produit</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6"/>
-                  </svg>
-                </a>
-              } @else {
-                <span class="btn-product-disabled">En développement</span>
-              }
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  </section>
+          <path d="M12 24 C12 20, 16 18, 20 18 L34 18 C38 18, 42 20, 42 24 L45 54 C45 61, 40 64, 27 64 C14 64, 9 61, 9 54 Z" 
+                stroke="url(#churnMetalGrad)" stroke-width="2.6" fill="none" />
+          
+          <ellipse cx="27" cy="18" rx="8" ry="2.5" fill="url(#churnMetalGrad)" stroke="#64748B" stroke-width="0.8" />
+          <path d="M19 18 L19 14 L35 14 L35 18 Z" fill="url(#churnMetalGrad)" stroke="#64748B" stroke-width="0.8" />
+          
+          <path d="M17 14 C17 11, 37 11, 37 14 Z" fill="url(#churnGoldGrad)" stroke="#78350F" stroke-width="0.8" />
+          <circle cx="27" cy="11.5" r="1.6" fill="url(#churnGoldGrad)" />
 
-  <section id="engagements" class="section-engagements">
-    <div class="container">
-      <div class="section-header reveal-on-scroll">
-        <span class="section-tag">Charte d'Excellence</span>
-        <h2 class="section-title">Pourquoi choisir les produits LAWTAN ?</h2>
-        <p class="section-subtitle">
-          Notre engagement repose sur une gestion rigoureuse, la valorisation des races locales et le respect absolu des normes sanitaires.
-        </p>
-      </div>
+          <path d="M10.5 40 Q27 43 43.5 40" stroke="url(#churnGoldGrad)" stroke-width="1.8" fill="none" opacity="0.85" />
+          <path d="M13 25 L10.5 52" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" opacity="0.65" />
+        </svg>
 
-      <div class="piliers-grid">
-        @for (pilier of piliers; track pilier.id; let i = $index) {
-          <div class="pilier-card reveal-on-scroll" [style.transition-delay]="(i * 120) + 'ms'">
-            <div class="pilier-icon-box">
-              @if (pilier.id === 'veterinaire') {
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/>
-                  <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/>
-                  <circle cx="20" cy="10" r="2"/>
-                </svg>
-              } @else if (pilier.id === 'alimentation') {
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
-                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
-                </svg>
-              } @else if (pilier.id === 'traite') {
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" y1="2" x2="12" y2="22"/>
-                  <path d="M20 12H4"/>
-                  <path d="M17 7l-5-5-5 5"/>
-                  <path d="M17 17l-5 5-5-5"/>
-                  <path d="M7 17l-5-5 5-5"/>
-                  <path d="M17 17l5-5-5-5"/>
-                </svg>
-              } @else {
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="1" y="3" width="15" height="13"/>
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                  <circle cx="5.5" cy="18.5" r="2.5"/>
-                  <circle cx="18.5" cy="18.5" r="2.5"/>
-                </svg>
-              }
-            </div>
-            
-            <h3 class="pilier-title">{{ pilier.titre }}</h3>
-            <p class="pilier-desc">{{ pilier.description }}</p>
-          </div>
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="section-cta-banner">
-    <div class="container">
-      <div class="cta-banner-content reveal-on-scroll">
-        <div class="cta-text">
-          <h2>Vous cherchez un approvisionnement régulier en lait de qualité ?</h2>
-          <p>
-            Nous établissons des partenariats durables avec les commerçants, cantines et coopératives. 
-            Calculez votre devis ou contactez notre équipe commerciale dès aujourd'hui.
-          </p>
-        </div>
-        <div class="cta-buttons">
-          <a routerLink="/devis" class="btn-banner-primary">Estimer mon Devis</a>
-          <a routerLink="/contact" class="btn-banner-secondary">Échanger avec un conseiller</a>
+        <div class="churn-count-seal" [title]="totalCartCount() + ' produits réservés'">
+          <span class="ccs-num">{{ totalCartCount() }}</span>
         </div>
       </div>
-    </div>
-  </section>
+
+      <div class="churn-info-plaque">
+        <div class="cip-top-label">
+          <span>Mon panier fermier</span>
+        </div>
+        <div class="cip-price-amount">
+          {{ totalCartAmountFcfa().toLocaleString('fr-FR') }} <span class="cip-currency">FCFA</span>
+        </div>
+        <div class="cip-action-cue">
+          <span>Voir ma sélection</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </button>
+  }
+
 </main>
 
 <app-public-footer></app-public-footer>

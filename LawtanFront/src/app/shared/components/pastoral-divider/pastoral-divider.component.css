@@ -1,0 +1,244 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.pastoral-sheep-strip {
+  position: relative;
+  width: 100%;
+  height: 105px;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f9f4 45%, #f8fafc 100%);
+  border-top: 1px dashed rgba(30, 94, 58, 0.18);
+  border-bottom: 1px dashed rgba(30, 94, 58, 0.18);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  user-select: none;
+  z-index: 10;
+}
+
+.pastoral-trail-line {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    rgba(30, 94, 58, 0.05) 0%, 
+    rgba(30, 94, 58, 0.24) 15%, 
+    rgba(30, 94, 58, 0.24) 85%, 
+    rgba(30, 94, 58, 0.05) 100%
+  );
+  z-index: 1;
+}
+
+.pastoral-grass-layer {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.grass-tuft {
+  transform-origin: bottom center;
+  animation: grassSway 4s ease-in-out infinite alternate;
+  opacity: 0.55;
+}
+
+.grass-tuft.t2 { animation-delay: -1.2s; }
+.grass-tuft.t3 { animation-delay: -2.4s; }
+.grass-tuft.t4 { animation-delay: -0.8s; }
+.grass-tuft.t5 { animation-delay: -1.9s; }
+
+@keyframes grassSway {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(4deg); }
+}
+
+
+
+.sheep-caravan {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
+  animation: sheepCaravanWalk var(--walk-duration, 26s) linear infinite;
+  will-change: transform;
+  z-index: 3;
+}
+
+.sheep-caravan.delay {
+  animation-delay: calc(var(--walk-duration, 26s) / -2);
+}
+
+@keyframes sheepCaravanWalk {
+  0% {
+    transform: translate3d(-520px, 0, 0);
+  }
+  100% {
+    transform: translate3d(calc(100vw + 80px), 0, 0);
+  }
+}
+
+/* Individual sheep/animal unit */
+.sheep-unit {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.04));
+}
+
+.sheep-unit:hover {
+  transform: scale(1.1) translateY(-2px);
+}
+
+/* Tooltip caché pour laisser uniquement les animaux purs */
+.sheep-unit .sheep-tooltip {
+  display: none !important;
+}
+
+/* Body Bobbing */
+.sheep-body-bob {
+  animation: sheepBodyBob 0.6s ease-in-out infinite alternate;
+}
+
+.lamb-body-bob {
+  animation: sheepBodyBob 0.42s ease-in-out infinite alternate;
+}
+
+@keyframes sheepBodyBob {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3.5px); }
+}
+
+/* Trot leg animation (swinging back and forth) */
+.ram .leg-fl,
+.ram .leg-br,
+.cow-bull .leg-fl,
+.cow-bull .leg-br {
+  transform-origin: 45px 34px;
+  animation: legSwingA 0.6s ease-in-out infinite alternate;
+}
+
+.ram .leg-fr,
+.ram .leg-bl,
+.cow-bull .leg-fr,
+.cow-bull .leg-bl {
+  transform-origin: 25px 34px;
+  animation: legSwingB 0.6s ease-in-out infinite alternate;
+}
+
+.ewe .leg-fl,
+.ewe .leg-br,
+.ewe-2 .leg-fl,
+.ewe-2 .leg-br,
+.cow-dairy .leg-fl,
+.cow-dairy .leg-br {
+  transform-origin: 41px 31px;
+  animation: legSwingA 0.6s ease-in-out infinite alternate;
+}
+
+.ewe .leg-fr,
+.ewe .leg-bl,
+.ewe-2 .leg-fr,
+.ewe-2 .leg-bl,
+.cow-dairy .leg-fr,
+.cow-dairy .leg-bl {
+  transform-origin: 22px 31px;
+  animation: legSwingB 0.6s ease-in-out infinite alternate;
+}
+
+.lamb .leg-fl,
+.lamb .leg-br,
+.calf .leg-fl,
+.calf .leg-br {
+  transform-origin: 31px 23px;
+  animation: legSwingA 0.42s ease-in-out infinite alternate;
+}
+
+.lamb .leg-fr,
+.lamb .leg-bl,
+.calf .leg-fr,
+.calf .leg-bl {
+  transform-origin: 16px 23px;
+  animation: legSwingB 0.42s ease-in-out infinite alternate;
+}
+
+@keyframes legSwingA {
+  0% { transform: rotate(18deg); }
+  100% { transform: rotate(-18deg); }
+}
+
+@keyframes legSwingB {
+  0% { transform: rotate(-18deg); }
+  100% { transform: rotate(18deg); }
+}
+
+/* Head Nod */
+.sheep-head-group {
+  transform-origin: 40px 20px;
+  animation: sheepHeadNod 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes sheepHeadNod {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-4.5deg); }
+}
+
+/* Tail Wag */
+.sheep-tail {
+  transform-origin: 12px 25px;
+  animation: sheepTailWag 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes sheepTailWag {
+  0% { transform: rotate(-8deg); }
+  100% { transform: rotate(12deg); }
+}
+
+/* Golden Bell Sway */
+.bell-swing {
+  transform-origin: 41px 24px;
+  animation: bellSway 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes bellSway {
+  0% { transform: rotate(-14deg); }
+  100% { transform: rotate(14deg); }
+}
+
+@media (max-width: 768px) {
+  .pastoral-sheep-strip {
+    height: 90px;
+  }
+  .pastoral-trail-line,
+  .pastoral-grass-layer,
+  .sheep-caravan {
+    bottom: 16px;
+  }
+  .pastoral-badge-pill {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.75rem;
+  }
+  .sheep-unit {
+    transform: scale(0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheep-caravan {
+    animation-duration: 60s;
+  }
+  .sheep-body-bob,
+  .lamb-body-bob,
+  .sheep-tail,
+  .grass-tuft {
+    animation: none;
+  }
+}
