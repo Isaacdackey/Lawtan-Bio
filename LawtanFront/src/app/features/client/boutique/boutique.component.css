@@ -462,6 +462,8 @@
   gap: 2.5rem;
   box-shadow: 0 20px 40px rgba(13, 74, 34, 0.25);
   overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .mwb-tag {
@@ -884,40 +886,121 @@
   .boutique-hero-title {
     font-size: 2.25rem;
   }
+
   .market-wholesale-banner {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 2.25rem;
+    align-items: center;
+    text-align: center;
+    padding: 2.5rem 2rem;
+    gap: 1.75rem;
+    margin: 0 auto;
+  }
+
+  .mwb-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .mwb-tag {
+    justify-content: center;
+  }
+
+  .mwb-desc {
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .btn-mwb-devis {
+    align-self: center;
   }
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 0 1.15rem;
+  }
+
   .boutique-hero {
     padding: 3rem 0 2.5rem;
   }
+
   .boutique-hero-title {
     font-size: 1.85rem;
   }
+
   .boutique-hero-desc {
     font-size: 0.95rem;
     margin-bottom: 2rem;
   }
+
   .boutique-action-bar {
     flex-direction: column;
     gap: 1rem;
   }
+
   .search-input-wrap {
     max-width: 100%;
   }
+
   .cart-pill-top {
     width: 100%;
     justify-content: center;
   }
+
   .market-products-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
+
+  .market-wholesale-banner {
+    padding: 2rem 1.25rem;
+    border-radius: 20px;
+    margin: 0 auto;
+    box-shadow: 0 12px 30px rgba(13, 74, 34, 0.2);
+  }
+
+  .mwb-title {
+    font-size: 1.45rem;
+  }
+
+  .mwb-desc {
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .btn-mwb-devis {
+    width: 100%;
+    max-width: 380px;
+    justify-content: center;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.9rem;
+    white-space: normal;
+    text-align: center;
+  }
+
   .hidden-mobile {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.85rem;
+  }
+
+  .market-wholesale-banner {
+    padding: 1.75rem 1rem;
+    border-radius: 16px;
+  }
+
+  .mwb-title {
+    font-size: 1.3rem;
+  }
+
+  .btn-mwb-devis {
+    font-size: 0.85rem;
+    padding: 0.8rem 1rem;
   }
 }
