@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LAWTAN BIO — Emblème</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06130c;--gold:#e2c070;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#06130c}}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(ellipse at 50% 35%,#0f3322 0%,#082015 45%,var(--bg) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+svg{height:min(90vh,880px);max-width:100%}
+button{font:500 12px 'Jost',system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:none;border:1px solid #e2c07066;border-radius:99px;padding:9px 22px;cursor:pointer}
+.serif{font-family:'Cormorant Garamond',Georgia,serif}.sans{font-family:'Jost',system-ui,sans-serif}
+.d{stroke-dasharray:1;stroke-dashoffset:1;fill:none;stroke:url(#gold);stroke-linecap:round;stroke-linejoin:round}
+.far{opacity:.55}
+.f,.t,#sun,#glow{opacity:0}
+.p .d{animation:draw var(--t,2s) cubic-bezier(.55,0,.25,1) var(--s,0s) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.p .f{animation:show 1.6s ease 2.4s forwards}
+.p #glow{animation:show 2.4s ease 1.6s forwards}
+@keyframes show{to{opacity:1}}
+.t{transform:translateY(14px)}
+.p .t{animation:up 1.1s cubic-bezier(.2,.8,.3,1) var(--s) forwards}
+@keyframes up{to{opacity:1;transform:none}}
+#sun{transform-origin:168px 118px;transform:scale(.3)}
+.p #sun{animation:sun 1.2s cubic-bezier(.2,1.3,.4,1) 2.6s forwards}
+@keyframes sun{to{opacity:1;transform:scale(1)}}
+#rays{transform-origin:168px 118px;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#sh{transform:translateX(-300px)}
+.p #sh{animation:sh 2.2s ease-in-out 4s forwards}
+@keyframes sh{to{transform:translateX(520px)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important}}
+</style>
+</head>
+<body>
+<svg id="stage" viewBox="0 0 460 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Emblème LAWTAN BIO : zébu doré dans un cercle">
+<defs>
+<linearGradient id="gold" gradientUnits="userSpaceOnUse" x1="40" y1="30" x2="420" y2="520"><stop offset="0" stop-color="#f6e3a8"/><stop offset=".45" stop-color="#c9973a"/><stop offset=".75" stop-color="#f0d48a"/><stop offset="1" stop-color="#b8862c"/></linearGradient>
+<linearGradient id="fillg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2c070" stop-opacity=".22"/><stop offset="1" stop-color="#e2c070" stop-opacity=".04"/></linearGradient>
+<radialGradient id="gl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e2c070" stop-opacity=".30"/><stop offset="1" stop-color="#e2c070" stop-opacity="0"/></radialGradient>
+<linearGradient id="shg" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="gnd" x1="0" x2="1"><stop offset="0" stop-color="#f6e3a8" stop-opacity="0"/><stop offset=".5" stop-color="#f6e3a8"/><stop offset="1" stop-color="#f6e3a8" stop-opacity="0"/></linearGradient>
+<clipPath id="cc"><circle cx="230" cy="230" r="190"/></clipPath>
+<path id="body" pathLength="1" d="M92 118 C120 100 160 104 188 90 C205 80 212 62 232 62 C252 62 262 84 282 94 C296 100 306 98 316 104 C326 108 340 130 354 152 C358 160 356 170 346 172 C334 174 322 166 312 158 C304 164 300 176 296 192 C292 208 280 214 262 216 C230 222 160 224 128 214 C108 208 92 190 88 160 C86 140 86 128 92 118 Z"/>
+<path id="fl" pathLength="1" d="M240 216 C240 245 238 262 238 282 L256 282 C256 262 258 240 262 216"/>
+<path id="hl" pathLength="1" d="M110 208 C104 232 120 250 116 282 L134 282 C136 252 128 232 140 218"/>
+</defs>
+
+<circle cx="230" cy="230" r="190" fill="#0a2a1b" opacity=".55"/>
+<circle id="glow" cx="230" cy="250" r="150" fill="url(#gl)"/>
+<circle class="d" style="--t:1.8s" pathLength="1" cx="230" cy="230" r="190" stroke-width="1.6" transform="rotate(-90 230 230)"/>
+<circle class="d" style="--t:1.8s;--s:.3s" pathLength="1" cx="230" cy="230" r="178" stroke-width=".8" transform="rotate(-90 230 230)" opacity=".7"/>
+
+<g id="sun"><g id="rays" stroke="#f0d48a" stroke-width="1.4" stroke-linecap="round">
+<path d="M168 82v-9M168 154v9M132 118h-9M204 118h9M143 93l-6-6M193 143l6 6M193 93l6-6M143 143l-6 6"/></g>
+<circle cx="168" cy="118" r="20" fill="url(#gold)"/></g>
+
+<g transform="translate(18 85)">
+<use href="#body" class="f" fill="url(#fillg)"/>
+<use href="#body" class="d" style="--t:2.6s" stroke-width="2.4"/>
+<use href="#fl" class="d far" style="--t:1.4s;--s:1s" stroke-width="2" transform="translate(-30 0)"/>
+<use href="#hl" class="d far" style="--t:1.4s;--s:1.1s" stroke-width="2" transform="translate(32 0)"/>
+<use href="#fl" class="d" style="--t:1.4s;--s:1.2s" stroke-width="2.4"/>
+<use href="#hl" class="d" style="--t:1.4s;--s:1.3s" stroke-width="2.4"/>
+<path class="d" pathLength="1" style="--t:1.6s;--s:1.4s" stroke-width="2" d="M90 126C70 140 66 190 74 232"/>
+<path class="d" pathLength="1" style="--t:1s;--s:2.2s" stroke-width="2" d="M74 232C66 244 70 256 76 258C84 252 84 242 74 232Z"/>
+<path class="d" pathLength="1" style="--t:1.5s;--s:1.6s" stroke-width="2.2" d="M310 103C300 80 312 56 334 52"/>
+<path class="d" pathLength="1" style="--t:1.5s;--s:1.7s" stroke-width="2.2" d="M318 104C322 84 340 74 352 80"/>
+<path class="d" pathLength="1" style="--t:1s;--s:2s" stroke-width="1.6" d="M300 102C288 98 280 104 276 112C288 114 296 112 304 108"/>
+<path class="d" pathLength="1" style="--t:1.4s;--s:2.1s" stroke-width="1.2" opacity=".7" d="M300 170C292 190 280 200 266 204M214 70C226 84 240 92 256 96"/>
+<circle class="f" cx="322" cy="122" r="2.8" fill="#f6e3a8"/>
+<path class="d" pathLength="1" style="--t:.8s;--s:2.4s" stroke-width="1.6" d="M347 159C351 161 352 164 351 167"/>
+<path d="M118 288H342" stroke="url(#gnd)" stroke-width="1.6" class="f"/>
+</g>
+
+<g clip-path="url(#cc)"><rect id="sh" x="0" y="0" width="150" height="460" fill="url(#shg)" transform-origin="0 0" style="mix-blend-mode:screen"/></g>
+
+<g text-anchor="middle" fill="#f0d48a">
+<text class="t serif" style="--s:3s" x="230" y="486" font-size="46" font-weight="600" letter-spacing="14">LAWTAN BIO</text>
+<g class="t" style="--s:3.4s"><path d="M120 506H208M252 506H340" stroke="#e2c07088" stroke-width=".8"/><path d="M230 500l5 6-5 6-5-6z" fill="#e2c070"/></g>
+<text class="t sans" style="--s:3.6s" x="230" y="536" font-size="11.5" letter-spacing="5" fill="#cdbb86">ÉLEVAGE D'ÉLITE · 100% SOLAIRE · DAGANA</text>
+</g>
+</svg>
+<button id="r" type="button">Rejouer</button>
+<script>
+const s=document.getElementById('stage');
+function play(){s.classList.remove('p');void s.getBoundingClientRect();s.classList.add('p')}
+document.getElementById('r').onclick=play;play();
+</script>
+</body>
+</html>

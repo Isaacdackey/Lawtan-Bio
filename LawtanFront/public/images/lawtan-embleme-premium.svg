@@ -1,0 +1,66 @@
+<svg viewBox="0 0 460 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Emblème LAWTAN BIO : zébu royal doré">
+  <defs>
+    <linearGradient id="gold" gradientUnits="userSpaceOnUse" x1="40" y1="30" x2="420" y2="520">
+      <stop offset="0" stop-color="#f6e3a8"/>
+      <stop offset="0.45" stop-color="#c9973a"/>
+      <stop offset="0.75" stop-color="#f0d48a"/>
+      <stop offset="1" stop-color="#b8862c"/>
+    </linearGradient>
+    <linearGradient id="fillg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2c070" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#e2c070" stop-opacity="0.08"/>
+    </linearGradient>
+    <radialGradient id="gl" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#e2c070" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#e2c070" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gnd" x1="0" x2="1">
+      <stop offset="0" stop-color="#f6e3a8" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#f6e3a8"/>
+      <stop offset="1" stop-color="#f6e3a8" stop-opacity="0"/>
+    </linearGradient>
+    <path id="zebu-body" d="M92 118 C120 100 160 104 188 90 C205 80 212 62 232 62 C252 62 262 84 282 94 C296 100 306 98 316 104 C326 108 340 130 354 152 C358 160 356 170 346 172 C334 174 322 166 312 158 C304 164 300 176 296 192 C292 208 280 214 262 216 C230 222 160 224 128 214 C108 208 92 190 88 160 C86 140 86 128 92 118 Z"/>
+    <path id="zebu-fl" d="M240 216 C240 245 238 262 238 282 L256 282 C256 262 258 240 262 216"/>
+    <path id="zebu-hl" d="M110 208 C104 232 120 250 116 282 L134 282 C136 252 128 232 140 218"/>
+  </defs>
+
+  <circle cx="230" cy="230" r="190" fill="#0a2a1b" opacity="0.7"/>
+  <circle id="glow" cx="230" cy="250" r="150" fill="url(#gl)"/>
+  <circle cx="230" cy="230" r="190" stroke="url(#gold)" stroke-width="2.5" fill="none"/>
+  <circle cx="230" cy="230" r="178" stroke="url(#gold)" stroke-width="1.2" fill="none" opacity="0.75"/>
+
+  <!-- Soleil avec rayons -->
+  <g id="sun">
+    <g id="rays" stroke="#f0d48a" stroke-width="1.8" stroke-linecap="round">
+      <path d="M168 82v-9M168 154v9M132 118h-9M204 118h9M143 93l-6-6M193 143l6 6M193 93l6-6M143 143l-6 6"/>
+    </g>
+    <circle cx="168" cy="118" r="20" fill="url(#gold)"/>
+  </g>
+
+  <!-- Zébu royal doré -->
+  <g transform="translate(18 85)">
+    <use href="#zebu-body" fill="url(#fillg)"/>
+    <use href="#zebu-body" stroke="url(#gold)" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <use href="#zebu-fl" stroke="url(#gold)" stroke-width="2.2" fill="none" opacity="0.55" transform="translate(-30 0)"/>
+    <use href="#zebu-hl" stroke="url(#gold)" stroke-width="2.2" fill="none" opacity="0.55" transform="translate(32 0)"/>
+    <use href="#zebu-fl" stroke="url(#gold)" stroke-width="2.6" fill="none"/>
+    <use href="#zebu-hl" stroke="url(#gold)" stroke-width="2.6" fill="none"/>
+    <path stroke="url(#gold)" stroke-width="2.2" fill="none" stroke-linecap="round" d="M90 126C70 140 66 190 74 232"/>
+    <path stroke="url(#gold)" stroke-width="2.2" fill="none" stroke-linecap="round" d="M74 232C66 244 70 256 76 258C84 252 84 242 74 232Z"/>
+    <path stroke="url(#gold)" stroke-width="2.4" fill="none" stroke-linecap="round" d="M310 103C300 80 312 56 334 52"/>
+    <path stroke="url(#gold)" stroke-width="2.4" fill="none" stroke-linecap="round" d="M318 104C322 84 340 74 352 80"/>
+    <path stroke="url(#gold)" stroke-width="1.8" fill="none" stroke-linecap="round" d="M300 102C288 98 280 104 276 112C288 114 296 112 304 108"/>
+    <path stroke="url(#gold)" stroke-width="1.4" fill="none" opacity="0.75" d="M300 170C292 190 280 200 266 204M214 70C226 84 240 92 256 96"/>
+    <circle cx="322" cy="122" r="3" fill="#f6e3a8"/>
+    <path stroke="url(#gold)" stroke-width="1.8" fill="none" stroke-linecap="round" d="M347 159C351 161 352 164 351 167"/>
+    <path d="M118 288H342" stroke="url(#gnd)" stroke-width="2"/>
+  </g>
+
+  <!-- Texte de prestige LAWTAN BIO -->
+  <g text-anchor="middle" fill="#f0d48a">
+    <text font-family="'Cormorant Garamond', Georgia, serif" x="230" y="486" font-size="44" font-weight="600" letter-spacing="12">LAWTAN BIO</text>
+    <path d="M120 506H208M252 506H340" stroke="#e2c07088" stroke-width="1"/>
+    <path d="M230 500l5 6-5 6-5-6z" fill="#e2c070"/>
+    <text font-family="'Jost', system-ui, sans-serif" x="230" y="534" font-size="12" letter-spacing="5" fill="#cdbb86">ÉLEVAGE D'ÉLITE · 100% SOLAIRE · DAGANA</text>
+  </g>
+</svg>

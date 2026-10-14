@@ -119,21 +119,68 @@
 
   <ng-template #cowIcon>
     <span class="ticker-sep" aria-hidden="true">
-      <svg class="ticker-cow" viewBox="0 0 24 18" width="18" height="14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 8C3 10 2 12 2.5 13" stroke="#FEF08A" stroke-width="1.2" stroke-linecap="round"/>
-        <circle cx="2.5" cy="13.2" r="0.8" fill="#D9A441"/>
-        <line x1="6" y1="11" x2="6" y2="16" stroke="#FEF08A" stroke-width="1.4" stroke-linecap="round"/>
-        <line x1="8" y1="11" x2="8" y2="16" stroke="#FEF08A" stroke-width="1.4" stroke-linecap="round"/>
-        <line x1="14" y1="11" x2="14" y2="16" stroke="#FEF08A" stroke-width="1.4" stroke-linecap="round"/>
-        <line x1="16" y1="11" x2="16" y2="16" stroke="#FEF08A" stroke-width="1.4" stroke-linecap="round"/>
-        <path d="M4 8C4 6 7 5.5 12 5.5C15 5.5 17 6 18 8C19 9.5 18 12 16 12C13 12.5 7 12.5 5 11.5C4 10.5 4 9 4 8Z" fill="#FAF8F5"/>
-        <path d="M8 6.5C10 6 11 7.5 10 9C9 9.5 7.5 9 8 6.5Z" fill="#0D4A22"/>
-        <path d="M13 7C14.5 7 15 8.5 14 9.5C13 9.5 12.5 8.5 13 7Z" fill="#0D4A22"/>
-        <path d="M17 7.5C18 6 19.5 5 21.5 5C23 5 23.5 6.5 23 7.5C22.5 8.5 20.5 9.5 19 9.5C18 9.5 17 8.5 17 7.5Z" fill="#FAF8F5"/>
-        <path d="M22 6C23 6.5 23.5 7 23 7.8C22.5 8.2 21.5 8 21 7.5Z" fill="#FDE68A"/>
-        <path d="M19 5.5C19.5 3.5 20.5 2.5 21 2C20.5 3 20 4.2 19.5 5.5Z" fill="#D9A441"/>
-        <circle cx="20" cy="6.5" r="0.6" fill="#0D4A22"/>
-        <circle cx="18.5" cy="10" r="1" fill="#D9A441"/>
+      <svg class="ticker-cow" viewBox="36 36 388 388" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tGold" gradientUnits="userSpaceOnUse" x1="40" y1="40" x2="420" y2="420">
+            <stop offset="0" stop-color="#FFF2BF"/>
+            <stop offset="0.45" stop-color="#D9A441"/>
+            <stop offset="0.75" stop-color="#FDE68A"/>
+            <stop offset="1" stop-color="#B47A1E"/>
+          </linearGradient>
+          <linearGradient id="tFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#E2C070" stop-opacity="0.32"/>
+            <stop offset="1" stop-color="#E2C070" stop-opacity="0.10"/>
+          </linearGradient>
+          <radialGradient id="tGlow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#F5B82E" stop-opacity="0.35"/>
+            <stop offset="1" stop-color="#F5B82E" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        
+        <circle cx="230" cy="230" r="190" fill="#061E12" stroke="url(#tGold)" stroke-width="4.5"/>
+        <circle cx="230" cy="245" r="150" fill="url(#tGlow)"/>
+        <circle cx="230" cy="230" r="176" stroke="url(#tGold)" stroke-width="2.2" stroke-dasharray="8 6" opacity="0.85"/>
+
+
+        <g id="tSun">
+          <g stroke="#FDE68A" stroke-width="3" stroke-linecap="round">
+            <path d="M168 80v-11M168 156v11M130 118h-11M206 118h11M141 91l-8-8M195 145l8 8M195 91l8-8M141 145l-8 8"/>
+          </g>
+          <circle cx="168" cy="118" r="22" fill="url(#tGold)"/>
+        </g>
+
+
+        <g transform="translate(18 85)">
+
+          <path d="M92 118 C120 100 160 104 188 90 C205 80 212 62 232 62 C252 62 262 84 282 94 C296 100 306 98 316 104 C326 108 340 130 354 152 C358 160 356 170 346 172 C334 174 322 166 312 158 C304 164 300 176 296 192 C292 208 280 214 262 216 C230 222 160 224 128 214 C108 208 92 190 88 160 C86 140 86 128 92 118 Z" fill="url(#tFill)" stroke="url(#tGold)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          
+
+          <path d="M240 216 C240 245 238 262 238 282 L256 282 C256 262 258 240 262 216" stroke="url(#tGold)" stroke-width="4" stroke-linecap="round" opacity="0.6" transform="translate(-30 0)"/>
+          <path d="M110 208 C104 232 120 250 116 282 L134 282 C136 252 128 232 140 218" stroke="url(#tGold)" stroke-width="4" stroke-linecap="round" opacity="0.6" transform="translate(32 0)"/>
+          
+
+          <path d="M240 216 C240 245 238 262 238 282 L256 282 C256 262 258 240 262 216" stroke="url(#tGold)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M110 208 C104 232 120 250 116 282 L134 282 C136 252 128 232 140 218" stroke="url(#tGold)" stroke-width="5" stroke-linecap="round"/>
+          
+
+          <path d="M90 126C70 140 66 190 74 232" stroke="url(#tGold)" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M74 232C66 244 70 256 76 258C84 252 84 242 74 232Z" fill="url(#tGold)" stroke="url(#tGold)" stroke-width="2.5"/>
+          
+
+          <path d="M310 103C300 80 312 56 334 52" stroke="url(#tGold)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M318 104C322 84 340 74 352 80" stroke="url(#tGold)" stroke-width="5" stroke-linecap="round"/>
+          
+
+          <path d="M300 102C288 98 280 104 276 112C288 114 296 112 304 108" stroke="url(#tGold)" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="322" cy="122" r="4.5" fill="#FFF2BF"/>
+
+          <path d="M347 159C351 161 352 164 351 167" stroke="url(#tGold)" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M300 170C292 190 280 200 266 204M214 70C226 84 240 92 256 96" stroke="url(#tGold)" stroke-width="3" opacity="0.8"/>
+          
+
+          <path d="M106 286H346" stroke="url(#tGold)" stroke-width="4" stroke-linecap="round"/>
+        </g>
       </svg>
     </span>
   </ng-template>
@@ -160,22 +207,47 @@
     <div class="ambient-glow glow-bottom-right"></div>
     <div class="container">
       
+    
       <ng-template #pouringMilkPillar let-flipped="flipped">
         <div class="pouring-milk-pillar" [class.flipped]="flipped" aria-hidden="true">
-          <svg class="milk-pillar-svg" viewBox="0 0 34 160" width="34" height="150" fill="none" preserveAspectRatio="xMidYMid meet">
-            <g class="carton-pack" [attr.transform]="flipped ? 'translate(16, 20) scale(-1, 1) rotate(-26)' : 'translate(18, 20) rotate(-26)'">
-              <rect x="-10" y="-14" width="20" height="26" rx="2" fill="#1E5E3A" stroke="#123b24" stroke-width="1.2"/>
-              <path d="M-10 -14 L0 -23 L10 -14 Z" fill="#FAF8F5" stroke="#1E5E3A" stroke-width="1.2"/>
-              <path d="M-2 -23 L-2 -26 L2 -26 L2 -23 Z" fill="#D9A441"/>
-              <circle cx="5" cy="-19" r="2.8" fill="#D9A441" stroke="#92400E" stroke-width="0.8"/>
-              <rect x="-10" y="-5" width="20" height="9" fill="#FAF8F5"/>
-              <text x="0" y="2" font-family="'Outfit', sans-serif" font-size="5.5" font-weight="900" fill="#1E5E3A" text-anchor="middle">BIO</text>
+          <svg class="milk-pillar-stage" viewBox="0 0 360 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animation versement LAWTAN BIO" preserveAspectRatio="xMidYMid meet">
+
+            
+
+            <svg x="33" y="340" width="294" height="288" viewBox="0 0 294 288" overflow="hidden">
+              <g id="fill" class="pillar-fill">
+                <g id="wave" class="pillar-wave">
+                  <path d="M -270 30 Q -225 0 -180 30 T -90 30 T 0 30 T 90 30 T 180 30 T 270 30 T 360 30 T 450 30 T 540 30 T 630 30 T 720 30 V 350 H -270 Z" fill="#fbfaf4" stroke="#0a1a12" stroke-width="4"/>
+                </g>
+              </g>
+            </svg>
+
+            <path class="pillar-glass-contour" d="M 35 340 L 35 600 Q 35 625 60 625 L 300 625 Q 325 625 325 600 L 325 340" fill="none" stroke="#0a1a12" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 46 360 L 46 590" stroke="rgba(255, 255, 255, 0.45)" stroke-width="3.5" stroke-linecap="round"/>
+
+            <path id="streamOutline" class="pillar-stream-outline" pathLength="1" d="M203 168 C 220 280, 155 420, 180 620" fill="none" stroke="#0a1a12" stroke-width="22" stroke-linecap="round"/>
+
+            <path id="stream" class="pillar-stream" pathLength="1" d="M203 168 C 220 280, 155 420, 180 620" fill="none" stroke="#fbfaf4" stroke-width="15" stroke-linecap="round"/>
+            <path id="dash" class="pillar-dash" pathLength="1" d="M204 180 C 218 280, 156 420, 180 615" fill="none" stroke="#cfdcd5" stroke-width="3" stroke-linecap="round" stroke-dasharray=".04 .06" opacity=".8"/>
+
+
+            <g>
+              <circle class="drop" cx="180" cy="480" r="5" fill="#fbfaf4" stroke="#0a1a12" stroke-width="2" style="animation-delay:2.4s"/>
+              <circle class="drop" cx="165" cy="420" r="3.5" fill="#fbfaf4" stroke="#0a1a12" stroke-width="1.8" style="animation-delay:2.7s"/>
+              <circle class="drop" cx="190" cy="370" r="4" fill="#fbfaf4" stroke="#0a1a12" stroke-width="1.8" style="animation-delay:3.1s"/>
             </g>
-            <path d="M8 26 C8 45, 17 55, 17 85 L17 140" stroke="#FAF8F5" stroke-width="6.5" stroke-linecap="round"/>
-            <path d="M8 26 C8 45, 17 55, 17 85 L17 140" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
-            <path class="milk-flow-shine" d="M10 32 C10 48, 18 58, 18 85 L18 135" stroke="#E2EBE5" stroke-width="1.4" stroke-linecap="round"/>
-            <circle cx="17" cy="148" r="2.8" fill="#FFFFFF"/>
-            <circle cx="17" cy="156" r="2" fill="#FFFFFF"/>
+
+
+            <g id="carton" class="pillar-carton">
+              <g transform="translate(-60,-60)">
+                <polygon points="12,34 60,-4 108,34" fill="#f7f5ee" stroke="#0a1a12" stroke-width="2.5" stroke-linejoin="round"/>
+                <rect x="2" y="26" width="116" height="118" rx="12" fill="#1E5E3A" stroke="#0a1a12" stroke-width="4"/>
+                <rect x="2" y="58" width="116" height="44" fill="#f7f5ee" stroke="#0a1a12" stroke-width="2"/>
+                <text x="60" y="90" text-anchor="middle" font-size="30" font-weight="800" fill="#1E5E3A" letter-spacing="2" transform="rotate(180 60 80)">BIO</text>
+                <rect x="22" y="-22" width="14" height="14" fill="#c98a3a" stroke="#0a1a12" stroke-width="2" transform="rotate(-20 29 -15)"/>
+                <circle cx="78" cy="2" r="12" fill="#f5b82e" stroke="#0a1a12" stroke-width="3"/>
+              </g>
+            </g>
           </svg>
         </div>
       </ng-template>

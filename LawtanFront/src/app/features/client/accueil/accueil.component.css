@@ -479,16 +479,19 @@
 }
 
 .ticker-cow {
-  width: 18px;
-  height: 14px;
+  width: 24px;
+  height: 24px;
   display: inline-block;
   vertical-align: middle;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
-  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
+  transition: transform 0.25s ease, filter 0.25s ease;
 }
 
 .ticker-item:hover .ticker-cow {
-  transform: scale(1.15);
+  transform: scale(1.22);
+  filter: drop-shadow(0 0 8px rgba(246, 227, 168, 0.85));
 }
 
 @keyframes infiniteTickerScroll {
@@ -847,31 +850,139 @@
   }
 }
 
-/* Pilier Brique de Lait qui se verse */
+/* Pilier Brique de Lait qui se verse — EXACT LAWTAN BIO Motion Design */
 .pouring-milk-pillar {
-  width: 36px;
+  width: 72px;
+  min-width: 60px;
+  max-width: 86px;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.milk-pillar-svg {
+.milk-pillar-stage {
+  width: 100%;
   height: 100%;
-  min-height: 150px;
-  max-height: 220px;
-  overflow: visible;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+  min-height: 220px;
+  max-height: 380px;
+  overflow: hidden;
+  border-radius: 12px;
+  filter: drop-shadow(0 6px 14px rgba(13, 74, 34, 0.12));
 }
 
-@keyframes milkStreamShimmer {
-  0% { stroke-dashoffset: 24; }
-  100% { stroke-dashoffset: 0; }
+.milk-pillar-stage * {
+  animation-fill-mode: both;
 }
 
-.milk-flow-shine {
-  stroke-dasharray: 8 6;
-  animation: milkStreamShimmer 1.4s linear infinite;
+/* 1. Entrée et bascule de la brique (0s à 1.9s) : descente, inclinaison 140°, oscillation */
+.pillar-carton,
+#carton {
+  transform: translate(180px, -160px);
+  animation:
+    cin 1.1s cubic-bezier(0.2, 1.4, 0.4, 1) 0.1s both,
+    tilt 1.0s ease-in-out 0.9s both,
+    wob 1.6s ease-in-out 1.9s infinite alternate;
+}
+
+@keyframes cin {
+  from { transform: translate(180px, -160px) rotate(0); }
+  to   { transform: translate(180px, 110px) rotate(0); }
+}
+
+@keyframes tilt {
+  from { transform: translate(180px, 110px) rotate(0); }
+  to   { transform: translate(180px, 110px) rotate(140deg); }
+}
+
+@keyframes wob {
+  from { transform: translate(180px, 110px) rotate(140deg); }
+  to   { transform: translate(180px, 110px) rotate(144deg); }
+}
+
+/* 2. Écoulement du lait & gouttelettes (1.9s à 4.7s) */
+.pillar-stream-outline,
+.pillar-stream,
+.pillar-dash,
+#streamOutline,
+#stream,
+#dash {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.pillar-stream-outline,
+#streamOutline {
+  animation: draw 1.0s cubic-bezier(0.5, 0, 0.3, 1) 1.8s forwards;
+}
+
+.pillar-stream,
+#stream {
+  animation: draw 1.0s cubic-bezier(0.5, 0, 0.3, 1) 1.8s forwards;
+  filter: drop-shadow(0 2px 4px rgba(19, 70, 39, 0.18));
+}
+
+.pillar-dash,
+#dash {
+  animation:
+    draw 1.0s cubic-bezier(0.5, 0, 0.3, 1) 1.9s forwards,
+    dashShimmer 1.8s linear 3.0s infinite;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes dashShimmer {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}
+
+/* Gouttes de lait animées tombant au rythme du versement */
+.drop {
+  opacity: 0;
+  animation: fall 1.1s ease-in infinite;
+}
+
+@keyframes fall {
+  0%   { opacity: 0; transform: translateY(0); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(90px); }
+}
+
+/* 3. Remplissage par le bas (2.8s à 5.0s) : le lait monte dès que le jet touche le fond */
+.pillar-fill,
+#fill {
+  transform: translateY(285px);
+  animation: rise 2.2s cubic-bezier(0.4, 0, 0.2, 1) 2.8s forwards;
+}
+
+@keyframes rise {
+  to { transform: translateY(70px); }
+}
+
+.pillar-wave,
+#wave {
+  animation: slide 2.4s linear infinite;
+}
+
+@keyframes slide {
+  to { transform: translateX(-180px); }
+}
+
+/* Récipient / verre de lait avec contour noir */
+.pillar-glass-contour {
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15));
+}
+
+/* Pilier droit inversé (symétrie miroir avec texte BIO redressé) */
+.pouring-milk-pillar.flipped {
+  transform: scaleX(-1);
+}
+
+.pouring-milk-pillar.flipped text {
+  transform: scaleX(-1);
+  transform-origin: 60px 90px;
 }
 
 /* Corps du texte du chapitre */
@@ -2628,8 +2739,8 @@
   }
 
   .ticker-cow {
-    width: 15px;
-    height: 12px;
+    width: 20px;
+    height: 20px;
   }
 
   /* 3. SECTION NOTRE HISTOIRE */
@@ -2698,12 +2809,13 @@
   }
 
   .pouring-milk-pillar {
-    width: 26px;
+    width: 52px;
+    min-width: 44px;
   }
 
-  .milk-pillar-svg {
-    max-height: 160px;
-    min-height: 110px;
+  .milk-pillar-stage {
+    max-height: 240px;
+    min-height: 160px;
   }
 
   .chapter-content-lead {
