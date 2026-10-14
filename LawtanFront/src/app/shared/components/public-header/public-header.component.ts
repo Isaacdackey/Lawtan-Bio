@@ -55,66 +55,51 @@ export class PublicHeaderComponent {
   }
 
   onHomeClick(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
     this.closeMobileMenu();
 
-    const isHome = this.router.url === '/' || this.router.url.startsWith('/#') || this.router.url.startsWith('/?');
+    const isHome = this.router.url === '/' || this.router.url.startsWith('/#') || this.router.url.startsWith('/?') || this.router.url === '';
     if (isHome) {
+      if (event) {
+        event.preventDefault();
+      }
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 50);
-    } else {
-      this.router.navigate(['/']).then(() => {
-        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
-      });
     }
   }
 
   scrollToSection(id: string, event?: Event): void {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
     this.closeMobileMenu();
 
     const executeScroll = (): boolean => {
       const el = document.getElementById(id);
       if (el) {
-        const header = document.querySelector('.public-navbar');
-        const headerHeight = (header?.clientHeight || 64) + 8;
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        const targetPos = Math.max(0, el.getBoundingClientRect().top + scrollTop - headerHeight);
-        window.scrollTo({
-          top: targetPos,
-          behavior: 'smooth'
-        });
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return true;
       }
       return false;
     };
 
-    const isHome = this.router.url === '/' || this.router.url.startsWith('/#') || this.router.url.startsWith('/?');
+    const isHome = this.router.url === '/' || this.router.url.startsWith('/#') || this.router.url.startsWith('/?') || this.router.url === '';
 
     if (isHome) {
-      // Décalage pour laisser le menu mobile se fermer et déverrouiller le défilement tactile
+      if (event) {
+        event.preventDefault();
+      }
       setTimeout(() => {
         if (!executeScroll()) {
           setTimeout(executeScroll, 100);
         }
       }, 70);
     } else {
-      this.router.navigate(['/'], { fragment: id }).then(() => {
-        let attempts = 0;
-        const checkInterval = setInterval(() => {
-          attempts++;
-          if (executeScroll() || attempts > 25) {
-            clearInterval(checkInterval);
-          }
-        }, 50);
-      });
+      // Sur une autre page, laisser Angular Router naviguer vers /#id grâce à routerLink, avec vérification de secours
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        if (executeScroll() || attempts > 25) {
+          clearInterval(interval);
+        }
+      }, 80);
     }
   }
 

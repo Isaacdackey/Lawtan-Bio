@@ -288,14 +288,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
     const checkAndScroll = () => {
       const el = document.getElementById(target);
       if (el) {
-        const header = document.querySelector('.public-navbar');
-        const headerHeight = (header?.clientHeight || 64) + 8;
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        const targetPos = Math.max(0, el.getBoundingClientRect().top + scrollTop - headerHeight);
-        window.scrollTo({
-          top: targetPos,
-          behavior: 'smooth'
-        });
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else if (attempts < 20) {
         attempts++;
         setTimeout(checkAndScroll, 60);

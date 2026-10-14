@@ -19,16 +19,12 @@ export class AppComponent {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // Si la navigation ne cible pas une ancre (#produits, #engagements), remettre le scroll en haut de page
-      if (typeof window !== 'undefined' && !event.urlAfterRedirects.includes('#')) {
+      const url = event.urlAfterRedirects || event.url || '';
+      // Si la navigation ne cible pas une ancre (#apropos, #pourquoi, etc.), remettre le scroll en haut de page
+      if (typeof window !== 'undefined' && !url.includes('#') && !window.location.hash) {
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-        }, 50);
       }
     });
   }
