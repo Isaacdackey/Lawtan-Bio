@@ -308,16 +308,15 @@
   height: 100vh;
   height: 100dvh;
   z-index: 999999;
+  display: none !important;
   pointer-events: none;
   visibility: hidden;
-  opacity: 0;
-  transition: visibility 0.32s ease, opacity 0.32s ease;
 }
 
 .mobile-drawer.open {
+  display: block !important;
   pointer-events: auto;
   visibility: visible;
-  opacity: 1;
 }
 
 .mobile-backdrop {
