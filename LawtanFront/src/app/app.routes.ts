@@ -26,6 +26,17 @@ export const routes: Routes = [
       import('./features/client/devis/devis.component').then((m) => m.DevisComponent),
     title: 'Demande de Devis — Lawtan Bio'
   },
+  {
+    path: 'boutique',
+    loadComponent: () =>
+      import('./features/client/boutique/boutique.component').then((m) => m.BoutiqueComponent),
+    title: 'Boutique Directe & Vente Fermière — Lawtan Bio'
+  },
+  {
+    path: 'marketplace',
+    redirectTo: 'boutique',
+    pathMatch: 'full'
+  },
 
   // Espace Authentification
   {

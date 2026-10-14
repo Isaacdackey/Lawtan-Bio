@@ -213,6 +213,27 @@
   color: #ffffff;
 }
 
+.btn-whatsapp-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.9rem 1.75rem;
+  border-radius: 9999px;
+  background: #25D366;
+  color: #072211;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-whatsapp-hero:hover {
+  background: #20bd5a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+}
+
 /* Metrics Strip */
 .slide-metrics-strip {
   display: flex;
@@ -1240,6 +1261,48 @@
   flex-direction: column;
   gap: 0.45rem;
 }
+
+/* Bouton Voir Plus / Découvrir la Boutique en direct */
+.gamme-cta-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3.5rem;
+  padding: 0 1rem;
+}
+
+.btn-gamme-boutique {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.1rem 2.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #0d4a22 0%, #15803d 100%);
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(13, 74, 34, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gamme-boutique:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 18px 40px rgba(13, 74, 34, 0.45);
+  background: linear-gradient(135deg, #093317 0%, #166534 100%);
+}
+
+.btn-gamme-boutique svg {
+  transition: transform 0.3s ease;
+}
+
+.btn-gamme-boutique:hover svg:last-child {
+  transform: translateX(4px);
+}
+
 
 
 /* ==========================================================================
@@ -2279,25 +2342,26 @@
     padding: 0 1.15rem;
   }
 
-  /* 1. HERO SLIDER MOBILE SANS CHEVAUCHEMENT */
+  /* 1. HERO SLIDER MOBILE ALIGNÉ EN BAS SANS ESPACE VIDE */
   .hero-slider-section {
-    height: auto !important;
-    min-height: 100svh;
-    max-height: none;
-    overflow: hidden;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    width: 100%;
+    min-height: 85svh;
+    min-height: 85dvh;
+    height: auto !important;
+    overflow: hidden;
+    background-color: #072211;
   }
 
   .slider-container {
     position: relative;
     width: 100%;
-    height: auto;
+    min-height: 85svh;
+    min-height: 85dvh;
+    height: 100%;
   }
 
-  /* Slide inactif masqué hors-flux */
+  /* Les slides occupent 100% de la hauteur de l'écran */
   .slide-item {
     position: absolute;
     inset: 0;
@@ -2306,37 +2370,69 @@
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
   }
 
-  /* Slide actif en flux normal pour adapter la hauteur exactement au contenu */
   .slide-item.active {
-    position: relative;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    width: 100%;
-    height: auto;
     z-index: 2;
   }
 
-  .slide-bg,
-  .slide-overlay,
+  /* Image de fond recadrée pour centrer le tracteur dans le cadre supérieur */
+  .slide-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: 62% 18%;
+    filter: brightness(0.95);
+  }
+
+  /* Dégradé du bas vers le haut : très sombre derrière le texte, presque transparent en haut */
+  .slide-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      0deg,
+      rgba(6, 31, 16, 0.98) 0%,
+      rgba(6, 31, 16, 0.92) 42%,
+      rgba(6, 31, 16, 0.45) 68%,
+      rgba(6, 31, 16, 0.05) 100%
+    );
+    z-index: 2;
+  }
+
   .slide-grid-pattern {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    opacity: 0.15;
+    z-index: 3;
   }
 
+  /* Alignement en bas (flex-end) avec padding-bottom de 92px pour monter le bloc et laisser respirer les briques de lait */
   .slide-content-wrap {
     position: relative;
     width: 100%;
-    height: auto;
-    padding-top: 2rem;
-    padding-bottom: 6rem; /* Espace réservé dédié pour les bouteilles de pagination */
+    height: 100%;
+    min-height: 85svh;
+    min-height: 85dvh;
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: calc(var(--nav-height, 68px) + 8px);
+    padding-bottom: 92px;
+    z-index: 4;
   }
 
   .slide-content-grid {
@@ -2349,58 +2445,92 @@
   }
 
   .slide-badge-pill {
-    font-size: 0.78rem;
-    padding: 0.35rem 0.85rem;
-    margin-bottom: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(212, 175, 55, 0.18);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    color: #FEF08A;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    margin-bottom: 0.5rem;
+    backdrop-filter: blur(6px);
   }
 
   .slide-main-title {
-    font-size: 1.85rem;
+    font-size: 1.58rem;
     line-height: 1.2;
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.65rem;
     word-break: break-word;
+    letter-spacing: -0.02em;
   }
 
   .slide-lead-desc {
-    font-size: 0.92rem;
-    line-height: 1.55;
-    margin-bottom: 1.4rem;
-    color: rgba(241, 245, 249, 0.95);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin-bottom: 1.15rem;
+    color: rgba(255, 255, 255, 0.9);
   }
 
+  /* Boutons d'action compacts, proportionnés et alignés côte à côte */
   .slide-actions-row {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-bottom: 1.15rem;
     width: 100%;
-    gap: 0.75rem;
-    margin-bottom: 1.6rem;
   }
 
   .slide-actions-row .btn-primary-glow,
   .slide-actions-row .btn-secondary-glass {
-    width: 100%;
+    width: auto;
+    padding: 0.55rem 1.15rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    letter-spacing: 0.01em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    padding: 0.85rem 1.25rem;
-    font-size: 0.92rem;
-    text-align: center;
+  }
+
+  .slide-actions-row .btn-whatsapp-hero {
+    width: auto;
+    padding: 0.55rem 1.15rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .slide-metrics-strip {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.3); /* Ligne plus visible */
   }
 
   .sm-value {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #ffffff;
   }
 
   .sm-label {
-    font-size: 0.68rem;
+    font-size: 13px; /* Légendes à 13px minimum */
     line-height: 1.25;
+    color: rgba(255, 255, 255, 0.85); /* Blanche à 85% d'opacité */
   }
 
   /* Flèches masquées sur mobile pour libérer l'écran */
@@ -2408,23 +2538,79 @@
     display: none !important;
   }
 
-  /* Pagination bouteilles toujours calée en bas dans sa zone réservée */
+  /* Indicateurs de carrousel : briques de lait artisanales visibles et centrées */
   .slider-indicators {
     position: absolute;
-    bottom: 1.25rem;
+    bottom: 16px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    gap: 0.75rem;
+    gap: 0.85rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .bottle-indicator {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    opacity: 0.65;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: none;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+  }
+
+  .bottle-indicator.active {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.08);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
   }
 
   .milk-bottle-svg {
     width: 20px;
     height: 40px;
+    display: block;
+    overflow: visible;
   }
 
   .bottle-slide-num {
-    font-size: 0.62rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #ffffff;
+    display: block;
+  }
+
+  @media (max-width: 400px) {
+    .slide-main-title {
+      font-size: 1.45rem;
+    }
+    .slide-lead-desc {
+      font-size: 0.82rem;
+    }
+    .slide-actions-row .btn-primary-glow,
+    .slide-actions-row .btn-secondary-glass,
+    .slide-actions-row .btn-whatsapp-hero {
+      padding: 0.5rem 0.95rem;
+      font-size: 0.78rem;
+    }
+    .sm-value {
+      font-size: 0.85rem;
+    }
+    .sm-label {
+      font-size: 12px;
+    }
   }
 
   /* 2. TICKER RUBAN MARQUEE */

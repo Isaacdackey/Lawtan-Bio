@@ -75,6 +75,20 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
   slides: SliderSlide[] = [
     {
       id: 0,
+      image: '/images/slider-facility.jpg',
+      badge: 'Technologie & Traçabilité Digitale',
+      title: 'La première exploitation agropastorale',
+      titleHighlight: 'moderne, connectée et transparente.',
+      description: 'Suivi génétique des lignées, contrôle continu de la santé animale par vétérinaire dédié et traçabilité numérique de chaque bouteille.',
+      ctaText: 'Notre Histoire & Vision',
+      ctaTarget: 'apropos',
+      secondaryCtaText: 'Nos 4 Piliers Qualité',
+      secondaryCtaTarget: 'pourquoi',
+      metricValue: 'Ferme laitière',
+      metricLabel: 'Lait certifié du jour'
+    },
+    {
+      id: 1,
       image: '/images/slider-cows.jpg',
       badge: 'Élevage d\'Élite & 100% Solaire',
       title: 'L\'excellence laitière sénégalaise,',
@@ -88,32 +102,18 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       metricLabel: 'Énergie Solaire Autonome'
     },
     {
-      id: 1,
+      id: 2,
       image: '/images/slider-products.jpg',
-      badge: 'Prestations Agricoles & Mécanisation',
-      title: 'Travaux des sols & parcelles fourragères,',
-      titleHighlight: 'la puissance mécanique au service du terroir.',
-      description: 'Labour profond, offsettage, moissonnage-battage et pressage de balles de fourrage de haute performance à Dagana et dans tout le bassin du Fleuve.',
-      ctaText: 'Demander un Devis Agricole',
+      badge: 'La puissance mécanique au service du terroir',
+      title: 'Labour, moisson & pressage de fourrage,',
+      titleHighlight: 'clés en main à Dagana.',
+      description: 'Labour profond, offsettage, moissonnage-battage et pressage de balles, chauffeur et carburant inclus.',
+      ctaText: 'Demander un devis',
       ctaTarget: 'devis',
-      secondaryCtaText: 'Nos Engagements Terroir',
-      secondaryCtaTarget: 'pourquoi',
+      secondaryCtaText: 'Écrire sur WhatsApp',
+      secondaryCtaTarget: 'whatsapp',
       metricValue: '100% Mécanisé',
       metricLabel: 'Chauffeur & Carburant Inclus'
-    },
-    {
-      id: 2,
-      image: '/images/slider-facility.jpg',
-      badge: 'Technologie & Traçabilité Digitale',
-      title: 'La première exploitation agropastorale',
-      titleHighlight: 'moderne, connectée et transparente.',
-      description: 'Suivi génétique des lignées, contrôle continu de la santé animale par vétérinaire dédié et traçabilité numérique de chaque bouteille.',
-      ctaText: 'Notre Histoire & Vision',
-      ctaTarget: 'apropos',
-      secondaryCtaText: 'Nos 4 Piliers Qualité',
-      secondaryCtaTarget: 'pourquoi',
-      metricValue: '1 250+ L/j',
-      metricLabel: 'Traçabilité de chaque Lot'
     }
   ];
 
@@ -280,8 +280,9 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       event.preventDefault();
     }
     if (!target) return;
-    if (target === 'devis' || target === 'contact' || target === 'login') {
-      this.router.navigate(['/' + target]);
+    if (target === 'devis' || target === 'contact' || target === 'login' || target === 'boutique' || target === 'marketplace') {
+      const dest = (target === 'marketplace') ? 'boutique' : target;
+      this.router.navigate(['/' + dest]);
       return;
     }
     let attempts = 0;
