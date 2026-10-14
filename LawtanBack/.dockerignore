@@ -4,3 +4,6 @@ target/
 *.iml
 .mvn/
 *.log
+.env
+*.env
+
