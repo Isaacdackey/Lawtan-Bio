@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   // Portail Vitrine Client
@@ -37,6 +38,7 @@ export const routes: Routes = [
   // Espace Ferme / Back-Office modulé selon les domaines Backend
   {
     path: 'ferme',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/ferme/layout/ferme-layout.component').then((m) => m.FermeLayoutComponent),
     children: [

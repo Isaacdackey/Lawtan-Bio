@@ -1,7 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -23,9 +23,15 @@ export class LoginComponent {
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
 
   constructor() {
+    if (this.authService.isAuthenticated()) {
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/ferme';
+      this.router.navigateByUrl(returnUrl);
+    }
+
     this.loginForm = this.fb.group({
       identifier: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(4)]],
@@ -56,7 +62,8 @@ export class LoginComponent {
         this.isLoading.set(false);
         this.loginSuccess.set(true);
         setTimeout(() => {
-          this.router.navigate(['/ferme']);
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/ferme';
+          this.router.navigateByUrl(returnUrl);
         }, 800);
       },
       error: (err) => {

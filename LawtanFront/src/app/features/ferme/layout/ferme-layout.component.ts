@@ -4,6 +4,7 @@ import { RouterModule, RouterOutlet, RouterLink, RouterLinkActive, Router, Navig
 import { filter } from 'rxjs/operators';
 import { FermeMockService, RoleUtilisateur, UtilisateurProfil } from '../services/ferme-mock.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { AuthService } from '../../../services/auth.service';
 
 export interface FarmNotificationItem {
   id: string;
@@ -24,6 +25,7 @@ export class FermeLayoutComponent {
   fermeService = inject(FermeMockService);
   notificationService = inject(NotificationService);
   private router = inject(Router);
+  private realAuthService = inject(AuthService);
 
   // Responsive sidebar drawer
   isSidebarOpen = signal<boolean>(false);
@@ -70,10 +72,24 @@ export class FermeLayoutComponent {
     return 'dashboard';
   });
 
-  // Proxy authService pour conformité exacte avec le template d'origine
+  // Proxy authService connecté au service d'authentification réel
   authService = {
-    isAuthenticated: () => true,
+    isAuthenticated: () => this.realAuthService.isAuthenticated(),
     currentUser: () => {
+      const real = this.realAuthService.currentUser();
+      if (real) {
+        return {
+          name: real.name,
+          email: real.email,
+          initials: real.initials || 'AS',
+          roleLabel: real.roleLabel || real.role,
+          roleBadgeColor: real.roleBadgeColor || '#15803d',
+          title: real.title || real.roleLabel || 'Exploitant',
+          department: real.department || 'Ferme LAWTAN',
+          phone: real.phone || '+221 77 123 45 67',
+          role: real.role as any
+        };
+      }
       const p = this.fermeService.profilActif();
       return {
         name: p.nom,
@@ -88,12 +104,14 @@ export class FermeLayoutComponent {
       };
     },
     hasRole: (roles: string[]) => {
-      const current = this.fermeService.profilActif().role;
+      const real = this.realAuthService.currentUser();
+      const current = real ? real.role : this.fermeService.profilActif().role;
       if (current === 'manager') return true;
-      return roles.includes(current);
+      return roles.includes(current as any);
     },
     canAccessTab: (tabId: string) => {
-      const current = this.fermeService.profilActif().role;
+      const real = this.realAuthService.currentUser();
+      const current = real ? real.role : this.fermeService.profilActif().role;
       if (current === 'manager') return true;
       const perm = this.fermeService.currentPermission().ongletsAutorises;
       if (tabId === 'animaux') return perm.includes('troupeau') || perm.includes('cheptel');
@@ -256,6 +274,7 @@ export class FermeLayoutComponent {
 
   logout(): void {
     this.isUserMenuOpen.set(false);
+    this.realAuthService.logout();
     this.router.navigate(['/login']);
   }
 
