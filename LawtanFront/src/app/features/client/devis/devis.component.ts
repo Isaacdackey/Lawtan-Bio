@@ -1,6 +1,6 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PublicHeaderComponent } from '../../../shared/components/public-header/public-header.component';
 import { PublicFooterComponent } from '../../../shared/components/public-footer/public-footer.component';
@@ -23,7 +23,12 @@ export type DevisNature = 'prestation' | 'laitier';
   styleUrl: './devis.component.css'
 })
 export class DevisComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+
   devisCategory = signal<DevisNature>('prestation');
+  cartSourceData = signal<{ items: any[]; totalAmount: number } | null>(null);
   isSubmitting = signal<boolean>(false);
   isSubmitted = signal<boolean>(false);
   submittedData = signal<any>(null);
@@ -40,6 +45,38 @@ export class DevisComponent implements OnInit {
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
       }, 50);
+    }
+
+    // Gestion du domaine via paramètre d'URL (ex: ?cat=laitier)
+    const queryCat = this.route.snapshot.queryParams['cat'];
+    if (queryCat === 'laitier' || queryCat === 'prestation') {
+      this.setCategory(queryCat as DevisNature);
+    }
+
+    // Récupération dynamique du panier transféré depuis la boutique
+    let cartPayload: { items: any[]; totalAmount: number } | null = null;
+    if (typeof history !== 'undefined' && history.state && history.state.items) {
+      cartPayload = {
+        items: history.state.items,
+        totalAmount: history.state.totalAmount || 0
+      };
+    }
+
+    if (!cartPayload && typeof window !== 'undefined' && window.sessionStorage) {
+      try {
+        const raw = sessionStorage.getItem('lawtan_devis_cart');
+        if (raw) {
+          cartPayload = JSON.parse(raw);
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (cartPayload && Array.isArray(cartPayload.items) && cartPayload.items.length > 0) {
+      this.cartSourceData.set(cartPayload);
+      this.setCategory('laitier');
+      this.applyCartData(cartPayload);
     }
   }
 
@@ -93,7 +130,7 @@ export class DevisComponent implements OnInit {
 
   faqOuverte = signal<number | null>(0);
 
-  constructor(private fb: FormBuilder) {
+  constructor() {
     this.devisForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       organization: [''],
@@ -127,6 +164,49 @@ export class DevisComponent implements OnInit {
     }
   }
 
+  applyCartData(cartPayload: { items: any[]; totalAmount: number }): void {
+    const items = cartPayload.items;
+    if (!items || items.length === 0) return;
+
+    let matchedProduct = 'lait-frais';
+    const firstCat = items[0]?.product?.category;
+    if (firstCat === 'caille') {
+      matchedProduct = 'lait-caille';
+    } else if (firstCat === 'beurre') {
+      matchedProduct = 'beurre-artisanal';
+    } else if (firstCat === 'fromage') {
+      matchedProduct = 'partenariat-distributeur';
+    }
+
+    const totalQty = items.reduce((acc: number, curr: any) => acc + (curr.quantity || 1), 0);
+
+    const messageLines = [
+      'Demande de devis sur mesure issue de mon panier boutique :',
+      ...items.map((i: any) => `• ${i.quantity}x ${i.product?.name || 'Produit'} (${((i.product?.priceFcfa || 0) * (i.quantity || 1)).toLocaleString('fr-FR')} FCFA)`),
+      `Total estimé : ${cartPayload.totalAmount.toLocaleString('fr-FR')} FCFA`,
+      '',
+      'Je souhaite obtenir un devis personnalisé incluant les modalités de conditionnement, de conservation et de livraison.'
+    ];
+
+    this.devisForm.patchValue({
+      dairyProduct: matchedProduct,
+      estimatedQuantity: `${totalQty} unité${totalQty > 1 ? 's' : ''} (${cartPayload.totalAmount.toLocaleString('fr-FR')} FCFA)`,
+      deliveryFrequency: 'ponctuel',
+      message: messageLines.join('\n')
+    });
+  }
+
+  clearCartSource(): void {
+    this.cartSourceData.set(null);
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      try {
+        sessionStorage.removeItem('lawtan_devis_cart');
+      } catch {
+        // ignore
+      }
+    }
+  }
+
   onSubmit(): void {
     if (this.devisForm.invalid) {
       this.devisForm.markAllAsTouched();
@@ -142,10 +222,18 @@ export class DevisComponent implements OnInit {
       });
       this.isSubmitting.set(false);
       this.isSubmitted.set(true);
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        try {
+          sessionStorage.removeItem('lawtan_devis_cart');
+        } catch {
+          // ignore
+        }
+      }
     }, 600);
   }
 
   resetForm(): void {
+    this.clearCartSource();
     this.devisForm.reset({
       agriculturalService: 'labour',
       volumeUnit: 'hectare',

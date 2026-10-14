@@ -1044,3 +1044,113 @@
     font-size: 0.82rem;
   }
 }
+
+/* ==========================================================================
+   CART ORIGIN BANNER (Import Panier Boutique)
+   ========================================================================== */
+.cart-origin-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1.5px solid #86efac;
+  border-radius: 14px;
+  padding: 1rem 1.35rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 14px -3px rgba(34, 197, 94, 0.14);
+}
+
+.cob-left {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.cob-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #1E5E3A;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cob-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.cob-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #14532d;
+}
+
+.cob-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.cob-tag {
+  background: #ffffff;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.cob-total-badge {
+  background: #1E5E3A;
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.cob-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.cob-close-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+@media (max-width: 640px) {
+  .cart-origin-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .cob-close-btn {
+    align-self: flex-end;
+  }
+}

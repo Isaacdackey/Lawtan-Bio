@@ -95,6 +95,38 @@
               </button>
             </div>
           } @else {
+            @if (cartSourceData(); as cartData) {
+              <div class="cart-origin-banner">
+                <div class="cob-left">
+                  <div class="cob-icon-wrap">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                  </div>
+                  <div class="cob-info">
+                    <div class="cob-title">
+                      Panier boutique importé ({{ cartData.items.length }} article{{ cartData.items.length > 1 ? 's' : '' }})
+                    </div>
+                    <div class="cob-summary">
+                      @for (item of cartData.items; track item.product.id) {
+                        <span class="cob-tag">{{ item.quantity }}x {{ item.product.name }}</span>
+                      }
+                      <span class="cob-total-badge">Total : {{ cartData.totalAmount.toLocaleString('fr-FR') }} FCFA</span>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="cob-close-btn" (click)="clearCartSource()" title="Ne pas lier le panier">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  <span>Détacher</span>
+                </button>
+              </div>
+            }
+
             <div class="nature-selector-block">
               <div class="nature-title">
                 <span class="nature-step">Étape 1</span>

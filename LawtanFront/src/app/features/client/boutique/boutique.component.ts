@@ -189,8 +189,30 @@ export class BoutiqueComponent {
   }
 
   goToDevis(): void {
+    const items = this.cart();
     this.closeCartDrawer();
-    this.router.navigate(['/devis']);
+
+    if (items.length > 0) {
+      const payload = {
+        items,
+        totalAmount: this.totalCartAmountFcfa()
+      };
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        try {
+          sessionStorage.setItem('lawtan_devis_cart', JSON.stringify(payload));
+        } catch {
+          // ignore
+        }
+      }
+      this.router.navigate(['/devis'], {
+        queryParams: { cat: 'laitier', fromCart: '1' },
+        state: payload
+      });
+    } else {
+      this.router.navigate(['/devis'], {
+        queryParams: { cat: 'laitier' }
+      });
+    }
   }
 
   getWhatsAppOrderLink(): string {
