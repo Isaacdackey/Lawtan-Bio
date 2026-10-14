@@ -16,3 +16,7 @@ src_backup_monolith/
 node_modules/
 dist/
 .angular/
+
+# Environment files
+.env
+*.env
