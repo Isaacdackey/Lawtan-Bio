@@ -7,7 +7,7 @@
  */
 
 /** Backend de production, deploye sur Render. */
-export const PRODUCTION_API_URL = 'https://lawtan-bio-back-2.onrender.com/api';
+export const PRODUCTION_API_URL = 'https://lawtan-bio-back-6h72.onrender.com/api';
 
 /** Backend utilise pendant le developpement local. */
 export const LOCAL_API_URL = 'http://localhost:8080/api';
