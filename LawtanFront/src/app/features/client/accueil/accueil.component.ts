@@ -288,12 +288,12 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
     const checkAndScroll = () => {
       const el = document.getElementById(target);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const header = document.querySelector('.public-navbar');
-        const headerHeight = (header?.clientHeight || 68) + 12;
-        const targetPos = el.getBoundingClientRect().top + window.scrollY - headerHeight;
+        const headerHeight = (header?.clientHeight || 64) + 8;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const targetPos = Math.max(0, el.getBoundingClientRect().top + scrollTop - headerHeight);
         window.scrollTo({
-          top: Math.max(0, targetPos),
+          top: targetPos,
           behavior: 'smooth'
         });
       } else if (attempts < 20) {

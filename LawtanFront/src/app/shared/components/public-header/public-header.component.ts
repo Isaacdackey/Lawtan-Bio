@@ -47,19 +47,28 @@ export class PublicHeaderComponent {
 
   closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+      document.documentElement.style.overflow = '';
+    }
   }
 
   onHomeClick(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     this.closeMobileMenu();
+
     const isHome = this.router.url === '/' || this.router.url.startsWith('/#') || this.router.url.startsWith('/?');
     if (isHome) {
-      if (event) {
-        event.preventDefault();
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 50);
     } else {
       this.router.navigate(['/']).then(() => {
-        setTimeout(() => window.scrollTo({ top: 0, behavior: 'instant' }), 50);
+        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
       });
     }
   }
@@ -67,18 +76,19 @@ export class PublicHeaderComponent {
   scrollToSection(id: string, event?: Event): void {
     if (event) {
       event.preventDefault();
+      event.stopPropagation();
     }
     this.closeMobileMenu();
 
     const executeScroll = (): boolean => {
       const el = document.getElementById(id);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const header = document.querySelector('.public-navbar');
-        const headerHeight = (header?.clientHeight || 68) + 12;
-        const targetPos = el.getBoundingClientRect().top + window.scrollY - headerHeight;
+        const headerHeight = (header?.clientHeight || 64) + 8;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const targetPos = Math.max(0, el.getBoundingClientRect().top + scrollTop - headerHeight);
         window.scrollTo({
-          top: Math.max(0, targetPos),
+          top: targetPos,
           behavior: 'smooth'
         });
         return true;
@@ -89,9 +99,12 @@ export class PublicHeaderComponent {
     const isHome = this.router.url === '/' || this.router.url.startsWith('/#') || this.router.url.startsWith('/?');
 
     if (isHome) {
-      if (!executeScroll()) {
-        setTimeout(executeScroll, 60);
-      }
+      // Décalage pour laisser le menu mobile se fermer et déverrouiller le défilement tactile
+      setTimeout(() => {
+        if (!executeScroll()) {
+          setTimeout(executeScroll, 100);
+        }
+      }, 70);
     } else {
       this.router.navigate(['/'], { fragment: id }).then(() => {
         let attempts = 0;
