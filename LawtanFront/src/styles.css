@@ -263,42 +263,42 @@ html.cow-cursor-active [contenteditable="true"] {
   font-feature-settings: "tnum";
 }
 
-/* Particule flottante 'Meeh !' à chaque clic partout sur l'écran */
+/* Particule flottante 'Meeh !' discrète et élégante à chaque clic sur le site public */
 .click-meeh-particle {
   position: fixed;
   z-index: 99999999;
   pointer-events: none;
   user-select: none;
   font-family: 'Fraunces', 'Outfit', serif;
-  font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  font-size: 8.5px;
+  letter-spacing: 0.01em;
   color: #23689E;
-  background: #FAF8F5;
-  border: 1.5px solid #F29A2E;
-  padding: 2px 10px;
+  background: rgba(250, 248, 245, 0.96);
+  border: 1px solid rgba(242, 154, 46, 0.7);
+  padding: 1px 5px;
   border-radius: 9999px;
-  box-shadow: 0 4px 14px rgba(44, 119, 176, 0.25);
+  box-shadow: 0 2px 6px rgba(44, 119, 176, 0.16);
   transform: translate(-50%, -100%);
-  animation: meehParticlePop 750ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: meehParticlePop 650ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes meehParticlePop {
   0% {
     opacity: 0;
-    transform: translate(-50%, 0) scale(0.6) rotate(calc(var(--meeh-rot, 0deg) - 4deg));
+    transform: translate(-50%, 0) scale(0.5) rotate(calc(var(--meeh-rot, 0deg) - 2deg));
   }
   20% {
     opacity: 1;
-    transform: translate(-50%, -16px) scale(1.12) rotate(var(--meeh-rot, 0deg));
+    transform: translate(-50%, -10px) scale(0.95) rotate(var(--meeh-rot, 0deg));
   }
   65% {
     opacity: 1;
-    transform: translate(-50%, -28px) scale(1) rotate(calc(var(--meeh-rot, 0deg) + 2deg));
+    transform: translate(-50%, -18px) scale(0.88) rotate(calc(var(--meeh-rot, 0deg) + 1deg));
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -46px) scale(0.8) rotate(calc(var(--meeh-rot, 0deg) + 4deg));
+    transform: translate(-50%, -28px) scale(0.7) rotate(calc(var(--meeh-rot, 0deg) + 2deg));
   }
 }
 

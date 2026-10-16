@@ -2386,6 +2386,7 @@ background: var(--bg-surface);
     grid-template-columns: 1fr;
   }
   .two-columns-grid,
+  .two-columns-grid-asym,
   .three-columns-grid {
     grid-template-columns: 1fr;
   }
@@ -2702,6 +2703,54 @@ gap: 6px;
   .pedigree-card-node {
     min-width: 100%;
     padding: 10px 12px;
+  }
+
+  /* Onglets de sous-navigation mobiles (Commercial, Production, Fourrage, Troupeau) */
+  .modal-tabs-header {
+    display: flex !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    padding: 6px 8px !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 6px !important;
+  }
+
+  .modal-tabs-header::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .modal-tab-button {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
+  }
+
+  /* Tables et conteneurs défilables sur petits écrans */
+  .table-responsive {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    margin-bottom: 8px;
+  }
+
+  .data-table {
+    min-width: 620px;
+  }
+
+  /* Formulaires & Modals plein écran propre sur mobile */
+  .modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .modal-card {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 94vh !important;
+    border-radius: 20px 20px 0 0 !important;
   }
 
   /* Toast Mobile */
