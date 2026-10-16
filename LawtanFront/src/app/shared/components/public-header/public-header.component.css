@@ -290,11 +290,22 @@
     height: 38px;
     border-radius: 50%;
     justify-content: center;
-    border-width: 1.5px;
+    background: #2C77B0;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 14px rgba(44, 119, 176, 0.25);
+  }
+  .nav-cart-pill:hover {
+    background: #1F5F94;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  .nav-cart-icon-wrap {
+    color: #ffffff;
   }
   .nav-cart-icon-wrap svg {
     width: 18px;
     height: 18px;
+    stroke: #ffffff;
   }
   .nav-cart-badge {
     top: -5px;
@@ -302,6 +313,7 @@
     min-width: 17px;
     height: 17px;
     font-size: 0.65rem;
+    border: 1.5px solid #ffffff;
   }
   .nav-cart-text {
     display: none;
