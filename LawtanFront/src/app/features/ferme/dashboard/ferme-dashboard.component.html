@@ -116,14 +116,14 @@
           </thead>
           <tbody>
             <tr *ngFor="let cow of milkingCows().slice(0, 5)" (click)="openAnimalModal(cow.internalId)" style="cursor:pointer" [class.row-alert]="cow.status === 'FEVER_TREATMENT'">
-              <td><code>{{ cow.internalId }}</code></td>
-              <td><strong>{{ cow.name }}</strong></td>
-              <td>{{ cow.breed }}</td>
-              <td>{{ cow.dailyMilkYield }} L</td>
-              <td [style.color]="cow.temperature && cow.temperature > 39.0 ? '#dc2626' : 'inherit'" [style.font-weight]="cow.temperature && cow.temperature > 39.0 ? '700' : 'normal'">
+              <td data-label="ID"><code>{{ cow.internalId }}</code></td>
+              <td data-label="Nom"><strong>{{ cow.name }}</strong></td>
+              <td data-label="Race">{{ cow.breed }}</td>
+              <td data-label="Lait Jour">{{ cow.dailyMilkYield }} L</td>
+              <td data-label="Temp." [style.color]="cow.temperature && cow.temperature > 39.0 ? '#dc2626' : 'inherit'" [style.font-weight]="cow.temperature && cow.temperature > 39.0 ? '700' : 'normal'">
                 {{ cow.temperature }} °C
               </td>
-              <td>
+              <td data-label="État Santé">
                 <span class="badge-pill badge-green" *ngIf="cow.status === 'EXCELLENT' || cow.status === 'HEALTHY'">Excellente</span>
                 <span class="badge-pill badge-red" *ngIf="cow.status === 'FEVER_TREATMENT'">Fièvre / Soin</span>
                 <span class="badge-pill badge-blue" *ngIf="cow.status === 'PREGNANT'">Gestante</span>

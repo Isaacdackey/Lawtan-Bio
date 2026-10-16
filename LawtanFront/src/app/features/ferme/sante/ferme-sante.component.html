@@ -59,7 +59,7 @@
         <span class="badge-pill badge-green">{{ healthRecords().length }} acte(s) enregistré(s)</span>
       </div>
       <div class="table-responsive">
-        <table class="data-table" style="min-width:680px">
+        <table class="data-table">
           <thead>
             <tr>
               <th>Date</th>
@@ -75,19 +75,19 @@
           </thead>
           <tbody>
             <tr *ngFor="let rec of healthRecords()" [class.row-alert]="rec.status === 'En cours'">
-              <td><strong>{{ rec.recordDate }}</strong></td>
-              <td><strong>{{ rec.animalName }} ({{ rec.animalInternalId }})</strong></td>
-              <td>
+              <td data-label="Date"><strong>{{ rec.recordDate }}</strong></td>
+              <td data-label="Animal"><strong>{{ rec.animalName }} ({{ rec.animalInternalId }})</strong></td>
+              <td data-label="Acte & Diagnostic">
                 <div style="font-weight:600;color:var(--text-dark)">{{ rec.actType }}</div>
                 <div style="font-size:0.78rem;color:var(--text-muted)">{{ rec.diagnosis }}</div>
               </td>
-              <td>
+              <td data-label="Prescription">
                 <span style="font-size:0.8rem;color:#1e3a8a;background:#eff6ff;padding:3px 8px;border-radius:4px;display:inline-block;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" [title]="rec.treatmentPrescription || 'Aucune'">
                   {{ rec.treatmentPrescription || 'Aucune' }}
                 </span>
               </td>
-              <td>{{ rec.practitionerName || '—' }}</td>
-              <td>
+              <td data-label="Praticien">{{ rec.practitionerName || '—' }}</td>
+              <td data-label="Délai Lait">
                 <span *ngIf="rec.milkWithdrawalDays && rec.milkWithdrawalDays > 0" class="badge-pill badge-red" title="Lait à écarter pendant le traitement">
                   {{ rec.milkWithdrawalDays }} j retrait
                 </span>
@@ -95,13 +95,13 @@
                   0j (Conforme)
                 </span>
               </td>
-              <td><code>{{ rec.costFcfa }} FCFA</code></td>
-              <td>
+              <td data-label="Coût"><code>{{ rec.costFcfa }} FCFA</code></td>
+              <td data-label="Statut">
                 <span class="badge-pill" [class.badge-red]="rec.status === 'En cours'" [class.badge-green]="rec.status === 'Terminé' || rec.status === 'Apte IA'" [class.badge-gold]="rec.status === 'Sous surveillance'">
                   {{ rec.status }}
                 </span>
               </td>
-              <td>
+              <td data-label="Action">
                 <button class="table-icon-btn" title="Modifier l'intervention médicale" (click)="openEditHealthModal(rec)">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>

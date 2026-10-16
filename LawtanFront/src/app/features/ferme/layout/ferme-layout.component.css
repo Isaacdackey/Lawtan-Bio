@@ -980,11 +980,13 @@
     left: 0 !important;
     bottom: 0 !important;
     height: 100vh !important;
+    height: 100dvh !important;
     width: 280px !important;
     max-width: 85vw !important;
     z-index: 999 !important;
     transform: translateX(-100%) !important;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
   }
 
   .sidebar.mobile-open,
@@ -1009,12 +1011,28 @@
 
 @media (max-width: 768px) {
   .topbar {
-    padding: 0 14px;
-    height: 62px;
+    padding: 0 12px;
+    height: 60px;
+    gap: 8px;
+  }
+
+  .topbar-left {
+    min-width: 0;
+    flex: 1;
+    gap: 10px;
+  }
+
+  .topbar-heading-group {
+    min-width: 0;
+    flex: 1;
   }
 
   .topbar-heading-group h1.page-title {
-    font-size: 1.05rem;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .topbar-heading-group p.sub-context {
@@ -1025,17 +1043,38 @@
     display: none;
   }
 
+  .user-dropdown-popover {
+    position: fixed;
+    top: 64px;
+    right: 8px;
+    left: 8px;
+    width: auto;
+    max-width: calc(100vw - 1rem);
+    z-index: 1000;
+  }
+
   .notif-dropdown-box {
     position: fixed;
     top: 64px;
-    left: 12px;
-    right: 12px;
+    left: 8px;
+    right: 8px;
     width: auto;
-    max-width: 100%;
-    z-index: 110;
+    max-width: calc(100vw - 1rem);
+    z-index: 1000;
   }
 
   .page-container {
-    padding: 14px 12px;
+    padding: 12px 10px;
+  }
+}
+
+/* Paysage mobile (hauteur faible, ex. 360-480px) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .topbar {
+    height: 50px;
+  }
+  .sidebar {
+    height: 100dvh !important;
+    overflow-y: auto !important;
   }
 }

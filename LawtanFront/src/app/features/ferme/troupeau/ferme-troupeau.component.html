@@ -192,15 +192,15 @@
             </thead>
             <tbody>
               <tr *ngFor="let evt of getAnimalEvents(selectedAnimal()?.internalId)">
-                <td>
+                <td data-label="Date & Heure">
                   <strong>{{ evt.date }}</strong>
                   <span *ngIf="evt.time" style="font-size:0.7rem;color:#64748b;display:block">{{ evt.time }}</span>
                 </td>
-                <td><span class="badge-pill" [ngClass]="evt.badgeClass">{{ evt.typeLabel }}</span></td>
-                <td style="font-size:0.78rem"><strong>{{ evt.details }}</strong></td>
-                <td style="font-size:0.78rem">{{ evt.operator }}</td>
-                <td><span class="badge-pill badge-green">{{ evt.result }}</span></td>
-                <td style="max-width:280px;font-size:0.75rem;color:#475569">{{ evt.observations }}</td>
+                <td data-label="Type d'Acte"><span class="badge-pill" [ngClass]="evt.badgeClass">{{ evt.typeLabel }}</span></td>
+                <td data-label="Détails" style="font-size:0.78rem"><strong>{{ evt.details }}</strong></td>
+                <td data-label="Intervenant" style="font-size:0.78rem">{{ evt.operator }}</td>
+                <td data-label="Résultat"><span class="badge-pill badge-green">{{ evt.result }}</span></td>
+                <td data-label="Observations" style="max-width:280px;font-size:0.75rem;color:#475569">{{ evt.observations }}</td>
               </tr>
             </tbody>
           </table>
@@ -208,7 +208,7 @@
       </div>
 
       <div class="modal-tab-pane" *ngIf="activeModalTab() === 'lactation'">
-        <div style="height:240px;position:relative">
+        <div class="chart-canvas-wrap" style="height:240px;position:relative">
           <canvas id="perfModalChart"></canvas>
         </div>
       </div>

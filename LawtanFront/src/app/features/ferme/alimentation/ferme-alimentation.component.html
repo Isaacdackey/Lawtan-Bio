@@ -124,18 +124,18 @@
           </thead>
           <tbody>
             <tr *ngFor="let s of filteredFeedStocks()" [class.row-alert]="s.currentStockKg <= s.alertThresholdKg">
-              <td><strong>{{ s.name }}</strong></td>
-              <td><span class="badge-pill badge-green">{{ s.categoryLabel }}</span></td>
-              <td><strong style="font-size:1rem;color:#12304A">{{ s.currentStockKg.toLocaleString() }} kg</strong></td>
-              <td><span style="color:#64748b">{{ s.alertThresholdKg.toLocaleString() }} kg</span></td>
-              <td><code>{{ s.unitPriceKg }} FCFA</code></td>
-              <td style="font-size:0.8rem;color:#475569">{{ s.storageLocation }}</td>
-              <td>
+              <td data-label="Aliment"><strong>{{ s.name }}</strong></td>
+              <td data-label="Catégorie"><span class="badge-pill badge-green">{{ s.categoryLabel }}</span></td>
+              <td data-label="Stock Actuel"><strong style="font-size:1rem;color:#12304A">{{ s.currentStockKg.toLocaleString() }} kg</strong></td>
+              <td data-label="Seuil Alerte"><span style="color:#64748b">{{ s.alertThresholdKg.toLocaleString() }} kg</span></td>
+              <td data-label="Prix / kg"><code>{{ s.unitPriceKg }} FCFA</code></td>
+              <td data-label="Lieu de Stockage" style="font-size:0.8rem;color:#475569">{{ s.storageLocation }}</td>
+              <td data-label="Statut Réserve">
                 <span class="badge-pill" [class.badge-red]="s.currentStockKg <= s.alertThresholdKg" [class.badge-green]="s.currentStockKg > s.alertThresholdKg">
                   {{ s.currentStockKg <= s.alertThresholdKg ? 'Alerte Seuil Bas' : 'Optimal' }}
                 </span>
               </td>
-              <td style="text-align:right">
+              <td data-label="Approvisionnement Rapide" style="text-align:right">
                 <div style="display:inline-flex;gap:6px">
                   <button class="btn-secondary" style="padding:4px 8px;font-size:0.75rem" (click)="addQuickStock(s, 100)">+ 100 kg</button>
                   <button class="btn-secondary" style="padding:4px 8px;font-size:0.75rem" (click)="addQuickStock(s, 500)">+ 500 kg</button>
@@ -207,12 +207,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let d of distributions()">
-              <td><strong>{{ d.date }}</strong></td>
-              <td><span class="badge-pill badge-green">{{ d.lotCible }}</span></td>
-              <td>{{ d.nomAliment }}</td>
-              <td><strong style="color:#2C77B0">{{ d.quantiteKg }} kg</strong></td>
-              <td><code>{{ d.coutFCFA.toLocaleString() }} FCFA</code></td>
-              <td>{{ d.distribuePar }}</td>
+              <td data-label="Date"><strong>{{ d.date }}</strong></td>
+              <td data-label="Lot Animal"><span class="badge-pill badge-green">{{ d.lotCible }}</span></td>
+              <td data-label="Aliment / Ration">{{ d.nomAliment }}</td>
+              <td data-label="Quantité (kg)"><strong style="color:#2C77B0">{{ d.quantiteKg }} kg</strong></td>
+              <td data-label="Coût (FCFA)"><code>{{ d.coutFCFA.toLocaleString() }} FCFA</code></td>
+              <td data-label="Responsable">{{ d.distribuePar }}</td>
             </tr>
           </tbody>
         </table>
@@ -221,7 +221,7 @@
   </div>
 
   <div *ngIf="activeFeedSubTab() === 'suppliers'">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr));gap:14px">
       <div *ngFor="let sup of suppliers()" class="content-card">
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div>

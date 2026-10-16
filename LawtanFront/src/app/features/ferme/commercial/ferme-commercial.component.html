@@ -62,7 +62,7 @@
     </div>
   </section>
 
-  <div class="modal-tabs-header" style="margin:20px 0;border-bottom:1px solid #e2e8f0;background:white;border-radius:12px;padding:6px;display:flex;flex-wrap:wrap;gap:6px;">
+  <div class="modal-tabs-header" style="margin:20px 0;border-bottom:1px solid #e2e8f0;background:white;border-radius:12px;padding:6px;">
     <button class="modal-tab-button" [class.active]="activeCommercialSubTab() === 'invoices'" (click)="navigateToCommercialSubTab('invoices')">
       Factures & Commandes ({{ invoices().length }})
     </button>
@@ -92,13 +92,13 @@
         <thead><tr><th>Référence</th><th>Client</th><th>Livraison</th><th>Articles</th><th>Total</th><th>Date</th><th>Statut</th></tr></thead>
         <tbody>
           <tr *ngFor="let order of marketplaceOrders()">
-            <td><strong>{{ order.reference }}</strong><br><small>{{ order.customerPhone }}</small></td>
-            <td>{{ order.customerName }}<br><small>{{ order.customerEmail || 'Pas d’email' }}</small></td>
-            <td>{{ order.deliveryAddress }}, {{ order.deliveryCity }}<br><small>{{ order.customerNote }}</small></td>
-            <td><div *ngFor="let item of order.items">{{ item.quantity }} × {{ item.productName }}</div></td>
-            <td><strong>{{ order.totalAmountFcfa.toLocaleString('fr-FR') }} FCFA</strong></td>
-            <td>{{ order.createdAt | date:'short' }}</td>
-            <td>
+            <td data-label="Référence"><strong>{{ order.reference }}</strong><br><small>{{ order.customerPhone }}</small></td>
+            <td data-label="Client">{{ order.customerName }}<br><small>{{ order.customerEmail || 'Pas d’email' }}</small></td>
+            <td data-label="Livraison">{{ order.deliveryAddress }}, {{ order.deliveryCity }}<br><small>{{ order.customerNote }}</small></td>
+            <td data-label="Articles"><div *ngFor="let item of order.items">{{ item.quantity }} × {{ item.productName }}</div></td>
+            <td data-label="Total"><strong>{{ order.totalAmountFcfa.toLocaleString('fr-FR') }} FCFA</strong></td>
+            <td data-label="Date">{{ order.createdAt | date:'short' }}</td>
+            <td data-label="Statut">
               <select
                 [ngModel]="order.status"
                 (ngModelChange)="changeMarketplaceOrderStatus(order, $event)"
@@ -108,7 +108,7 @@
               </select>
             </td>
           </tr>
-          <tr *ngIf="marketplaceOrders().length === 0"><td colspan="7">Aucune commande marketplace pour le moment.</td></tr>
+          <tr *ngIf="marketplaceOrders().length === 0"><td colspan="7" class="empty-cell">Aucune commande marketplace pour le moment.</td></tr>
         </tbody>
       </table>
     </div>
@@ -158,7 +158,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let s of filteredProductStocks()" [style.opacity]="s.quantityAvailable > 0 ? '1' : '0.65'">
-            <td>
+            <td data-label="Produit">
               <strong style="color:#0f172a">{{ s.productName }}</strong>
               <div *ngIf="s.storageLocation" style="display:inline-flex;align-items:center;gap:4px;font-size:0.75rem;color:#64748b;margin-top:2px">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -168,23 +168,23 @@
                 <span>{{ s.storageLocation }}</span>
               </div>
             </td>
-            <td><span class="badge-pill" style="background:#f1f5f9;color:#334155">{{ s.unit }}</span></td>
-            <td>
+            <td data-label="Conditionnement"><span class="badge-pill" style="background:#f1f5f9;color:#334155">{{ s.unit }}</span></td>
+            <td data-label="Stock Boutique">
               <strong [style.color]="s.quantityAvailable > 0 ? '#16a34a' : '#dc2626'">
                 {{ s.quantityAvailable }} {{ s.unit }}
               </strong>
             </td>
-            <td>
+            <td data-label="Prix Unitaire">
               <span style="font-weight:700;color:#0284c7">{{ s.unitPriceFcfa.toLocaleString('fr-FR') }} FCFA</span>
             </td>
-            <td>
+            <td data-label="Valeur Stock">
               <span style="font-weight:600;color:#64748b">{{ ((s.quantityAvailable || 0) * (s.unitPriceFcfa || 0)).toLocaleString('fr-FR') }} FCFA</span>
             </td>
-            <td>
+            <td data-label="DLC">
               <span *ngIf="s.dlcExpiryDate" style="font-size:0.84rem;color:#475569">{{ s.dlcExpiryDate | date:'mediumDate' }}</span>
               <span *ngIf="!s.dlcExpiryDate" style="color:#94a3b8">—</span>
             </td>
-            <td>
+            <td data-label="Statut Boutique">
               <span class="badge-pill" [style.background]="s.quantityAvailable > 0 ? '#dcfce7' : '#f1f5f9'" [style.color]="s.quantityAvailable > 0 ? '#166534' : '#64748b'" style="display:inline-flex;align-items:center;gap:5px">
                 <svg *ngIf="s.quantityAvailable > 0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="20 6 9 17 4 12"/>
@@ -195,7 +195,7 @@
                 <span>{{ s.quantityAvailable > 0 ? 'En rayon (Visible)' : 'Archivé (Hors-ligne)' }}</span>
               </span>
             </td>
-            <td style="text-align:right">
+            <td data-label="Actions" style="text-align:right">
               <div style="display:inline-flex;gap:8px">
                 <button type="button" class="btn-secondary" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;font-size:0.82rem" (click)="openEditStockModal(s)" title="Modifier les informations ou le prix">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -266,36 +266,36 @@
           </thead>
           <tbody>
             <tr *ngFor="let inv of filteredInvoices()">
-              <td>
+              <td data-label="N° Facture">
                 <code style="font-weight:700;color:#12304A;background:#EAF5FD;border:1px solid #BFDFF3;padding:3px 6px;border-radius:4px">{{ inv.invoiceNumber }}</code>
               </td>
-              <td>
+              <td data-label="Client & Contact">
                 <div style="font-weight:600;color:#1e293b">{{ inv.customerName }}</div>
                 <div style="font-size:0.75rem;color:#64748b">{{ inv.customerPhone }}</div>
               </td>
-              <td>
+              <td data-label="Date / Échéance">
                 <div style="font-size:0.85rem;font-weight:500">{{ inv.issueDate }}</div>
                 <div style="font-size:0.75rem;color:#94a3b8">Éch. {{ inv.dueDate }}</div>
               </td>
-              <td>
+              <td data-label="Articles Commandés">
                 <div style="font-size:0.8rem;max-width:240px;color:#334155">
                   <span *ngFor="let it of inv.items; let last = last">
                     {{ it.quantity }}x {{ it.productName }}<span *ngIf="!last">, </span>
                   </span>
                 </div>
               </td>
-              <td><strong style="font-size:1rem;color:#12304A">{{ inv.totalAmountFcfa.toLocaleString() }} FCFA</strong></td>
-              <td>
+              <td data-label="Montant Net"><strong style="font-size:1rem;color:#12304A">{{ inv.totalAmountFcfa.toLocaleString() }} FCFA</strong></td>
+              <td data-label="Encaissé / Reste">
                 <div style="font-size:0.85rem;color:#2C77B0">{{ inv.paidAmountFcfa.toLocaleString() }} FCFA</div>
                 <div *ngIf="inv.remainingAmountFcfa > 0" style="font-size:0.75rem;color:#dc2626;font-weight:700">Reste: {{ inv.remainingAmountFcfa.toLocaleString() }} FCFA</div>
               </td>
-              <td><span class="badge-pill badge-green">{{ inv.paymentMethod }}</span></td>
-              <td>
+              <td data-label="Règlement"><span class="badge-pill badge-green">{{ inv.paymentMethod }}</span></td>
+              <td data-label="Statut">
                 <span class="badge-pill" [class.badge-green]="inv.status === 'PAID'" [class.badge-gold]="inv.status === 'ISSUED'">
                   {{ inv.status === 'PAID' ? 'Soldée' : 'En Attente' }}
                 </span>
               </td>
-              <td style="text-align:right">
+              <td data-label="Actions" style="text-align:right">
                 <button *ngIf="inv.status !== 'PAID'" class="btn-primary" style="padding:4px 10px;font-size:0.75rem" (click)="openRecordPaymentModal(inv)">
                   Encaisser
                 </button>
@@ -312,7 +312,7 @@
   </div>
 
   <div *ngIf="activeCommercialSubTab() === 'customers'">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:18px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr));gap:14px">
       <div *ngFor="let c of customers()" class="content-card">
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div>
@@ -349,13 +349,13 @@
           </thead>
           <tbody>
             <tr *ngFor="let p of payments()">
-              <td><code style="font-weight:700">{{ p.transactionRef }}</code></td>
-              <td><code>{{ p.invoiceNumber }}</code></td>
-              <td><strong>{{ p.customerName }}</strong></td>
-              <td><strong style="color:#2C77B0;font-size:1rem">{{ p.amountFcfa.toLocaleString() }} FCFA</strong></td>
-              <td>{{ p.paymentDate }}</td>
-              <td><span class="badge-pill badge-green">{{ p.paymentMethod }}</span></td>
-              <td><span class="badge-pill badge-green">Validé & Rapproché</span></td>
+              <td data-label="Réf. Transaction"><code style="font-weight:700">{{ p.transactionRef }}</code></td>
+              <td data-label="Facture Liée"><code>{{ p.invoiceNumber }}</code></td>
+              <td data-label="Client"><strong>{{ p.customerName }}</strong></td>
+              <td data-label="Montant Encaissé"><strong style="color:#2C77B0;font-size:1rem">{{ p.amountFcfa.toLocaleString() }} FCFA</strong></td>
+              <td data-label="Date Règlement">{{ p.paymentDate }}</td>
+              <td data-label="Mode de Paiement"><span class="badge-pill badge-green">{{ p.paymentMethod }}</span></td>
+              <td data-label="Statut"><span class="badge-pill badge-green">Validé & Rapproché</span></td>
             </tr>
           </tbody>
         </table>

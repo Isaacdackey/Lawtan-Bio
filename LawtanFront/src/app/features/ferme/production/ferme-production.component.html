@@ -295,17 +295,17 @@
           </thead>
           <tbody>
             <tr *ngFor="let p of paginatedMilkProductions()">
-              <td><strong>{{ p.productionDate }}</strong></td>
-              <td>
+              <td data-label="Date Traite"><strong>{{ p.productionDate }}</strong></td>
+              <td data-label="Session">
                 <span class="badge-pill" [class.badge-gold]="p.session === 'MORNING'" [class.badge-purple]="p.session === 'EVENING'">
                   {{ p.session === 'MORNING' ? 'Matin' : 'Soir' }}
                 </span>
               </td>
-              <td><strong>{{ p.animalName }} ({{ p.animalInternalId }})</strong></td>
-              <td><strong style="color:#2C77B0">{{ p.volumeLiters }} L</strong></td>
-              <td>{{ p.milkTemperature }} °C</td>
-              <td><span class="badge-pill badge-green">100% Conforme Bio</span></td>
-              <td><code>{{ p.destinationTank }}</code></td>
+              <td data-label="Vache & Identifiant"><strong>{{ p.animalName }} ({{ p.animalInternalId }})</strong></td>
+              <td data-label="Volume (Litres)"><strong style="color:#2C77B0">{{ p.volumeLiters }} L</strong></td>
+              <td data-label="Température">{{ p.milkTemperature }} °C</td>
+              <td data-label="Qualité Bio"><span class="badge-pill badge-green">100% Conforme Bio</span></td>
+              <td data-label="Destination Cuve"><code>{{ p.destinationTank }}</code></td>
             </tr>
           </tbody>
         </table>

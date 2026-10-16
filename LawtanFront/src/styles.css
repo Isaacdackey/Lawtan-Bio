@@ -986,6 +986,18 @@ textarea.form-input {
   z-index: 2000;
   font-size: 13px;
   animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 420px;
+}
+
+@media (max-width: 640px) {
+  .toast-box {
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: none;
+    box-sizing: border-box;
+  }
 }
 
 @keyframes toastIn {
@@ -1040,23 +1052,52 @@ textarea.form-input {
    ========================================================================== */
 
 /* Cibles tactiles confortables (min 44px d'encombrement / hit area) */
-button,
-.btn-primary,
-.btn-subtle,
-.btn-card-primary,
-.btn-card-secondary,
-.form-input,
-.segmented-control button,
-.dropdown-item,
-.user-btn-trigger,
-.toast-close-btn,
-.btn-close {
-  min-height: 44px;
-  touch-action: manipulation;
+/* Cibles tactiles confortables sur terminaux tactiles (pointer: coarse) */
+@media (pointer: coarse) {
+  button:not(.btn-xs):not(.pagination-btn):not(.page-number-btn):not(.table-icon-btn):not(.btn-icon-compact):not(.segmented-control button),
+  .btn-primary,
+  .btn-subtle,
+  .btn-card-primary,
+  .btn-card-secondary,
+  .form-input,
+  .dropdown-item,
+  .user-btn-trigger,
+  .toast-close-btn,
+  .btn-close {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+
+/* Boutons compacts (pagination, icônes, pastilles, barre d'onglets) */
+.btn-xs,
+.page-number-btn,
+.table-icon-btn,
+.btn-icon-compact,
+.segmented-control button {
+  min-height: unset;
+  position: relative;
+}
+
+/* Zone tactile garantie de 44px sans gonfler le rendu visuel */
+@media (pointer: coarse) {
+  .btn-xs::after,
+  .page-number-btn::after,
+  .table-icon-btn::after,
+  .btn-icon-compact::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+  }
 }
 
 .btn-close {
   min-width: 44px;
+  min-height: 44px;
 }
 
 /* Modales adaptatives sur smartphone (Bottom Sheet plein confort sans débordement) */
@@ -1265,14 +1306,53 @@ button,
 
   .segmented-control {
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     gap: 4px;
+    padding: 3px;
+  }
+
+  .segmented-control::-webkit-scrollbar {
+    display: none;
   }
 
   .segmented-control button {
     text-align: center;
-    padding: 0.5rem;
+    padding: 0.5rem 0.85rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+}
+
+/* Prévention zoom automatique sur iOS pour formulaires (< 16px zoome automatiquement) */
+@media (max-width: 640px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  .form-input {
+    font-size: 16px !important;
+  }
+}
+
+/* Conteneurs Canvas Chart.js responsive (maintainAspectRatio: false) */
+.chart-canvas-wrap,
+.chart-canvas-container {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 220px;
+}
+
+@media (max-width: 640px) {
+  .chart-canvas-wrap,
+  .chart-canvas-container {
+    height: 240px !important;
+    max-height: 280px !important;
   }
 }
 

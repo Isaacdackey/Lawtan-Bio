@@ -130,12 +130,12 @@
         </thead>
         <tbody>
           <tr *ngFor="let evt of paginatedReproEvents()">
-            <td><strong>{{ evt.eventDate }}</strong></td>
-            <td>
+            <td data-label="Date"><strong>{{ evt.eventDate }}</strong></td>
+            <td data-label="Animal">
               <strong>{{ evt.animalName || evt.animalInternalId }}</strong>
               <span style="font-size:0.72rem;color:#64748b;display:block">{{ evt.animalInternalId }}</span>
             </td>
-            <td>
+            <td data-label="Type d'Acte">
               <span class="badge-pill" 
                     [class.badge-gold]="evt.eventType === 'HEAT_DETECTION'"
                     [class.badge-blue]="evt.eventType === 'ARTIFICIAL_INSEMINATION' || evt.eventType === 'NATURAL_MATING'"
@@ -145,22 +145,22 @@
                 {{ evt.eventTypeLabel || evt.eventType }}
               </span>
             </td>
-            <td>{{ evt.bullOrSemenUsed || '—' }}</td>
-            <td>{{ evt.operatorName || '—' }}</td>
-            <td>
+            <td data-label="Taureau / Semence">{{ evt.bullOrSemenUsed || '—' }}</td>
+            <td data-label="Praticien">{{ evt.operatorName || '—' }}</td>
+            <td data-label="Tarissement prévu">
               <span *ngIf="evt.expectedDryOffDate" style="color:#b45309;font-weight:700">{{ evt.expectedDryOffDate }} (Tarissement)</span>
               <span *ngIf="!evt.expectedDryOffDate">—</span>
             </td>
-            <td>
+            <td data-label="Vêlage prévu">
               <span *ngIf="evt.expectedCalvingDate" style="color:#2C77B0;font-weight:700">{{ evt.expectedCalvingDate }} (Vêlage)</span>
               <span *ngIf="!evt.expectedCalvingDate">—</span>
             </td>
-            <td style="max-width:240px;font-size:0.75rem;color:#475569">{{ evt.observations || '—' }}</td>
-            <td>
+            <td data-label="Observations" style="max-width:240px;font-size:0.75rem;color:#475569">{{ evt.observations || '—' }}</td>
+            <td data-label="Statut">
               <span class="badge-pill badge-green" *ngIf="evt.isConfirmed">Confirmé</span>
               <span class="badge-pill badge-gold" *ngIf="!evt.isConfirmed">En attente</span>
             </td>
-            <td>
+            <td data-label="Action">
               <button class="table-icon-btn" title="Supprimer cet acte" (click)="deleteReproEntry(evt.id)" style="color:#dc2626">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
               </button>
