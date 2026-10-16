@@ -63,8 +63,9 @@
           <div class="tank-fill-info">
             <span>Lait en attente de répartition : <strong>{{ unallocatedMilkVolume() }} L</strong> ({{ unallocatedMilkPercentage() }}%)</span>
           </div>
-          <div *ngIf="unallocatedMilkVolume() <= 0" class="tank-empty-alert" style="background:#EAF5FD;color:#23689E;border-color:#BFDFF3">
-            ✓ Tout le lait collecté est réparti. Il reste du stock en cuve pour la transformation et la vente.
+          <div *ngIf="unallocatedMilkVolume() <= 0" class="tank-empty-alert" style="display:flex;align-items:center;gap:8px;background:#EAF5FD;color:#23689E;border-color:#BFDFF3">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Tout le lait collecté est réparti. Il reste du stock en cuve pour la transformation et la vente.</span>
           </div>
         </div>
 

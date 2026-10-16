@@ -286,8 +286,9 @@
                 <button *ngIf="inv.status !== 'PAID'" class="btn-primary" style="padding:4px 10px;font-size:0.75rem" (click)="openRecordPaymentModal(inv)">
                   Encaisser
                 </button>
-                <span *ngIf="inv.status === 'PAID'" class="badge-pill badge-green" style="font-size:0.75rem">
-                  ✓ Payé
+                <span *ngIf="inv.status === 'PAID'" class="badge-pill badge-green" style="display:inline-flex;align-items:center;gap:4px;font-size:0.75rem">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Payé</span>
                 </span>
               </td>
             </tr>
