@@ -5,16 +5,16 @@
       <a href="javascript:void(0)" class="logo-badge-container" (click)="showPage('dashboard')" title="LAWTAN Agro Industries">
         <div class="logo-svg-wrap">
           <svg viewBox="0 0 160 140" width="100%" height="100%">
-            <path d="M 80 8 C 125 8, 155 35, 155 75 C 155 110, 120 132, 80 132 C 38 132, 5 110, 5 75 C 5 35, 35 8, 80 8 Z" fill="#0d4a22" stroke="#f59e0b" stroke-width="4"/>
-            <path d="M 80 28 C 65 10, 48 18, 52 35 C 56 46, 75 42, 80 44 C 85 42, 104 46, 108 35 C 112 18, 95 10, 80 28 Z" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/>
-            <path d="M 80 28 Q 78 38 68 40" stroke="#86efac" stroke-width="1.5" fill="none"/>
-            <path d="M 80 28 Q 82 38 92 40" stroke="#86efac" stroke-width="1.5" fill="none"/>
+            <path d="M 80 8 C 125 8, 155 35, 155 75 C 155 110, 120 132, 80 132 C 38 132, 5 110, 5 75 C 5 35, 35 8, 80 8 Z" fill="#23689E" stroke="#f59e0b" stroke-width="4"/>
+            <path d="M 80 28 C 65 10, 48 18, 52 35 C 56 46, 75 42, 80 44 C 85 42, 104 46, 108 35 C 112 18, 95 10, 80 28 Z" fill="#2C77B0" stroke="#2C77B0" stroke-width="1.5"/>
+            <path d="M 80 28 Q 78 38 68 40" stroke="#BFDFF3" stroke-width="1.5" fill="none"/>
+            <path d="M 80 28 Q 82 38 92 40" stroke="#BFDFF3" stroke-width="1.5" fill="none"/>
             <path d="M 20 88 C 55 78, 105 78, 140 92 C 145 94, 135 102, 110 102 C 60 102, 35 98, 20 88 Z" fill="#dc2626"/>
             <path d="M 115 54 C 110 50, 118 42, 124 45 C 128 48, 125 56, 120 58 Z" fill="#1e293b"/>
             <ellipse cx="120" cy="42" rx="14" ry="5" fill="#fef08a" stroke="#d97706" stroke-width="1"/>
             <path d="M 112 58 L 126 58 L 132 80 L 106 80 Z" fill="#eab308"/>
             <path d="M 114 68 L 128 68 L 130 82 L 110 82 Z" fill="#38bdf8"/>
-            <text x="72" y="74" text-anchor="middle" font-family="'Outfit', cursive, sans-serif" font-weight="900" font-size="34" fill="#ffffff" stroke="#14532d" stroke-width="1.5" letter-spacing="1">Lawtan</text>
+            <text x="72" y="74" text-anchor="middle" font-family="'Outfit', cursive, sans-serif" font-weight="900" font-size="34" fill="#ffffff" stroke="#12304A" stroke-width="1.5" letter-spacing="1">Lawtan</text>
             <text x="80" y="98" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="10.5" fill="#ffffff" letter-spacing="0.5">Agro Industries</text>
             <path d="M 28 114 Q 80 128 132 114" stroke="#f59e0b" stroke-width="3.5" fill="none" stroke-linecap="round"/>
           </svg>
@@ -367,8 +367,8 @@
                   type="button"
                   class="btn-secondary"
                   style="font-size:0.7rem;padding:3px 7px;border-radius:6px"
-                  [style.borderColor]="p.id === fermeService.profilActif().id ? '#15803d' : '#e2e8f0'"
-                  [style.background]="p.id === fermeService.profilActif().id ? '#f0fdf4' : '#ffffff'"
+                  [style.borderColor]="p.id === fermeService.profilActif().id ? '#2C77B0' : '#e2e8f0'"
+                  [style.background]="p.id === fermeService.profilActif().id ? '#EAF5FD' : '#ffffff'"
                   (click)="selectionnerRole(p.id)">
                   {{ p.avatar }} ({{ p.roleTitre }})
                 </button>
@@ -412,7 +412,7 @@
           </div>
         </li>
         <li class="notif-item-row" *ngIf="farmNotifications().length === 0">
-          <span class="notif-dot-type" style="background:#16a34a"></span>
+          <span class="notif-dot-type" style="background:#2C77B0"></span>
           <div class="notif-item-content">
             <h5>Aucune alerte en cours</h5>
             <p>Aucune alerte de reproduction, soin en cours ni stock sous le seuil.</p>

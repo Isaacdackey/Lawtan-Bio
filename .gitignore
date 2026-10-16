@@ -20,3 +20,8 @@ dist/
 # Environment files
 .env
 *.env
+
+# Large archives and temporary files
+*.zip
+classpath.txt
+target/

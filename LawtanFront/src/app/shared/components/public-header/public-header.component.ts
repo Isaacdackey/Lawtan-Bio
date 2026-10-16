@@ -1,6 +1,7 @@
 import { Component, Input, HostListener, HostBinding, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { CartService } from '../../../services/cart.service';
 
 @Component({
   selector: 'app-public-header',
@@ -13,6 +14,7 @@ export class PublicHeaderComponent {
   @Input() activePage: string = 'accueil';
 
   private router = inject(Router);
+  cartService = inject(CartService);
 
   isScrolled = signal<boolean>(false);
   isMobileMenuOpen = signal<boolean>(false);
@@ -20,6 +22,17 @@ export class PublicHeaderComponent {
   @HostBinding('class.menu-open')
   get isMenuOpenClass(): boolean {
     return this.isMobileMenuOpen();
+  }
+
+  openCart(): void {
+    this.closeMobileMenu();
+    if (!this.router.url.includes('/boutique')) {
+      this.router.navigate(['/boutique']).then(() => {
+        this.cartService.openCartDrawer();
+      });
+    } else {
+      this.cartService.toggleCartDrawer();
+    }
   }
 
   constructor() {

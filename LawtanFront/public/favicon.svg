@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
   <defs>
     <linearGradient id="farmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1E5E3A"/>
-      <stop offset="100%" stop-color="#15442A"/>
+      <stop offset="0%" stop-color="#2C77B0"/>
+      <stop offset="100%" stop-color="#23689E"/>
     </linearGradient>
   </defs>
   
-  <!-- Fond écusson / squirle vert agricole Lawtan -->
+  <!-- Fond écusson / squirle bleu ciel laitier Lawtan -->
   <rect width="128" height="128" rx="30" fill="url(#farmGrad)"/>
   
   <!-- Monogramme L Lawtan stylisé -->

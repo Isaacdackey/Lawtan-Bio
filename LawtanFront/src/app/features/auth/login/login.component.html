@@ -112,6 +112,21 @@
           </div>
         }
 
+        <div style="margin-bottom:18px;padding:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px">
+          <span style="display:block;font-size:0.75rem;font-weight:700;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em">Comptes d'accès rapide :</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button type="button" class="btn-secondary" style="font-size:0.75rem;padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;background:#fff;cursor:pointer" (click)="quickFill('amadou.sow@lawtan.sn', 'Lawtan@2026')">
+              👔 Direction (Amadou)
+            </button>
+            <button type="button" class="btn-secondary" style="font-size:0.75rem;padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;background:#fff;cursor:pointer" (click)="quickFill('fatou.ndiaye@lawtan.sn', 'Compta@2026')">
+              💼 Commercial (Fatou)
+            </button>
+            <button type="button" class="btn-secondary" style="font-size:0.75rem;padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;background:#fff;cursor:pointer" (click)="quickFill('moussa.diop@lawtan.sn', 'Tech@2026')">
+              ⚙️ Technique (Moussa)
+            </button>
+          </div>
+        </div>
+
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="card-form" novalidate>
           <div class="form-field">
             <label for="identifier" class="field-title">Email professionnel</label>

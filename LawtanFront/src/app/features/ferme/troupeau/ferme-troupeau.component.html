@@ -146,7 +146,7 @@
           <div class="metric-unit-item"><span class="lbl">Température</span><strong class="val">{{ selectedAnimal()?.temperature }} °C</strong></div>
           <div class="metric-unit-item"><span class="lbl">Jours Ouverts</span><strong class="val">{{ selectedAnimal()?.daysOpen }} jours</strong></div>
           <div class="metric-unit-item"><span class="lbl">Statut Repro Détaillé</span><strong class="val">{{ selectedAnimal()?.reproStatus }}</strong></div>
-          <div class="metric-unit-item"><span class="lbl">Production Lait Jour</span><strong class="val" style="color:#16a34a">{{ selectedAnimal()?.dailyMilkYield }} L/j</strong></div>
+          <div class="metric-unit-item"><span class="lbl">Production Lait Jour</span><strong class="val" style="color:#2C77B0">{{ selectedAnimal()?.dailyMilkYield }} L/j</strong></div>
           <div class="metric-unit-item"><span class="lbl">Élevage / Origine</span><strong class="val">{{ selectedAnimal()?.originLot }}</strong></div>
         </div>
       </div>
@@ -154,10 +154,10 @@
       <div class="modal-tab-pane" *ngIf="activeModalTab() === 'pedigree'">
         <div class="pedigree-visual-tree" style="display:flex;flex-direction:column;gap:16px">
           <div class="pedigree-tier" style="display:flex;justify-content:center">
-            <div class="pedigree-card-node node-target" style="border:2px solid #16a34a;padding:12px 18px;border-radius:8px;text-align:center;background:#f0fdf4;min-width:260px">
-              <p class="role-tag" style="font-size:0.7rem;color:#166534;font-weight:700">Sujet Sélectionné</p>
+            <div class="pedigree-card-node node-target" style="border:2px solid #2C77B0;padding:12px 18px;border-radius:8px;text-align:center;background:#EAF5FD;min-width:260px">
+              <p class="role-tag" style="font-size:0.7rem;color:#23689E;font-weight:700">Sujet Sélectionné</p>
               <strong class="name" style="font-size:1.1rem">{{ selectedAnimal()?.name }} ({{ selectedAnimal()?.internalId }})</strong>
-              <div class="details" style="font-size:0.78rem;color:#526658">{{ selectedAnimal()?.breed }} — Ferme LAWTAN BIO</div>
+              <div class="details" style="font-size:0.78rem;color:#64748b">{{ selectedAnimal()?.breed }} — Ferme LAWTAN BIO</div>
             </div>
           </div>
 
@@ -165,13 +165,13 @@
             <div class="pedigree-card-node node-father" style="border:1px solid #bae6fd;padding:12px;border-radius:8px;background:#f0f9ff">
               <p class="role-tag" style="color:#0284c7;font-weight:700;font-size:0.75rem">Père (Taureau / Semence)</p>
               <strong class="name">{{ selectedAnimal()?.pedigree?.fatherName }}</strong>
-              <div class="details" style="font-size:0.75rem;color:#526658">{{ selectedAnimal()?.pedigree?.fatherBreed }}</div>
+              <div class="details" style="font-size:0.75rem;color:#64748b">{{ selectedAnimal()?.pedigree?.fatherBreed }}</div>
             </div>
 
             <div class="pedigree-card-node node-mother" style="border:1px solid #fecaca;padding:12px;border-radius:8px;background:#fef2f2">
               <p class="role-tag" style="color:#dc2626;font-weight:700;font-size:0.75rem">Mère (Vache Laitière)</p>
               <strong class="name">{{ selectedAnimal()?.pedigree?.motherName }}</strong>
-              <div class="details" style="font-size:0.75rem;color:#526658">{{ selectedAnimal()?.pedigree?.motherBreed }}</div>
+              <div class="details" style="font-size:0.75rem;color:#64748b">{{ selectedAnimal()?.pedigree?.motherBreed }}</div>
             </div>
           </div>
         </div>

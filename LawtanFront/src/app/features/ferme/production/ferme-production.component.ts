@@ -299,8 +299,8 @@ export class FermeProductionComponent implements OnInit, AfterViewInit, OnDestro
           {
             label: 'Traite Matin (L)',
             data: [64, 66, 68, 65, 70, 68, 72],
-            borderColor: '#16a34a',
-            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+            borderColor: '#2C77B0',
+            backgroundColor: 'rgba(44, 119, 176, 0.1)',
             fill: true,
             tension: 0.3
           },

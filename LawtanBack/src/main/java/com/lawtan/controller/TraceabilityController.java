@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/traceability")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class TraceabilityController {
 

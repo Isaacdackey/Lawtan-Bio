@@ -25,7 +25,7 @@
         Sélectionnez vos produits laitiers frais du jour. Vos commandes sont préparées le matin même de la traite pour une fraîcheur et une authenticité inégalées.
       </p>
 
-      <!-- BARRE DE RECHERCHE & PANIER FLOTTANT -->
+     
       <div class="boutique-action-bar">
         <div class="search-input-wrap">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2">
@@ -34,7 +34,7 @@
           </svg>
           <input 
             type="text" 
-            placeholder="Rechercher un produit laitier (lait, sow, beurre...)..." 
+            placeholder="Rechercher un produit laitier (lait frais, sow, fromage, yaourt...)..." 
             [ngModel]="searchQuery()"
             (ngModelChange)="searchQuery.set($event)"
             class="search-input" />
@@ -42,35 +42,18 @@
             <button class="search-clear-btn" (click)="searchQuery.set('')">✕</button>
           }
         </div>
-
-        <button class="cart-pill-top" (click)="toggleCartDrawer()" aria-label="Ouvrir mon panier">
-          <div class="cart-icon-wrap">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 0 1-8 0"/>
-            </svg>
-            @if (totalCartCount() > 0) {
-              <span class="cart-badge-count">{{ totalCartCount() }}</span>
-            }
-          </div>
-          <div class="cart-pill-text">
-            <span class="cpt-label">Mon Panier</span>
-            <span class="cpt-total">{{ totalCartAmountFcfa().toLocaleString('fr-FR') }} FCFA</span>
-          </div>
-        </button>
       </div>
     </div>
   </section>
 
-  <!-- CATALOGUE & PRODUITS -->
+  
   <section class="boutique-catalog-section">
     <div class="container">
       
-      <!-- FILTRES PAR CATÉGORIES -->
-      <div class="market-filters-bar">
+      
+        <div class="market-filters-bar">
         <button class="mfilter-btn" [class.active]="selectedCategory() === 'all'" (click)="selectedCategory.set('all')">
-          Tous les Produits ({{ products.length }})
+          Tous les Produits ({{ products().length }})
         </button>
         <button class="mfilter-btn" [class.active]="selectedCategory() === 'lait'" (click)="selectedCategory.set('lait')">
           Lait Frais Pasteurisé
@@ -78,15 +61,25 @@
         <button class="mfilter-btn" [class.active]="selectedCategory() === 'caille'" (click)="selectedCategory.set('caille')">
           Lait Caillé Artisanal (Sow)
         </button>
-        <button class="mfilter-btn" [class.active]="selectedCategory() === 'beurre'" (click)="selectedCategory.set('beurre')">
-          Beurre & Crème
-        </button>
         <button class="mfilter-btn" [class.active]="selectedCategory() === 'fromage'" (click)="selectedCategory.set('fromage')">
           Fromages & Nouveautés
         </button>
       </div>
 
-      <!-- GRILLE DES PRODUITS -->
+      @if (orderConfirmation()) {
+        <div class="market-order-confirmation" role="status">{{ orderConfirmation() }}</div>
+      }
+      @if (isLoadingProducts()) {
+        <p class="market-loading">Chargement du catalogue depuis la ferme…</p>
+      }
+      @if (productsError()) {
+        <p class="market-error" role="alert">{{ productsError() }}</p>
+      }
+      @if (!isLoadingProducts() && !productsError() && filteredProducts().length === 0) {
+        <p class="market-loading">Aucun produit disponible pour ces critères.</p>
+      }
+
+
       <div class="market-products-grid">
         @for (prod of filteredProducts(); track prod.id) {
           <div class="product-market-card" [class.unavailable]="!prod.available">
@@ -138,7 +131,7 @@
         }
       </div>
 
-      <!-- BANNIÈRE COMMANDES EN GROS / PRO -->
+
       <div class="market-wholesale-banner">
         <div class="mwb-content">
           <span class="mwb-tag">
@@ -159,15 +152,15 @@
     </div>
   </section>
 
-  <!-- PASTEL DIVIDER -->
+
   <app-pastoral-divider [variant]="'mixed'"></app-pastoral-divider>
 
-  <!-- CART DRAWER SLIDE-OVER -->
+
   <div class="cart-drawer-backdrop" [class.open]="isCartDrawerOpen()" (click)="closeCartDrawer()"></div>
   <div class="cart-drawer-panel" [class.open]="isCartDrawerOpen()">
     <div class="cart-drawer-header">
       <div class="cdh-title-wrap">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2C77B0" stroke-width="2.2">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
           <line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 0 1-8 0"/>
@@ -262,7 +255,7 @@
   <!-- TOAST NOTIFICATION -->
   @if (orderToastMessage()) {
     <div class="boutique-toast">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C77B0" stroke-width="2.5">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
         <polyline points="22 4 12 14.01 9 11.01"/>
       </svg>

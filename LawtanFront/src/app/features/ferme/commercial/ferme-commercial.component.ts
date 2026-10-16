@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FermeMockService } from '../services/ferme-mock.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { ApiService, MarketplaceOrderResult } from '../../../services/api.service';
+
+import { ProductStock } from '../../../models/transformation.model';
 
 export interface InvoiceItem {
   id: string;
@@ -50,9 +53,49 @@ export class FermeCommercialComponent implements OnInit {
   fermeService = inject(FermeMockService);
   notificationService = inject(NotificationService);
 
-  activeCommercialSubTab = signal<'invoices' | 'customers' | 'payments'>('invoices');
+  activeCommercialSubTab = signal<'invoices' | 'customers' | 'payments' | 'marketplace' | 'products'>('invoices');
+  productStocks = signal<ProductStock[]>([]);
+  productStocksLoading = signal<boolean>(false);
+  isEditStockModalOpen = signal<boolean>(false);
+  isNewStockModalOpen = signal<boolean>(false);
+  selectedStockForEdit = signal<ProductStock | null>(null);
+
+  stockForm = {
+    id: undefined as number | undefined,
+    productName: '',
+    quantityAvailable: 0,
+    unit: 'Bouteille 1L',
+    unitPriceFcfa: 1000,
+    dlcExpiryDate: '',
+    storageLocation: 'Chambre Froide Laiterie (+4°C)',
+    isOrganicCertified: true
+  };
+  marketplaceOrders = signal<MarketplaceOrderResult[]>([]);
+  marketplaceOrdersLoading = signal<boolean>(false);
+  marketplaceOrdersError = signal<string | null>(null);
+  private api = inject(ApiService);
   invoiceFilterStatus = signal<string>('ALL');
   invoicesSearchTerm = signal<string>('');
+
+  private readonly orderFlow = ['PENDING', 'CONFIRMED', 'PREPARING', 'READY_FOR_DELIVERY', 'DELIVERED'];
+
+  readonly orderStatusLabels: Record<string, string> = {
+    PENDING: 'En attente',
+    CONFIRMED: 'Confirmée',
+    PREPARING: 'En préparation',
+    READY_FOR_DELIVERY: 'Prête à livrer',
+    DELIVERED: 'Livrée',
+    CANCELLED: 'Annulée'
+  };
+
+  /** Statut actuel + étape suivante + annulation (même règle que le backend). */
+  allowedOrderStatuses(current: string): string[] {
+    if (current === 'DELIVERED' || current === 'CANCELLED') return [current];
+    const i = this.orderFlow.indexOf(current);
+    const next = i >= 0 && i < this.orderFlow.length - 1 ? [this.orderFlow[i + 1]] : [];
+    return [current, ...next, 'CANCELLED'];
+  }
+
 
   // Modales
   isNewInvoiceModalOpen = signal<boolean>(false);
@@ -258,10 +301,151 @@ export class FermeCommercialComponent implements OnInit {
   paymentAmountInput = signal<number>(0);
   paymentMethodInput = signal<string>('Wave');
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadProductStocks();
+  }
 
-  navigateToCommercialSubTab(tab: 'invoices' | 'customers' | 'payments'): void {
+  loadProductStocks(): void {
+    this.productStocksLoading.set(true);
+    this.api.getAllStocks().subscribe({
+      next: stocks => {
+        this.productStocks.set(stocks || []);
+        this.productStocksLoading.set(false);
+      },
+      error: () => {
+        // Fallback résilient : charger depuis le catalogue public si la session doit être renouvelée
+        this.api.getMarketplaceProducts({ size: 100 }).subscribe({
+          next: page => {
+            const mapped: ProductStock[] = (page.content || []).map(p => ({
+              id: p.id,
+              productName: p.name,
+              quantityAvailable: p.quantityAvailable,
+              unit: p.unit,
+              unitPriceFcfa: p.priceFcfa,
+              totalValueFcfa: p.quantityAvailable * p.priceFcfa,
+              dlcExpiryDate: p.dlcExpiryDate || undefined,
+              isOrganicCertified: p.organicCertified !== false
+            }));
+            this.productStocks.set(mapped);
+            this.productStocksLoading.set(false);
+          },
+          error: () => {
+            this.notificationService.afficherToast('Erreur lors du chargement des stocks de produits.');
+            this.productStocksLoading.set(false);
+          }
+        });
+      }
+    });
+  }
+
+  openEditStockModal(stock: ProductStock): void {
+    this.selectedStockForEdit.set(stock);
+    this.stockForm = {
+      id: stock.id,
+      productName: stock.productName,
+      quantityAvailable: stock.quantityAvailable,
+      unit: stock.unit,
+      unitPriceFcfa: stock.unitPriceFcfa,
+      dlcExpiryDate: stock.dlcExpiryDate || '',
+      storageLocation: stock.storageLocation || 'Chambre Froide Laiterie (+4°C)',
+      isOrganicCertified: stock.isOrganicCertified !== false
+    };
+    this.isEditStockModalOpen.set(true);
+  }
+
+  openNewStockModal(): void {
+    const today = new Date();
+    const dlc = new Date();
+    dlc.setDate(today.getDate() + 14);
+
+    this.selectedStockForEdit.set(null);
+    this.stockForm = {
+      id: undefined,
+      productName: '',
+      quantityAvailable: 50,
+      unit: 'Bouteille 1L',
+      unitPriceFcfa: 1000,
+      dlcExpiryDate: dlc.toISOString().split('T')[0],
+      storageLocation: 'Chambre Froide Laiterie (+4°C)',
+      isOrganicCertified: true
+    };
+    this.isNewStockModalOpen.set(true);
+  }
+
+  saveStock(): void {
+    if (!this.stockForm.productName || !this.stockForm.unitPriceFcfa) {
+      this.notificationService.afficherToast('Veuillez renseigner le nom et le prix du produit.');
+      return;
+    }
+
+    const payload: ProductStock = {
+      id: this.stockForm.id,
+      productName: this.stockForm.productName.trim(),
+      quantityAvailable: Number(this.stockForm.quantityAvailable) || 0,
+      unit: this.stockForm.unit,
+      unitPriceFcfa: Number(this.stockForm.unitPriceFcfa) || 0,
+      totalValueFcfa: (Number(this.stockForm.quantityAvailable) || 0) * (Number(this.stockForm.unitPriceFcfa) || 0),
+      dlcExpiryDate: this.stockForm.dlcExpiryDate || undefined,
+      storageLocation: this.stockForm.storageLocation,
+      isOrganicCertified: this.stockForm.isOrganicCertified
+    };
+
+    this.api.createOrUpdateStock(payload).subscribe({
+      next: saved => {
+        this.notificationService.afficherToast(`Produit « ${saved.productName} » enregistré avec succès !`);
+        this.isEditStockModalOpen.set(false);
+        this.isNewStockModalOpen.set(false);
+        this.loadProductStocks();
+      },
+      error: () => {
+        this.notificationService.afficherToast("Erreur lors de l'enregistrement du produit.");
+      }
+    });
+  }
+
+  deleteProductStock(stock: ProductStock): void {
+    if (!stock.id) return;
+    if (!confirm(`Supprimer définitivement le produit « ${stock.productName} » du catalogue ?`)) return;
+
+    this.api.deleteStock(stock.id).subscribe({
+      next: () => {
+        this.notificationService.afficherToast(`Produit « ${stock.productName} » supprimé.`);
+        this.loadProductStocks();
+      },
+      error: () => {
+        this.notificationService.afficherToast('Impossible de supprimer ce produit.');
+      }
+    });
+  }
+
+  loadMarketplaceOrders(): void {
+    this.marketplaceOrdersLoading.set(true);
+    this.marketplaceOrdersError.set(null);
+    this.api.getMarketplaceOrders({ size: 100 }).subscribe({
+      next: page => { this.marketplaceOrders.set(page.content); this.marketplaceOrdersLoading.set(false); },
+      error: () => { this.marketplaceOrdersError.set('Impossible de charger les commandes marketplace. Vérifiez votre connexion et vos droits.'); this.marketplaceOrdersLoading.set(false); }
+    });
+  }
+  
+  changeMarketplaceOrderStatus(order: MarketplaceOrderResult, status: string): void {
+    if (status === order.status) return;
+    if (status === 'CANCELLED' && !confirm('Annuler cette commande ? Le stock réservé sera remis en vente.')) {
+      this.loadMarketplaceOrders(); // remet le select sur l'ancien statut
+      return;
+    }
+    this.api.updateMarketplaceOrderStatus(order.id, status).subscribe({
+      next: updated => this.marketplaceOrders.update(items => items.map(item => item.id === updated.id ? updated : item)),
+      error: err => {
+        this.marketplaceOrdersError.set(err?.error?.message || 'Le statut de la commande n’a pas pu être modifié.');
+        this.loadMarketplaceOrders();
+      }
+    });
+  }
+
+
+  navigateToCommercialSubTab(tab: 'invoices' | 'customers' | 'payments' | 'marketplace'): void {
     this.activeCommercialSubTab.set(tab);
+    if (tab === 'marketplace') this.loadMarketplaceOrders();
   }
 
   filterInvoices(status: string): void {

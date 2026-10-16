@@ -42,7 +42,7 @@
       </div>
       <div class="kpi-footer">
         <span *ngIf="lowFeedStockCount() > 0" style="color:#dc2626">Seuil de sécurité atteint</span>
-        <span *ngIf="lowFeedStockCount() === 0" style="color:#15803d">Tous les stocks sont optimaux</span>
+        <span *ngIf="lowFeedStockCount() === 0" style="color:#2C77B0">Tous les stocks sont optimaux</span>
       </div>
     </div>
 
@@ -92,7 +92,7 @@
     <div class="content-card">
       <div class="filter-search-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <label style="font-size:0.82rem;font-weight:700;color:#526658">Catégorie :</label>
+          <label style="font-size:0.82rem;font-weight:700;color:#64748b">Catégorie :</label>
           <select [ngModel]="feedCategoryFilter()" (ngModelChange)="filterFeedStocks($event)" class="filter-select-pro">
             <option value="ALL">Toutes les catégories</option>
             <option value="FORAGE_GREEN">Fourrage Vert / Ensilage</option>
@@ -126,7 +126,7 @@
             <tr *ngFor="let s of filteredFeedStocks()" [class.row-alert]="s.currentStockKg <= s.alertThresholdKg">
               <td><strong>{{ s.name }}</strong></td>
               <td><span class="badge-pill badge-green">{{ s.categoryLabel }}</span></td>
-              <td><strong style="font-size:1rem;color:#0d381e">{{ s.currentStockKg.toLocaleString() }} kg</strong></td>
+              <td><strong style="font-size:1rem;color:#12304A">{{ s.currentStockKg.toLocaleString() }} kg</strong></td>
               <td><span style="color:#64748b">{{ s.alertThresholdKg.toLocaleString() }} kg</span></td>
               <td><code>{{ s.unitPriceKg }} FCFA</code></td>
               <td style="font-size:0.8rem;color:#475569">{{ s.storageLocation }}</td>
@@ -154,28 +154,28 @@
         <div>
           <div class="content-card-header" style="border-bottom:none;padding-bottom:10px">
             <div>
-              <h3 style="margin:0;font-size:1.05rem;color:#0d381e">{{ r.name }}</h3>
-              <p style="margin:2px 0 0;font-size:0.78rem;color:#526658">{{ r.targetGroup }}</p>
+              <h3 style="margin:0;font-size:1.05rem;color:#12304A">{{ r.name }}</h3>
+              <p style="margin:2px 0 0;font-size:0.78rem;color:#64748b">{{ r.targetGroup }}</p>
             </div>
             <span class="badge-pill badge-green">{{ r.dailyCostFcfa }} FCFA / j</span>
           </div>
 
-          <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;margin:12px 0;background:#f8faf6;padding:10px;border-radius:8px">
+          <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;margin:12px 0;background:#F4FAFF;padding:10px;border-radius:8px;border:1px solid #BFDFF3">
             <div style="text-align:center">
-              <span style="font-size:0.7rem;color:#526658;display:block">Matière Sèche</span>
-              <strong style="color:#0d381e">{{ r.dryMatterKg }} kg MS</strong>
+              <span style="font-size:0.7rem;color:#64748b;display:block">Matière Sèche</span>
+              <strong style="color:#12304A">{{ r.dryMatterKg }} kg MS</strong>
             </div>
             <div style="text-align:center">
-              <span style="font-size:0.7rem;color:#526658;display:block">Énergie</span>
-              <strong style="color:#16a34a">{{ r.energyUfl }} UFL</strong>
+              <span style="font-size:0.7rem;color:#64748b;display:block">Énergie</span>
+              <strong style="color:#2C77B0">{{ r.energyUfl }} UFL</strong>
             </div>
             <div style="text-align:center">
-              <span style="font-size:0.7rem;color:#526658;display:block">Protéines</span>
+              <span style="font-size:0.7rem;color:#64748b;display:block">Protéines</span>
               <strong style="color:#0284c7">{{ r.proteinPdiG }} g PDI</strong>
             </div>
           </div>
 
-          <h4 style="font-size:0.8rem;color:#0d381e;margin:10px 0 6px">Composition de la Ration :</h4>
+          <h4 style="font-size:0.8rem;color:#12304A;margin:10px 0 6px">Composition de la Ration :</h4>
           <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px">
             <li *ngFor="let ing of r.ingredients" style="display:flex;justify-content:space-between;font-size:0.78rem;padding:4px 8px;background:white;border-radius:6px;border:1px solid #e2e8f0">
               <span>{{ ing.name }}</span>
@@ -210,7 +210,7 @@
               <td><strong>{{ d.date }}</strong></td>
               <td><span class="badge-pill badge-green">{{ d.lotCible }}</span></td>
               <td>{{ d.nomAliment }}</td>
-              <td><strong style="color:#16a34a">{{ d.quantiteKg }} kg</strong></td>
+              <td><strong style="color:#2C77B0">{{ d.quantiteKg }} kg</strong></td>
               <td><code>{{ d.coutFCFA.toLocaleString() }} FCFA</code></td>
               <td>{{ d.distribuePar }}</td>
             </tr>
@@ -225,8 +225,8 @@
       <div *ngFor="let sup of suppliers()" class="content-card">
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div>
-            <h4 style="margin:0;font-size:1.05rem;color:#0d381e">{{ sup.name }}</h4>
-            <p style="margin:2px 0 0;font-size:0.78rem;color:#526658">{{ sup.specialty }}</p>
+            <h4 style="margin:0;font-size:1.05rem;color:#12304A">{{ sup.name }}</h4>
+            <p style="margin:2px 0 0;font-size:0.78rem;color:#64748b">{{ sup.specialty }}</p>
           </div>
           <span class="badge-pill badge-green">Bio Certifié</span>
         </div>

@@ -66,7 +66,7 @@ export class FermeDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       { day: 'Dim', morning: 74, evening: 57 }
     ],
     revenueDistributionChart: [
-      { name: 'Lait Frais Bio Pasteuris\u00e9', percent: 45, color: '#16a34a' },
+      { name: 'Lait Frais Bio Pasteuris\u00e9', percent: 45, color: '#2C77B0' },
       { name: 'Fromage Frais & Gouda', percent: 25, color: '#f59e0b' },
       { name: 'Yaourts & Lait Caill\u00e9 (Sow)', percent: 20, color: '#38bdf8' },
       { name: 'Beurre Traditionnel', percent: 10, color: '#8b5cf6' }
@@ -146,7 +146,7 @@ export class FermeDashboardComponent implements OnInit, AfterViewInit, OnDestroy
             {
               label: 'Traite Matin',
               data: weekly.map(d => d.morning),
-              backgroundColor: '#16a34a',
+              backgroundColor: '#2C77B0',
               borderRadius: 6
             },
             {

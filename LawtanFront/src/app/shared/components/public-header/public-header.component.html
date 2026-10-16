@@ -39,6 +39,22 @@
     </nav>
 
     <div class="nav-actions">
+      <!-- BOUTON MON PANIER EN HAUT -->
+      <button type="button" class="nav-cart-pill" (click)="openCart()" aria-label="Ouvrir mon panier" title="Mon Panier">
+        <div class="nav-cart-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="nav-cart-badge" *ngIf="cartService.totalCartCount() > 0">{{ cartService.totalCartCount() }}</span>
+        </div>
+        <div class="nav-cart-text">
+          <span class="nav-cart-label">MON PANIER</span>
+          <span class="nav-cart-total">{{ cartService.totalCartAmountFcfa().toLocaleString('fr-FR') }} FCFA</span>
+        </div>
+      </button>
+
       <a routerLink="/devis" (click)="closeMobileMenu()" class="btn-devis-cta" title="Demander un Devis" aria-label="Demander un devis">
         <div class="btn-glow"></div>
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">

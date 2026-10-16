@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/suppliers")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 @Tag(name = "Fournisseurs & Approvisionnements", description = "API de gestion des fournisseurs bio, fourrages, emballages et intrants")
 public class SupplierController {
 

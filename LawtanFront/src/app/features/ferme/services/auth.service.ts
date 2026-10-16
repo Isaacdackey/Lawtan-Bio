@@ -37,10 +37,13 @@ export class AuthService {
     if (typeof window === 'undefined') return;
     try {
       const savedUserJson = localStorage.getItem(STORAGE_KEY_USER);
-      if (savedUserJson) {
+      const savedToken = localStorage.getItem(STORAGE_KEY_TOKEN);
+      if (savedUserJson && savedToken) {
         const parsedUser: User = JSON.parse(savedUserJson);
         this.currentUser.set(parsedUser);
         this.isAuthenticated.set(true);
+      } else {
+        this.clearSession();
       }
     } catch (e) {
       this.clearSession();

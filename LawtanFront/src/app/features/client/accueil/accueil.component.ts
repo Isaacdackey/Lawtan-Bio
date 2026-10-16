@@ -75,61 +75,61 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
   slides: SliderSlide[] = [
     {
       id: 0,
-      image: '/images/slider-facility.jpg',
-      badge: 'Technologie & Traçabilité Digitale',
-      title: 'La première exploitation agropastorale',
-      titleHighlight: 'moderne, connectée et transparente.',
-      description: 'Suivi génétique des lignées, contrôle continu de la santé animale par vétérinaire dédié et traçabilité numérique de chaque bouteille.',
-      ctaText: 'Notre Histoire & Vision',
+      image: '/images/VacheHolsteindevantfermelaitièremoderne.png',
+      badge: 'Élevage Bovin d\'Élite • Cheptel Sélectionné',
+      title: 'L\'excellence laitière sénégalaise,',
+      titleHighlight: 'un cheptel d\'élite nourri au respect du vivant.',
+      description: 'Vaches laitières de haute lignée génétique élevées en plein air à Dagana, alimentation fourragère naturelle sans intrants chimiques et suivi vétérinaire individualisé pour un lait noble et d\'une richesse exceptionnelle.',
+      ctaText: 'Découvrir Notre Élevage',
       ctaTarget: 'apropos',
-      secondaryCtaText: 'Nos 4 Piliers Qualité',
+      secondaryCtaText: 'Nos Engagements Qualité',
       secondaryCtaTarget: 'pourquoi',
-      metricValue: 'Ferme laitière',
-      metricLabel: 'Lait certifié du jour'
+      metricValue: '100% Naturel',
+      metricLabel: 'Bien-Être Animal & Pâturage'
     },
     {
       id: 1,
-      image: '/images/slider-cows.jpg',
-      badge: 'Élevage d\'Élite & 100% Solaire',
-      title: 'L\'excellence laitière sénégalaise,',
-      titleHighlight: 'nourrie au soleil et au respect du vivant.',
-      description: '9 bovins d\'exception surveillés au quotidien, alimentation fourragère naturelle sans intrants chimiques et traite mécanique de haute précision.',
-      ctaText: 'Découvrir la Gamme Laitière',
-      ctaTarget: 'produits',
-      secondaryCtaText: 'Commander en Ligne',
-      secondaryCtaTarget: 'marketplace',
-      metricValue: '100% Bio',
-      metricLabel: 'Énergie Solaire Autonome'
+      image: '/images/imagelaitquicoule.png',
+      badge: 'Traite Mécanique & Haute Technologie',
+      title: 'Une laiterie moderne de pointe,',
+      titleHighlight: 'pureté absolue, hygiène et chaîne du froid 4°C.',
+      description: 'Du pis de nos vaches à nos cuves inox réfrigérées sous vide : traite mécanisée automatisée, pasteurisation douce préservant les nutriments essentiels et zéro contact manuel pour une sécurité alimentaire irréprochable.',
+      ctaText: 'Notre Processus de Traite',
+      ctaTarget: 'pourquoi',
+      secondaryCtaText: 'Demander un Devis Pro',
+      secondaryCtaTarget: 'devis',
+      metricValue: '4°C Immédiat',
+      metricLabel: 'Refroidissement Garanti'
     },
     {
       id: 2,
-      image: '/images/slider-products.jpg',
-      badge: 'La puissance mécanique au service du terroir',
-      title: 'Labour, moisson & pressage de fourrage,',
-      titleHighlight: 'clés en main à Dagana.',
-      description: 'Labour profond, offsettage, moissonnage-battage et pressage de balles, chauffeur et carburant inclus.',
-      ctaText: 'Demander un devis',
-      ctaTarget: 'devis',
-      secondaryCtaText: 'Écrire sur WhatsApp',
+      image: '/images/Produits laitiers frais à la ferme.png',
+      badge: 'Fraîcheur Fermière • Du Pré à Votre Table',
+      title: 'Savourez la générosité de nos produits,',
+      titleHighlight: 'lait frais entier, Sow onctueux, yaourts & fromages.',
+      description: 'Retrouvez l\'authenticité et la saveur pure du terroir du Walo : lait entier pasteurisé en bouteille verre, lait caillé Sow traditionnel, yaourts brassés et fromages affinés livrés avec fraîcheur garantie.',
+      ctaText: 'Commander à la Boutique',
+      ctaTarget: 'boutique',
+      secondaryCtaText: 'Commander via WhatsApp',
       secondaryCtaTarget: 'whatsapp',
-      metricValue: '100% Mécanisé',
-      metricLabel: 'Chauffeur & Carburant Inclus'
+      metricValue: '100% Frais du Jour',
+      metricLabel: 'Traite Matinale Quotidienne'
     }
   ];
 
   // === À PROPOS / NOTRE HISTOIRE (INSPIRATION ACCORDÉON & RÉVÉLATION COULEUR) ===
-  activeAboutTab = signal<'histoire' | 'cheptel' | 'solaire' | 'equipe'>('histoire');
+  activeAboutTab = signal<'histoire' | 'cheptel' | 'solaire' | 'equipe' | null>('histoire');
 
-  activeHistoryPhoto = computed(() => {
+    activeHistoryPhoto = computed(() => {
     switch (this.activeAboutTab()) {
-      case 'histoire': return '/images/farm-hero-cinematic.jpg';
-      case 'cheptel': return '/images/slider-cows.jpg';
-      case 'solaire': return '/images/slider-facility.jpg';
-      case 'equipe': return '/images/traite-lait-frais.jpg';
-      default: return '/images/farm-hero-cinematic.jpg';
+      case 'histoire': return '/images/VacheHolsteindevantfermelaitièremoderne.png';
+      case 'cheptel':  return '/images/produits-laitiers-frais-ferme.png';
+      case 'solaire':  return '/images/traite-lait-frais.jpg';
+      case 'equipe':   return '/images/imagelaitquicoule.png';
+      default:         return '/images/VacheHolsteindevantfermelaitièremoderne.png';
     }
   });
-
+  
   activeHistoryBadge = computed(() => {
     switch (this.activeAboutTab()) {
       case 'histoire': return 'Ferme Modèle • Terroir Sénégalais';
@@ -141,7 +141,11 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
   });
 
   toggleAboutChapter(tab: 'histoire' | 'cheptel' | 'solaire' | 'equipe'): void {
-    this.activeAboutTab.set(tab);
+    if (this.activeAboutTab() === tab) {
+      this.activeAboutTab.set(null);
+    } else {
+      this.activeAboutTab.set(tab);
+    }
   }
 
   // === MARKETPLACE PRODUCTS ===
@@ -206,18 +210,18 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       conservation: 'À conserver à 4°C (DLC 10 jours)'
     },
     {
-      id: 'beurre-fermier-250g',
-      name: 'Beurre Fermier Pur Baratté — Pain 250g',
-      category: 'beurre',
-      categoryLabel: 'Beurre Fermier',
-      priceFcfa: 2500,
-      unit: 'Pain de beurre 250g',
-      description: 'Baratté à la ferme à partir de crème fraîche crue entière. Arôme subtil de noisette et texture fondante à souhait.',
-      image: '/images/product-beurre.jpg',
-      badge: '100% Crème Entière',
+      id: 'yaourt-brasse-bio-nature',
+      name: 'Yaourt Brassé Bio Nature (Pot 125g)',
+      category: 'caille',
+      categoryLabel: 'Yaourt & Fermenté',
+      priceFcfa: 500,
+      unit: 'Pot 125g',
+      description: 'Yaourt ferme et onctueux élaboré à partir de lait bio frais de nos vaches avec ferments lactiques vivants.',
+      image: '/images/product-lait-caille.jpg',
+      badge: 'Bio Certifié',
       available: true,
-      nutrition: '82% Matière Grasse noble • Vitamines A & E',
-      conservation: 'À conserver au frais à 4°C (DLC 30 jours)'
+      nutrition: 'Ferments lactiques vivants • Riche en calcium',
+      conservation: 'À conserver au frais à 4°C (DLC 21 jours)'
     },
     {
       id: 'fromage-fermier-artisanal',
@@ -351,6 +355,10 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isSliderPaused.set(paused);
   }
 
+  getSlideBackground(image: string): string {
+    return `url('${encodeURI(image)}')`;
+  }
+
   // --- Marketplace Cart Operations ---
   addToCart(product: MarketProduct): void {
     if (!product.available) return;
@@ -412,7 +420,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getWhatsAppOrderLink(): string {
     const items = this.cart();
-    if (items.length === 0) return 'https://wa.me/221771234567';
+    if (items.length === 0) return 'https://wa.me/221777657656';
 
     let msg = `Bonjour Ferme LAWTAN BIO,\nJe souhaite passer une commande directe de produits laitiers :\n\n`;
     items.forEach(i => {
@@ -420,7 +428,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     msg += `\nTotal estimé : ${this.totalCartAmountFcfa().toLocaleString('fr-FR')} FCFA\nMerci de me confirmer la livraison !`;
 
-    return `https://wa.me/221771234567?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/221777657656?text=${encodeURIComponent(msg)}`;
   }
 
   private showToast(msg: string): void {

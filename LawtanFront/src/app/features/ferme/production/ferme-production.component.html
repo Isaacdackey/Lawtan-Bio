@@ -42,7 +42,7 @@
           </div>
         </div>
         <div class="tank-badge-status">
-          <span class="tank-status-badge" style="background:#dcfce7;color:#166534">
+          <span class="tank-status-badge" style="background:#EAF5FD;color:#23689E">
             {{ tankStatus().qualityStatus }}
           </span>
           <span class="tank-lot-badge">Lot : {{ tankStatus().targetBatch }}</span>
@@ -63,7 +63,7 @@
           <div class="tank-fill-info">
             <span>Lait en attente de répartition : <strong>{{ unallocatedMilkVolume() }} L</strong> ({{ unallocatedMilkPercentage() }}%)</span>
           </div>
-          <div *ngIf="unallocatedMilkVolume() <= 0" class="tank-empty-alert" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0">
+          <div *ngIf="unallocatedMilkVolume() <= 0" class="tank-empty-alert" style="background:#EAF5FD;color:#23689E;border-color:#BFDFF3">
             ✓ Tout le lait collecté est réparti. Il reste du stock en cuve pour la transformation et la vente.
           </div>
         </div>
@@ -72,12 +72,12 @@
           <div class="tank-stat-quad" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
             <div class="tank-kpi-box">
               <span class="lbl">Collecte Brute (Jour)</span>
-              <strong class="val" style="color:#16a34a">{{ tankStatus().grossVolumeCollected }} L</strong>
+              <strong class="val" style="color:#2C77B0">{{ tankStatus().grossVolumeCollected }} L</strong>
               <span class="sub-lbl">Matin {{ tankStatus().morningVolume }}L • Soir {{ tankStatus().eveningVolume }}L</span>
             </div>
             <div class="tank-kpi-box">
               <span class="lbl">Lait en Attente</span>
-              <strong class="val" [style.color]="unallocatedMilkVolume() > 0 ? '#b45309' : '#15803d'">{{ unallocatedMilkVolume() }} L</strong>
+              <strong class="val" [style.color]="unallocatedMilkVolume() > 0 ? '#b45309' : '#2C77B0'">{{ unallocatedMilkVolume() }} L</strong>
               <span class="sub-lbl">{{ unallocatedMilkVolume() > 0 ? 'Non réparti' : 'Totalité répartie' }}</span>
             </div>
             <div class="tank-kpi-box">
@@ -108,8 +108,8 @@
     <div class="content-card" style="margin-top:20px">
       <div class="content-card-header" style="border-bottom:none;padding-bottom:12px">
         <div>
-          <h3 style="margin:0;font-size:1.15rem;color:#0d381e">Enregistrement Rapide par Vache Laitière</h3>
-          <p style="margin:2px 0 0 0;font-size:0.8rem;color:#526658">Cliquez sur « Matin » ou « Soir » sous chaque vache pour saisir la traite</p>
+          <h3 style="margin:0;font-size:1.15rem;color:#12304A">Enregistrement Rapide par Vache Laitière</h3>
+          <p style="margin:2px 0 0 0;font-size:0.8rem;color:#64748b">Cliquez sur « Matin » ou « Soir » sous chaque vache pour saisir la traite</p>
         </div>
         <span class="badge-pill badge-green">{{ milkingCows().length }} Vaches en lactation</span>
       </div>
@@ -301,7 +301,7 @@
                 </span>
               </td>
               <td><strong>{{ p.animalName }} ({{ p.animalInternalId }})</strong></td>
-              <td><strong style="color:#15803d">{{ p.volumeLiters }} L</strong></td>
+              <td><strong style="color:#2C77B0">{{ p.volumeLiters }} L</strong></td>
               <td>{{ p.milkTemperature }} °C</td>
               <td><span class="badge-pill badge-green">100% Conforme Bio</span></td>
               <td><code>{{ p.destinationTank }}</code></td>

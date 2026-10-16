@@ -289,8 +289,8 @@ export class FermeTroupeauComponent implements OnInit, AfterViewInit, OnDestroy 
         datasets: [{
           label: `Courbe de Lactation — ${animal.name} (${animal.internalId})`,
           data: [Math.max(8, baseYield - 3), baseYield + 1, baseYield + 3, baseYield + 1, baseYield, Math.max(8, baseYield - 2), Math.max(6, baseYield - 4)],
-          borderColor: '#16a34a',
-          backgroundColor: 'rgba(34, 197, 94, 0.15)',
+          borderColor: '#2C77B0',
+          backgroundColor: 'rgba(44, 119, 176, 0.15)',
           fill: true,
           tension: 0.35,
           borderWidth: 3

@@ -62,8 +62,8 @@
 
 .icon-green,
 .icon-whatsapp {
-  background-color: #f1f8f3;
-  color: #1b5e20;
+  background-color: #EAF5FD;
+  color: #2C77B0;
 }
 
 .card-title {
@@ -107,7 +107,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #1b5e20;
+  color: #2C77B0;
   font-weight: 700;
   text-decoration: none;
   font-size: 0.9375rem;
@@ -115,12 +115,12 @@
 }
 
 .item-link:hover {
-  color: #145318;
+  color: #23689E;
   transform: translateX(2px);
 }
 
 .item-link svg {
-  color: #1b5e20;
+  color: #2C77B0;
   flex-shrink: 0;
 }
 
@@ -129,7 +129,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8125rem;
-  color: #1b5e20;
+  color: #2C77B0;
   font-weight: 600;
 }
 
@@ -196,9 +196,9 @@
 .whatsapp-badge {
   display: inline-flex;
   align-self: flex-start;
-  background-color: #f1f8f3;
-  color: #1b5e20;
-  border: 1px solid #d1e7d5;
+  background-color: #EAF5FD;
+  color: #23689E;
+  border: 1px solid #BFDFF3;
   font-size: 0.6875rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -210,7 +210,7 @@
 .whatsapp-title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #12304A;
   margin: 0;
   line-height: 1.3;
 }
@@ -229,20 +229,20 @@
   gap: 0.65rem;
   width: 100%;
   box-sizing: border-box;
-  background-color: #1b5e20;
+  background-color: #2C77B0;
   color: #ffffff;
   padding: 0.85rem 1.5rem;
   font-size: 0.9375rem;
   font-weight: 700;
   border-radius: 8px;
   text-decoration: none;
-  box-shadow: 0 2px 4px rgba(27, 94, 32, 0.2);
+  box-shadow: 0 2px 4px rgba(44, 119, 176, 0.2);
   transition: all 0.2s ease;
   font-family: inherit;
 }
 
 .btn-whatsapp:hover {
-  background-color: #145318;
-  box-shadow: 0 4px 10px rgba(27, 94, 32, 0.3);
+  background-color: #23689E;
+  box-shadow: 0 4px 10px rgba(44, 119, 176, 0.3);
   transform: translateY(-1px);
 }

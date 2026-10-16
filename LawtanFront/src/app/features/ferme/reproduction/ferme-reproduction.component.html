@@ -98,7 +98,7 @@
     <div class="content-card-header" style="flex-wrap:wrap;gap:12px">
       <div>
         <h3>Registre des Actes de Reproduction ({{ filteredReproEvents().length }})</h3>
-        <p style="font-size:0.75rem;color:#526658">Historique des inséminations, échographies, vêlages et tarissements</p>
+        <p style="font-size:0.75rem;color:#64748b">Historique des inséminations, échographies, vêlages et tarissements</p>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
         <select class="filter-select-pro" [ngModel]="reproFilter()" (ngModelChange)="filterRepro($event)">
@@ -133,7 +133,7 @@
             <td><strong>{{ evt.eventDate }}</strong></td>
             <td>
               <strong>{{ evt.animalName || evt.animalInternalId }}</strong>
-              <span style="font-size:0.72rem;color:#526658;display:block">{{ evt.animalInternalId }}</span>
+              <span style="font-size:0.72rem;color:#64748b;display:block">{{ evt.animalInternalId }}</span>
             </td>
             <td>
               <span class="badge-pill" 
@@ -152,7 +152,7 @@
               <span *ngIf="!evt.expectedDryOffDate">—</span>
             </td>
             <td>
-              <span *ngIf="evt.expectedCalvingDate" style="color:#15803d;font-weight:700">{{ evt.expectedCalvingDate }} (Vêlage)</span>
+              <span *ngIf="evt.expectedCalvingDate" style="color:#2C77B0;font-weight:700">{{ evt.expectedCalvingDate }} (Vêlage)</span>
               <span *ngIf="!evt.expectedCalvingDate">—</span>
             </td>
             <td style="max-width:240px;font-size:0.75rem;color:#475569">{{ evt.observations || '—' }}</td>
@@ -220,12 +220,12 @@
     <div class="two-columns-grid" *ngIf="breedingBulls().length > 0">
       <div class="semen-analysis-card" *ngFor="let bull of breedingBulls()" style="border:1px solid #e2e8f0;border-radius:12px;padding:14px">
         <div style="display:flex;align-items:center;gap:12px">
-          <div style="width:44px;height:44px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;display:grid;place-items:center;color:#15803d">
+          <div style="width:44px;height:44px;background:#EAF5FD;border:1px solid #BFDFF3;border-radius:10px;display:grid;place-items:center;color:#2C77B0">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 4v6c0 5.5-3.8 10.7-7 12-3.2-1.3-7-6.5-7-12V6l7-4z"/><path d="m9 12 2 2 4-4"/></svg>
           </div>
           <div>
-            <h4 style="font-size:1.05rem;font-weight:800;color:#0d381e">{{ bull.name }} ({{ bull.internalId }})</h4>
-            <p style="font-size:0.75rem;color:#526658">
+            <h4 style="font-size:1.05rem;font-weight:800;color:#12304A">{{ bull.name }} ({{ bull.internalId }})</h4>
+            <p style="font-size:0.75rem;color:#64748b">
               {{ bull.breed }}
               <span *ngIf="bull.weight"> &bull; {{ bull.weight }} kg</span>
               <span *ngIf="bull.pedigree.fatherName"> &bull; Père : {{ bull.pedigree.fatherName }}</span>
@@ -253,7 +253,7 @@
           </div>
         </div>
 
-        <p style="font-size:0.75rem;color:#526658" *ngIf="bull.reproStatus">{{ bull.reproStatus }}</p>
+        <p style="font-size:0.75rem;color:#64748b" *ngIf="bull.reproStatus">{{ bull.reproStatus }}</p>
       </div>
     </div>
   </div>
@@ -263,7 +263,7 @@
   <div class="modal-card modal-card-lg" (click)="$event.stopPropagation()">
     <div class="modal-top-header">
       <div class="modal-title-wrap">
-        <div class="modal-title-icon-box" style="background:#f1f5f9;color:#0f2417"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <div class="modal-title-icon-box" style="background:#f1f5f9;color:#12304A"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
         <div>
           <h3>Enregistrer un Acte de Reproduction</h3>
           <p>Cycle biologique CowMaster : IA, Gestation, Tarissement & Vêlage</p>
@@ -338,7 +338,7 @@
             </div>
             <div class="calc-item" *ngIf="reproForm.expectedCalvingDate">
               <span class="lbl" style="font-size:0.75rem;color:#64748b;display:block">Date de Vêlage Prévue (~282j) :</span>
-              <strong class="val" style="color:#15803d;font-size:0.95rem">{{ reproForm.expectedCalvingDate }}</strong>
+              <strong class="val" style="color:#2C77B0;font-size:0.95rem">{{ reproForm.expectedCalvingDate }}</strong>
             </div>
           </div>
         </div>
@@ -349,8 +349,8 @@
         </div>
 
         <div style="display:flex;align-items:center;gap:10px">
-          <input type="checkbox" id="confirmRepro" [(ngModel)]="reproForm.isConfirmed" name="reproConfirm" style="width:18px;height:18px;accent-color:#16a34a" />
-          <label for="confirmRepro" style="font-size:0.85rem;font-weight:600;color:#0d381e;cursor:pointer">
+          <input type="checkbox" id="confirmRepro" [(ngModel)]="reproForm.isConfirmed" name="reproConfirm" style="width:18px;height:18px;accent-color:#2C77B0" />
+          <label for="confirmRepro" style="font-size:0.85rem;font-weight:600;color:#12304A;cursor:pointer">
             Acte confirmé et validé par le responsable d'élevage
           </label>
         </div>

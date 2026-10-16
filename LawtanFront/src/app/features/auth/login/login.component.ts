@@ -43,6 +43,13 @@ export class LoginComponent {
     this.showPassword.update((val) => !val);
   }
 
+  quickFill(identifier: string, password: string): void {
+    this.loginForm.patchValue({
+      identifier,
+      password
+    });
+  }
+
   onSubmit(): void {
     this.loginError.set(null);
 

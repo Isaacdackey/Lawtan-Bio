@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap, catchError, throwError, of, map } from 'rxjs';
 import { Animal } from '../models/animal.model';
 import { HealthRecord, VaccineSchedule } from '../models/health.model';
@@ -12,6 +12,11 @@ import { Supplier } from '../models/supplier.model';
 import { FinanceSummary } from '../models/finance.model';
 import { TraceabilityLot } from '../models/traceability.model';
 import { resolveApiBaseUrl } from './api-url';
+
+export interface MarketplaceProductDto { id: number; name: string; description?: string | null; category?: string | null; categoryLabel: string; priceFcfa: number; unit: string; quantityAvailable: number; image: string; available: boolean; dlcExpiryDate?: string | null; organicCertified?: boolean | null; }
+export interface MarketplacePage<T> { content: T[]; totalElements: number; totalPages: number; number: number; size: number; }
+export interface MarketplaceOrderPayload { idempotencyKey: string; customerName: string; customerPhone: string; customerEmail?: string; deliveryAddress: string; deliveryCity: string; customerNote?: string; items: { productId: number; quantity: number }[]; }
+export interface MarketplaceOrderResult { id: number; reference: string; customerName: string; customerPhone: string; customerEmail?: string; deliveryAddress: string; deliveryCity: string; customerNote?: string; totalAmountFcfa: number; status: string; items: { productId: number; productName: string; quantity: number; unit: string; unitPriceFcfa: number; lineTotalFcfa: number }[]; createdAt: string; updatedAt: string; }
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +51,34 @@ export class ApiService {
       console.warn('[ApiService] Erreur réseau / backend indisponible :', err.message || err);
       return throwError(() => err);
     });
+  }
+
+
+  // --- Marketplace public ---
+  getMarketplaceProducts(params: { search?: string; category?: string; page?: number; size?: number } = {}): Observable<MarketplacePage<MarketplaceProductDto>> {
+    let httpParams = new HttpParams();
+    if (params.search) httpParams = httpParams.set('search', params.search);
+    if (params.category && params.category !== 'all') httpParams = httpParams.set('category', params.category);
+    httpParams = httpParams.set('page', String(params.page ?? 0)).set('size', String(params.size ?? 50));
+    return this.http.get<MarketplacePage<MarketplaceProductDto>>(`${this.baseUrl}/marketplace/products`, { params: httpParams });
+  }
+
+  getMarketplaceCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/marketplace/categories`);
+  }
+
+  createMarketplaceOrder(payload: MarketplaceOrderPayload): Observable<MarketplaceOrderResult> {
+    return this.http.post<MarketplaceOrderResult>(`${this.baseUrl}/marketplace/orders`, payload);
+  }
+
+  getMarketplaceOrders(params: { status?: string; page?: number; size?: number } = {}): Observable<MarketplacePage<MarketplaceOrderResult>> {
+    let httpParams = new HttpParams().set('page', String(params.page ?? 0)).set('size', String(params.size ?? 50));
+    if (params.status && params.status !== 'ALL') httpParams = httpParams.set('status', params.status);
+    return this.http.get<MarketplacePage<MarketplaceOrderResult>>(`${this.baseUrl}/marketplace/orders`, { params: httpParams });
+  }
+
+  updateMarketplaceOrderStatus(id: number, status: string): Observable<MarketplaceOrderResult> {
+    return this.http.patch<MarketplaceOrderResult>(`${this.baseUrl}/marketplace/orders/${id}/status`, {}, { params: { status } });
   }
 
   // --- Health Check / Ping ---

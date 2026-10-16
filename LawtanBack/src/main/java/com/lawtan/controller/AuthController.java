@@ -3,24 +3,30 @@ package com.lawtan.controller;
 import com.lawtan.dto.AuthDTO;
 import com.lawtan.entity.AppUser;
 import com.lawtan.repository.AppUserRepository;
+import com.lawtan.security.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class AuthController {
 
-    private final AppUserRepository appUserRepository;
+    private static final Pattern BCRYPT_HASH = Pattern.compile("^\\$2[aby]?\\$\\d{2}\\$.{53}$");
+    private static final String INVALID_CREDENTIALS = "Identifiant ou mot de passe incorrect.";
 
-    public AuthController(AppUserRepository appUserRepository) {
-        this.appUserRepository = appUserRepository;
-    }
+    private final AppUserRepository appUserRepository;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthDTO.LoginRequest request) {
@@ -32,44 +38,28 @@ public class AuthController {
         String username = request.getUsername().trim().toLowerCase();
         String password = request.getPassword() != null ? request.getPassword().trim() : "";
 
-        // Recherche en base par email
+        // CORRECTIF : plus de recherche par rôle/nom ni de mots de passe de démonstration
+        // (<rôle>2026, lawtan2026, comparaison insensible à la casse). Seul l'email identifie un compte.
         Optional<AppUser> userOpt = appUserRepository.findByEmailIgnoreCase(username);
 
-        // Fallback: recherche par rôle si l'email ne correspond pas
-        if (userOpt.isEmpty()) {
-            userOpt = appUserRepository.findAll().stream()
-                    .filter(u -> u.getRole().equalsIgnoreCase(username) ||
-                                 u.getName().toLowerCase().contains(username))
-                    .findFirst();
-        }
-
-        if (userOpt.isEmpty()) {
+        // Même réponse pour "compte inconnu" et "mauvais mot de passe" : pas d'énumération de comptes.
+        if (userOpt.isEmpty() || password.isEmpty() || !verifyAndUpgradePassword(userOpt.get(), password)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Identifiant non reconnu. Utilisez votre adresse @lawtan.sn"));
+                    .body(Map.of("message", INVALID_CREDENTIALS));
         }
 
         AppUser user = userOpt.get();
-
         if (!Boolean.TRUE.equals(user.getActive())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("message", "Compte désactivé. Contactez l'administrateur."));
         }
 
-        // Vérification du mot de passe (mot de passe officiel ou raccourci de démonstration)
-        boolean validPassword = password.equals(user.getPassword())
-                || password.equalsIgnoreCase(user.getPassword())
-                || password.equalsIgnoreCase(user.getRole() + "2026")
-                || (user.getRole().equalsIgnoreCase("manager") && password.equalsIgnoreCase("lawtan2026"));
-        if (!validPassword) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Mot de passe incorrect"));
-        }
-
-        // Génération d'un token simple pour la démo
-        String token = "jwt_" + user.getRole() + "_" + UUID.randomUUID().toString().replace("-", "");
+        // CORRECTIF : vrai JWT signé (avant : chaîne "jwt_<rôle>_<uuid>" jamais vérifiée côté serveur).
+        String token = jwtService.generateToken(user);
 
         AuthDTO.UserProfile profile = AuthDTO.UserProfile.builder()
                 .id("usr_" + user.getId())
+                .numericId(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
@@ -79,14 +69,35 @@ public class AuthController {
                 .title(user.getTitle())
                 .department(user.getDepartment())
                 .phone(user.getPhone())
+                .active(true)
                 .build();
 
-        AuthDTO.AuthResponse response = AuthDTO.AuthResponse.builder()
+        return ResponseEntity.ok(AuthDTO.AuthResponse.builder()
                 .token(token)
                 .user(profile)
-                .expiresIn(86400L)
-                .build();
+                .expiresIn(jwtService.getExpirationSeconds())
+                .build());
+    }
 
-        return ResponseEntity.ok(response);
+    /**
+     * Vérifie le mot de passe. Les comptes existants ont un mot de passe en clair (ancien stockage) :
+     * à la première connexion réussie il est remplacé par son hash BCrypt (migration transparente).
+     */
+    private boolean verifyAndUpgradePassword(AppUser user, String rawPassword) {
+        String stored = user.getPassword();
+        if (stored == null || stored.isEmpty()) {
+            return false;
+        }
+        if (BCRYPT_HASH.matcher(stored).matches()) {
+            return passwordEncoder.matches(rawPassword, stored);
+        }
+        boolean legacyMatch = MessageDigest.isEqual(
+                stored.getBytes(StandardCharsets.UTF_8),
+                rawPassword.getBytes(StandardCharsets.UTF_8));
+        if (legacyMatch) {
+            user.setPassword(passwordEncoder.encode(rawPassword));
+            appUserRepository.save(user);
+        }
+        return legacyMatch;
     }
 }

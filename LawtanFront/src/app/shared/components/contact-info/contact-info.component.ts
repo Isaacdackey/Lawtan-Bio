@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './contact-info.component.css'
 })
 export class ContactInfoComponent {
-  readonly phoneNumber = '+221 77 765 56 48';
-  readonly phoneRaw = '+221777655648';
+  readonly phoneNumber = '+221 77 765 76 56';
+  readonly phoneRaw = '+221777657656';
   readonly email = 'lawtan@gmail.com';
 }

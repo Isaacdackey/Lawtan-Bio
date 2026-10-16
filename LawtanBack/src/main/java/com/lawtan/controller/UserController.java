@@ -2,26 +2,35 @@ package com.lawtan.controller;
 
 import com.lawtan.dto.AuthDTO;
 import com.lawtan.entity.AppUser;
+import com.lawtan.model.RoleName;
 import com.lawtan.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
 
+    private static final int MIN_PASSWORD_LENGTH = 8;
+
     private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 1. Liste de tous les utilisateurs
     @GetMapping
@@ -36,25 +45,23 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return appUserRepository.findById(id)
-                .map(user -> ResponseEntity.ok(toProfile(user)))
+                .<ResponseEntity<?>>map(user -> ResponseEntity.ok(toProfile(user)))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body((AuthDTO.UserProfile) null));
+                        .body(Map.of("message", "Utilisateur introuvable.")));
     }
 
     // 3. Création d'un nouvel utilisateur
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody AuthDTO.CreateUserRequest request) {
         if (request.getEmail() == null || request.getEmail().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "L'adresse email est obligatoire."));
+            return badRequest("L'adresse email est obligatoire.");
         }
         if (request.getName() == null || request.getName().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Le nom complet est obligatoire."));
+            return badRequest("Le nom complet est obligatoire.");
         }
-        if (request.getPassword() == null || request.getPassword().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Le mot de passe initial est obligatoire."));
+        String passwordError = validatePassword(request.getPassword());
+        if (passwordError != null) {
+            return badRequest(passwordError);
         }
 
         String email = request.getEmail().trim().toLowerCase();
@@ -63,56 +70,79 @@ public class UserController {
                     .body(Map.of("message", "Un compte existe déjà avec cette adresse email (" + email + ")."));
         }
 
-        String role = (request.getRole() != null && !request.getRole().isBlank()) ? request.getRole().toLowerCase().trim() : "tech";
-        String roleLabel = resolveRoleLabel(role);
-        String roleBadgeColor = resolveRoleBadgeColor(role);
-        String initials = computeInitials(request.getName());
+        String requestedRole = (request.getRole() != null && !request.getRole().isBlank())
+                ? request.getRole() : RoleName.TECHNICIAN.getCode();
+        Optional<RoleName> roleOpt = RoleName.fromCode(requestedRole);
+        if (roleOpt.isEmpty()) {
+            return badRequest(unknownRoleMessage());
+        }
+        RoleName role = roleOpt.get();
 
         AppUser newUser = AppUser.builder()
                 .name(request.getName().trim())
                 .email(email)
-                .password(request.getPassword().trim())
-                .role(role)
-                .roleLabel(roleLabel)
-                .roleBadgeColor(roleBadgeColor)
-                .initials(initials)
-                .title(request.getTitle() != null ? request.getTitle().trim() : roleLabel)
-                .department(request.getDepartment() != null ? request.getDepartment().trim() : resolveDefaultDepartment(role))
+                .password(passwordEncoder.encode(request.getPassword().trim()))
+                .role(role.getCode())
+                .roleLabel(role.getLabel())
+                .roleBadgeColor(role.getBadgeColor())
+                .initials(computeInitials(request.getName()))
+                .title(request.getTitle() != null ? request.getTitle().trim() : role.getLabel())
+                .department(request.getDepartment() != null ? request.getDepartment().trim() : role.getDefaultDepartment())
                 .phone(request.getPhone() != null ? request.getPhone().trim() : "")
                 .active(true)
                 .build();
 
         AppUser saved = appUserRepository.save(newUser);
-        log.info("Nouvel utilisateur créé avec succès : {} ({})", saved.getEmail(), saved.getRole());
+        log.info("Nouvel utilisateur créé : {} ({})", saved.getEmail(), saved.getRole());
         return ResponseEntity.status(HttpStatus.CREATED).body(toProfile(saved));
     }
 
     // 4. Mise à jour des informations d'un utilisateur
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody AuthDTO.UpdateUserRequest request) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id,
+                                        @RequestBody AuthDTO.UpdateUserRequest request,
+                                        Authentication authentication) {
         Optional<AppUser> userOpt = appUserRepository.findById(id);
         if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Utilisateur introuvable."));
+            return notFound();
         }
 
         AppUser user = userOpt.get();
+        boolean isSelf = isCurrentUser(user, authentication);
+
         if (request.getName() != null && !request.getName().isBlank()) {
             user.setName(request.getName().trim());
             user.setInitials(computeInitials(request.getName()));
         }
         if (request.getRole() != null && !request.getRole().isBlank()) {
-            String role = request.getRole().toLowerCase().trim();
-            user.setRole(role);
-            user.setRoleLabel(resolveRoleLabel(role));
-            user.setRoleBadgeColor(resolveRoleBadgeColor(role));
+            Optional<RoleName> roleOpt = RoleName.fromCode(request.getRole());
+            if (roleOpt.isEmpty()) {
+                return badRequest(unknownRoleMessage());
+            }
+            RoleName role = roleOpt.get();
+            // Évite qu'un manager se retire lui-même ses droits (verrouillage de l'administration).
+            if (isSelf && role != RoleName.MANAGER) {
+                return badRequest("Vous ne pouvez pas modifier votre propre rôle.");
+            }
+            user.setRole(role.getCode());
+            user.setRoleLabel(role.getLabel());
+            user.setRoleBadgeColor(role.getBadgeColor());
         }
         if (request.getTitle() != null) user.setTitle(request.getTitle().trim());
         if (request.getDepartment() != null) user.setDepartment(request.getDepartment().trim());
         if (request.getPhone() != null) user.setPhone(request.getPhone().trim());
-        if (request.getActive() != null) user.setActive(request.getActive());
+        if (request.getActive() != null) {
+            if (isSelf && !request.getActive()) {
+                return badRequest("Vous ne pouvez pas désactiver votre propre compte.");
+            }
+            user.setActive(request.getActive());
+        }
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            user.setPassword(request.getPassword().trim());
+            String passwordError = validatePassword(request.getPassword());
+            if (passwordError != null) {
+                return badRequest(passwordError);
+            }
+            user.setPassword(passwordEncoder.encode(request.getPassword().trim()));
         }
 
         AppUser updated = appUserRepository.save(user);
@@ -122,27 +152,29 @@ public class UserController {
 
     // 5. Bascule du statut actif / inactif
     @PutMapping("/{id}/toggle-active")
-    public ResponseEntity<?> toggleUserActive(@PathVariable Long id) {
+    public ResponseEntity<?> toggleUserActive(@PathVariable Long id, Authentication authentication) {
         Optional<AppUser> userOpt = appUserRepository.findById(id);
         if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Utilisateur introuvable."));
+            return notFound();
         }
 
         AppUser user = userOpt.get();
+        if (isCurrentUser(user, authentication) && Boolean.TRUE.equals(user.getActive())) {
+            return badRequest("Vous ne pouvez pas désactiver votre propre compte.");
+        }
         user.setActive(!Boolean.TRUE.equals(user.getActive()));
         AppUser updated = appUserRepository.save(user);
         log.info("Statut utilisateur {} basculé vers : {}", updated.getEmail(), updated.getActive());
         return ResponseEntity.ok(toProfile(updated));
     }
 
-    // 6. Mise à jour du profil personnel (utilisateur connecté)
+    // 6. Mise à jour du profil personnel (utilisateur connecté, identité issue du JWT)
     @PutMapping("/me/profile")
-    public ResponseEntity<?> updateMyProfile(@RequestParam String email, @RequestBody AuthDTO.UpdateProfileRequest request) {
-        Optional<AppUser> userOpt = appUserRepository.findByEmailIgnoreCase(email.trim());
+    public ResponseEntity<?> updateMyProfile(Authentication authentication,
+                                             @RequestBody AuthDTO.UpdateProfileRequest request) {
+        Optional<AppUser> userOpt = appUserRepository.findByEmailIgnoreCase(authentication.getName());
         if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Utilisateur introuvable."));
+            return notFound();
         }
 
         AppUser user = userOpt.get();
@@ -154,41 +186,75 @@ public class UserController {
         if (request.getTitle() != null) user.setTitle(request.getTitle().trim());
         if (request.getDepartment() != null) user.setDepartment(request.getDepartment().trim());
 
-        AppUser updated = appUserRepository.save(user);
-        return ResponseEntity.ok(toProfile(updated));
+        return ResponseEntity.ok(toProfile(appUserRepository.save(user)));
     }
 
-    // 7. Changement de mot de passe personnel
+    // 7. Changement de mot de passe personnel (utilisateur connecté, identité issue du JWT)
     @PutMapping("/me/password")
-    public ResponseEntity<?> changePassword(@RequestBody AuthDTO.ChangePasswordRequest request) {
-        if (request.getEmail() == null || request.getEmail().isBlank()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Email obligatoire."));
-        }
-        if (request.getNewPassword() == null || request.getNewPassword().length() < 4) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Le nouveau mot de passe doit comporter au moins 4 caractères."));
+    public ResponseEntity<?> changePassword(Authentication authentication,
+                                            @RequestBody AuthDTO.ChangePasswordRequest request) {
+        String passwordError = validatePassword(request.getNewPassword());
+        if (passwordError != null) {
+            return badRequest(passwordError);
         }
 
-        Optional<AppUser> userOpt = appUserRepository.findByEmailIgnoreCase(request.getEmail().trim());
+        Optional<AppUser> userOpt = appUserRepository.findByEmailIgnoreCase(authentication.getName());
         if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Compte introuvable."));
+            return notFound();
         }
 
         AppUser user = userOpt.get();
-        if (!user.getPassword().equals(request.getOldPassword() != null ? request.getOldPassword().trim() : "")) {
+        String oldPassword = request.getOldPassword() != null ? request.getOldPassword().trim() : "";
+        if (!matchesStoredPassword(user.getPassword(), oldPassword)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "L'ancien mot de passe saisi est incorrect."));
         }
 
-        user.setPassword(request.getNewPassword().trim());
+        user.setPassword(passwordEncoder.encode(request.getNewPassword().trim()));
         appUserRepository.save(user);
-        log.info("Mot de passe mis à jour avec succès pour l'utilisateur : {}", user.getEmail());
+        log.info("Mot de passe mis à jour pour l'utilisateur : {}", user.getEmail());
         return ResponseEntity.ok(Map.of("message", "Mot de passe modifié avec succès."));
     }
 
-    // --- Helpers Mappage & Métier ---
+    // --- Helpers ---
+
+    private boolean matchesStoredPassword(String stored, String raw) {
+        if (stored == null || raw.isEmpty()) return false;
+        if (stored.startsWith("$2")) {
+            return passwordEncoder.matches(raw, stored);
+        }
+        // Ancien stockage en clair (comptes pas encore migrés par une connexion)
+        return MessageDigest.isEqual(stored.getBytes(StandardCharsets.UTF_8), raw.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String validatePassword(String password) {
+        if (password == null || password.isBlank()) {
+            return "Le mot de passe est obligatoire.";
+        }
+        if (password.trim().length() < MIN_PASSWORD_LENGTH) {
+            return "Le mot de passe doit comporter au moins " + MIN_PASSWORD_LENGTH + " caractères.";
+        }
+        return null;
+    }
+
+    private boolean isCurrentUser(AppUser user, Authentication authentication) {
+        return authentication != null && user.getEmail() != null
+                && user.getEmail().equalsIgnoreCase(authentication.getName());
+    }
+
+    private String unknownRoleMessage() {
+        String codes = Arrays.stream(RoleName.values()).map(RoleName::getCode).collect(Collectors.joining(", "));
+        return "Rôle inconnu. Valeurs autorisées : " + codes + ".";
+    }
+
+    private ResponseEntity<Map<String, String>> badRequest(String message) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", message));
+    }
+
+    private ResponseEntity<Map<String, String>> notFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Utilisateur introuvable."));
+    }
+
     private AuthDTO.UserProfile toProfile(AppUser u) {
         return AuthDTO.UserProfile.builder()
                 .id("usr_" + u.getId())
@@ -204,39 +270,6 @@ public class UserController {
                 .phone(u.getPhone())
                 .active(Boolean.TRUE.equals(u.getActive()))
                 .build();
-    }
-
-    private String resolveRoleLabel(String role) {
-        return switch (role.toLowerCase()) {
-            case "manager" -> "Directeur Général";
-            case "veto" -> "Vétérinaire Chef";
-            case "tech" -> "Technicien Élevage";
-            case "compta" -> "Comptable & Ventes";
-            case "bouvier" -> "Chef Bouvier";
-            default -> "Collaborateur Exploitation";
-        };
-    }
-
-    private String resolveRoleBadgeColor(String role) {
-        return switch (role.toLowerCase()) {
-            case "manager" -> "#059669"; // Emerald
-            case "veto" -> "#0284c7";    // Sky blue
-            case "tech" -> "#d97706";    // Amber
-            case "compta" -> "#7c3aed";  // Violet
-            case "bouvier" -> "#16a34a"; // Green
-            default -> "#475569";        // Slate
-        };
-    }
-
-    private String resolveDefaultDepartment(String role) {
-        return switch (role.toLowerCase()) {
-            case "manager" -> "Direction Générale";
-            case "veto" -> "Santé & Reproduction";
-            case "tech" -> "Production & Laiterie";
-            case "compta" -> "Commercial & Finances";
-            case "bouvier" -> "Élevage & Énergie";
-            default -> "Exploitation";
-        };
     }
 
     private String computeInitials(String fullName) {

@@ -1,7 +1,9 @@
 package com.lawtan.repository;
 
 import com.lawtan.entity.ProductStock;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +15,11 @@ import java.util.Optional;
 public interface ProductStockRepository extends JpaRepository<ProductStock, Long> {
     List<ProductStock> findByQuantityAvailableGreaterThan(Double minQty);
     Optional<ProductStock> findByBatchId(Long batchId);
+
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM ProductStock s WHERE s.id = :id")
+    Optional<ProductStock> findByIdForUpdate(Long id);
 
     @Query("SELECT SUM(s.totalValueFcfa) FROM ProductStock s WHERE s.quantityAvailable > 0")
     Double sumTotalStockValue();

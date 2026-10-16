@@ -2,6 +2,8 @@ package com.lawtan.service.impl;
 
 import com.lawtan.dto.AnimalDTO;
 import com.lawtan.dto.DashboardStatsDTO;
+import com.lawtan.entity.Animal;
+import com.lawtan.entity.HealthRecord;
 import com.lawtan.entity.InvoiceItem;
 import com.lawtan.entity.MilkProduction;
 import com.lawtan.entity.SaleInvoice;
@@ -13,7 +15,11 @@ import com.lawtan.model.MilkSession;
 import com.lawtan.model.ProductType;
 import com.lawtan.repository.*;
 import com.lawtan.service.AnimalService;
+import com.lawtan.dto.FeedbackSummaryDTO;
+import com.lawtan.dto.FodderSummaryDTO;
+import com.lawtan.service.CustomerFeedbackService;
 import com.lawtan.service.DashboardService;
+import com.lawtan.service.FodderCropService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +39,8 @@ public class DashboardServiceImpl implements DashboardService {
     private final SaleInvoiceRepository saleInvoiceRepository;
     private final SolarEnergyMetricRepository solarEnergyMetricRepository;
     private final FeedDistributionRepository feedDistributionRepository;
+    private final FodderCropService fodderCropService;
+    private final CustomerFeedbackService customerFeedbackService;
 
     @Override
     @Transactional(readOnly = true)
@@ -122,6 +130,11 @@ public class DashboardServiceImpl implements DashboardService {
                 .sum();
         double feedRatio = milkLiters30d > 0 ? Math.round((feedKg / milkLiters30d) * 100.0) / 100.0 : 0.0;
 
+        // KPI santé du troupeau (mortalité, morbidité, coût vétérinaire par animal) - 12 derniers mois
+        HealthKpis healthKpis = computeHealthKpis(today);
+        FeedbackSummaryDTO feedbackSummary = customerFeedbackService.getSummary();
+        FodderSummaryDTO fodderSummary = fodderCropService.getSummary();
+
         return DashboardStatsDTO.builder()
                 .dailyMilkTotal(realDailyTotal)
                 .morningMilkTotal(Math.round(morningSum * 10.0) / 10.0)
@@ -138,7 +151,80 @@ public class DashboardServiceImpl implements DashboardService {
                 .milkingCowsToday(milkingCows)
                 .weeklyProductionChart(weeklyData)
                 .revenueDistributionChart(revenueData)
+                .mortalityRatePercent(healthKpis.mortalityRatePercent())
+                .deathsLast12Months(healthKpis.deaths())
+                .morbidityRatePercent(healthKpis.morbidityRatePercent())
+                .diseaseCasesLast12Months(healthKpis.diseaseCases())
+                .veterinaryCostPerAnimalFcfa(healthKpis.vetCostPerAnimalFcfa())
+                .customerSatisfactionAverage(feedbackSummary.averageRating())
+                .customerFeedbackCount(feedbackSummary.totalCount())
+                .fodderProductionCostPerKgFcfa(fodderSummary.costPerKgFcfa())
                 .build();
+    }
+
+    /** Actes dont le libellé contient l'un de ces mots sont considérés comme préventifs/suivi, pas comme une maladie. */
+    private static final List<String> PREVENTIVE_ACT_KEYWORDS = List.of(
+            "vaccin", "bilan", "insémin", "insemin", "contrôle", "controle",
+            "dépistage", "depistage", "déparasitage", "deparasitage", "pédicure", "pedicure");
+
+    private record HealthKpis(Double mortalityRatePercent, int deaths, Double morbidityRatePercent,
+                              int diseaseCases, Double vetCostPerAnimalFcfa) {
+    }
+
+    /**
+     * Mortalité, morbidité et dépenses vétérinaires par animal sur les 12 derniers mois.
+     * - Troupeau actif : animaux ni morts, ni mort-nés, ni vendus.
+     * - Mortalité = décès datés des 12 derniers mois / (troupeau actif + décès).
+     * - Morbidité = animaux distincts ayant eu au moins un soin curatif / troupeau actif.
+     * Limite : un décès sans date de décès renseignée n'est pas compté.
+     */
+    private HealthKpis computeHealthKpis(LocalDate today) {
+        LocalDate since = today.minusMonths(12);
+        List<Animal> animals = animalRepository.findAll();
+
+        long activeHerd = animals.stream()
+                .filter(a -> a.getStatus() != AnimalStatus.MORT
+                        && a.getStatus() != AnimalStatus.MORT_NE
+                        && a.getStatus() != AnimalStatus.VENDU)
+                .count();
+
+        long deaths = animals.stream()
+                .filter(a -> (a.getStatus() == AnimalStatus.MORT || a.getStatus() == AnimalStatus.MORT_NE)
+                        && a.getDeathDate() != null
+                        && !a.getDeathDate().isBefore(since)
+                        && !a.getDeathDate().isAfter(today))
+                .count();
+
+        List<HealthRecord> recentRecords = healthRecordRepository.findAll().stream()
+                .filter(h -> h.getRecordDate() != null
+                        && !h.getRecordDate().isBefore(since)
+                        && !h.getRecordDate().isAfter(today))
+                .toList();
+
+        List<HealthRecord> diseaseCases = recentRecords.stream().filter(this::isDiseaseCase).toList();
+        long sickAnimals = diseaseCases.stream()
+                .filter(h -> h.getAnimal() != null)
+                .map(h -> h.getAnimal().getId())
+                .distinct()
+                .count();
+        double vetCost = recentRecords.stream()
+                .mapToDouble(h -> h.getCostFcfa() != null ? h.getCostFcfa() : 0.0)
+                .sum();
+
+        long mortalityBase = activeHerd + deaths;
+        Double mortalityRate = mortalityBase > 0 ? Math.round(deaths * 1000.0 / mortalityBase) / 10.0 : null;
+        Double morbidityRate = activeHerd > 0 ? Math.round(sickAnimals * 1000.0 / activeHerd) / 10.0 : null;
+        Double vetCostPerAnimal = activeHerd > 0 ? Math.round(vetCost / activeHerd * 10.0) / 10.0 : null;
+
+        return new HealthKpis(mortalityRate, (int) deaths, morbidityRate, diseaseCases.size(), vetCostPerAnimal);
+    }
+
+    private boolean isDiseaseCase(HealthRecord record) {
+        if (record.getActType() == null || record.getActType().isBlank()) {
+            return false;
+        }
+        String act = record.getActType().toLowerCase(Locale.ROOT);
+        return PREVENTIVE_ACT_KEYWORDS.stream().noneMatch(act::contains);
     }
 
     /**

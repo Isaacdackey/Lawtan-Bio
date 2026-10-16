@@ -28,20 +28,20 @@ import { isPlatformBrowser } from '@angular/common';
           xmlns="http://www.w3.org/2000/svg"
         >
           <!-- Pattes -->
-          <g class="mc-leg mc-leg-back"><path d="M8 14 L8 20" stroke="#1E5E3A" stroke-width="1.6" stroke-linecap="round"/></g>
-          <g class="mc-leg mc-leg-front"><path d="M22 14 L22 20" stroke="#1E5E3A" stroke-width="1.6" stroke-linecap="round"/></g>
+          <g class="mc-leg mc-leg-back"><path d="M8 14 L8 20" stroke="#23689E" stroke-width="1.6" stroke-linecap="round"/></g>
+          <g class="mc-leg mc-leg-front"><path d="M22 14 L22 20" stroke="#23689E" stroke-width="1.6" stroke-linecap="round"/></g>
           
           <!-- Corps -->
-          <path d="M5 10 C5 8, 9 7, 16 7 C21 7, 24 8, 25 10 C26 12, 24 15, 22 15 C17 15.5, 9 15.5, 6 14 Z" fill="#1E5E3A"/>
+          <path d="M5 10 C5 8, 9 7, 16 7 C21 7, 24 8, 25 10 C26 12, 24 15, 22 15 C17 15.5, 9 15.5, 6 14 Z" fill="#23689E"/>
           <path d="M10 9 C12 8, 14 10, 13 12 C11 12, 9 11, 10 9 Z" fill="#FAF8F5"/>
           
-          <!-- T\u00eate & Corne -->
-          <path d="M23 9 C24 8, 26 7, 29 7 C31 7, 32 8.5, 31 10 C30 11.5, 28 12, 26 12 Z" fill="#1E5E3A"/>
+          <!-- Tête & Corne -->
+          <path d="M23 9 C24 8, 26 7, 29 7 C31 7, 32 8.5, 31 10 C30 11.5, 28 12, 26 12 Z" fill="#23689E"/>
           <path d="M26 7 C27 4.5, 28 3.5, 29 3" stroke="#D9A441" stroke-width="1.2" stroke-linecap="round"/>
           <circle cx="28.5" cy="8.8" r="0.6" fill="#FFFFFF"/>
           
           <!-- Queue -->
-          <path d="M5 11 C4 14, 3 16, 2.5 17.5" stroke="#15442A" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M5 11 C4 14, 3 16, 2.5 17.5" stroke="#1F5F94" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
       </div>
     </div>
@@ -64,7 +64,7 @@ import { isPlatformBrowser } from '@angular/common';
       left: 0;
       height: 100%;
       width: 100%;
-      background: linear-gradient(90deg, #1E5E3A 0%, #2A7F48 60%, #D9A441 100%);
+      background: linear-gradient(90deg, #23689E 0%, #2C77B0 60%, #9FD3F2 100%);
       transform-origin: left center;
       transform: scaleX(0);
       will-change: transform;

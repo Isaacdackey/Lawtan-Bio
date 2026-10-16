@@ -11,7 +11,6 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/finance")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class FinanceController {
 

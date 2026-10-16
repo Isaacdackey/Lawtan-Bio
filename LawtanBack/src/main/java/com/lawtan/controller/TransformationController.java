@@ -20,7 +20,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class TransformationController {
 
     private final RecipeService recipeService;

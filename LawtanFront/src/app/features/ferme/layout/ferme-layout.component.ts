@@ -83,7 +83,7 @@ export class FermeLayoutComponent {
           email: real.email,
           initials: real.initials || 'AS',
           roleLabel: real.roleLabel || real.role,
-          roleBadgeColor: real.roleBadgeColor || '#15803d',
+          roleBadgeColor: this.sanitizeBadgeColor(real.roleBadgeColor, real.role),
           title: real.title || real.roleLabel || 'Exploitant',
           department: real.department || 'Ferme LAWTAN',
           phone: real.phone || '+221 77 123 45 67',
@@ -158,7 +158,7 @@ export class FermeLayoutComponent {
       title: 'Collecte Matinale',
       message: 'Traite du matin validée et transférée vers cuve Bio.',
       time: '06h30',
-      color: '#16a34a'
+      color: '#2C77B0'
     }
   ]);
 
@@ -283,14 +283,27 @@ export class FermeLayoutComponent {
     this.notificationService.afficherToast('Données synchronisées avec succès.');
   }
 
+  private sanitizeBadgeColor(color?: string, role?: string): string {
+    if (!color ||
+        color.toLowerCase().includes('059669') ||
+        color.toLowerCase().includes('16a34a') ||
+        color.toLowerCase().includes('1e5e3a') ||
+        color.toLowerCase().includes('2a7f48') ||
+        color.toLowerCase().includes('green') ||
+        color.toLowerCase().includes('emerald')) {
+      return this.getRoleColor((role as any) || 'manager');
+    }
+    return color;
+  }
+
   private getRoleColor(role: RoleUtilisateur): string {
     switch (role) {
-      case 'manager': return '#15803d';
+      case 'manager': return '#23689E';
       case 'veterinaire': return '#dc2626';
       case 'bouvier': return '#b45309';
       case 'commercial': return '#0284c7';
       case 'comptable': return '#7c3aed';
-      default: return '#16a34a';
+      default: return '#2C77B0';
     }
   }
 

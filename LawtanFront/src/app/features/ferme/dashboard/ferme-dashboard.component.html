@@ -143,15 +143,15 @@
       <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;padding:0;margin:0">
         <li *ngFor="let step of dailyPlanning()"
             style="display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:8px"
-            [style.background]="step.tone === 'done' ? '#f0fdf4' : (step.tone === 'active' ? '#fef3c7' : '#f8faf6')"
-            [style.borderLeft]="'3px solid ' + (step.tone === 'done' ? '#16a34a' : (step.tone === 'active' ? '#f59e0b' : '#94a3b8'))">
+            [style.background]="step.tone === 'done' ? '#EAF5FD' : (step.tone === 'active' ? '#fef3c7' : '#F4FAFF')"
+            [style.borderLeft]="'3px solid ' + (step.tone === 'done' ? '#2C77B0' : (step.tone === 'active' ? '#f59e0b' : '#94a3b8'))">
           <span style="font-weight:800;font-size:0.8rem;min-width:56px"
-                [style.color]="step.tone === 'done' ? '#166534' : (step.tone === 'active' ? '#b45309' : '#526658')">
+                [style.color]="step.tone === 'done' ? '#23689E' : (step.tone === 'active' ? '#b45309' : '#64748b')">
             {{ step.time }}
           </span>
           <div>
             <strong style="font-size:0.85rem">{{ step.title }}</strong>
-            <p style="font-size:0.75rem;color:#526658;margin:2px 0 0 0">{{ step.detail }}</p>
+            <p style="font-size:0.75rem;color:#64748b;margin:2px 0 0 0">{{ step.detail }}</p>
           </div>
           <span class="badge-pill" style="margin-left:auto"
                 [class.badge-green]="step.tone === 'done'"

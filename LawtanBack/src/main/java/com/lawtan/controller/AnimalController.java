@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/animals")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class AnimalController {
 
     private final AnimalService animalService;

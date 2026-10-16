@@ -19,7 +19,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/milk")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class MilkProductionController {
 
     private final MilkProductionService milkProductionService;

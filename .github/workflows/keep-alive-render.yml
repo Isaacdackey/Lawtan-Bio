@@ -1,0 +1,24 @@
+name: Wake up Render Backend
+
+on:
+  schedule:
+    # Déclenchement toutes les 14 minutes (le spin-down gratuit Render se fait après 15 min d'inactivité)
+    - cron: '*/14 * * * *'
+  workflow_dispatch: # Permet de déclencher manuellement le réveil depuis l'onglet Actions de GitHub
+
+jobs:
+  ping-render:
+    name: Ping Render Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping public health endpoint
+        run: |
+          echo "Pinging Render backend to keep instance warm..."
+          # Ping de l'endpoint public marketplace (ne requiert pas d'authentification)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 https://lawtan-bio-back-6h72.onrender.com/api/marketplace/products || echo "TIMEOUT")
+          echo "HTTP Status: $STATUS"
+          if [ "$STATUS" = "200" ]; then
+            echo "Render backend is alive and warm!"
+          else
+            echo "Warning: Response status was $STATUS, but wake-up ping was delivered."
+          fi

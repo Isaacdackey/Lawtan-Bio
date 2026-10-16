@@ -21,7 +21,7 @@
    ========================================================================== */
 .boutique-hero {
   position: relative;
-  background: radial-gradient(circle at 15% 20%, #154d2a 0%, #082513 100%);
+  background: radial-gradient(circle at 15% 20%, #1F5F94 0%, #0E2438 100%);
   color: #ffffff;
   padding: 4.5rem 0 3.5rem;
   overflow: hidden;
@@ -76,7 +76,7 @@
 }
 
 .title-highlight {
-  background: linear-gradient(90deg, #fef08a 0%, #f59e0b 60%, #34d399 100%);
+  background: linear-gradient(90deg, #fef08a 0%, #F29A2E 60%, #9FD3F2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -113,8 +113,8 @@
 }
 
 .search-input-wrap:focus-within {
-  border-color: #22c55e;
-  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.28);
+  border-color: #2C77B0;
+  box-shadow: 0 10px 30px rgba(44, 119, 176, 0.25);
 }
 
 .search-input {
@@ -162,7 +162,7 @@
 
 .cart-icon-wrap {
   position: relative;
-  color: #0d4a22;
+  color: #2C77B0;
   display: flex;
 }
 
@@ -246,10 +246,10 @@
 }
 
 .mfilter-btn.active {
-  background: #0d4a22;
-  border-color: #0d4a22;
+  background: #2C77B0;
+  border-color: #2C77B0;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(13, 74, 34, 0.25);
+  box-shadow: 0 4px 14px rgba(44, 119, 176, 0.25);
 }
 
 /* Grille des cartes produits */
@@ -275,8 +275,8 @@
 
 .product-market-card:not(.unavailable):hover {
   transform: translateY(-6px);
-  border-color: #a7f3d0;
-  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.12);
+  border-color: #BFDFF3;
+  box-shadow: 0 20px 40px rgba(44, 119, 176, 0.12);
 }
 
 .product-market-card.unavailable {
@@ -307,7 +307,7 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
-  background: rgba(13, 74, 34, 0.9);
+  background: rgba(18, 48, 74, 0.9);
   color: #ffffff;
   font-size: 0.75rem;
   font-weight: 800;
@@ -345,7 +345,7 @@
 .pmc-category {
   font-size: 0.75rem;
   font-weight: 800;
-  color: #16a34a;
+  color: #2C77B0;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 0.35rem;
@@ -406,7 +406,7 @@
   font-family: 'Outfit', sans-serif;
   font-size: 1.5rem;
   font-weight: 900;
-  color: #0d4a22;
+  color: #2C77B0;
 }
 
 .price-cur {
@@ -421,20 +421,20 @@
   gap: 0.45rem;
   padding: 0.65rem 1.25rem;
   border-radius: 9999px;
-  background: #0d4a22;
+  background: #2C77B0;
   color: #ffffff;
   border: none;
   font-weight: 700;
   font-size: 0.88rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(13, 74, 34, 0.2);
+  box-shadow: 0 4px 12px rgba(44, 119, 176, 0.2);
   transition: all 0.25s ease;
 }
 
 .btn-add-cart:hover {
-  background: #15803d;
+  background: #1F5F94;
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(13, 74, 34, 0.3);
+  box-shadow: 0 8px 18px rgba(44, 119, 176, 0.3);
 }
 
 .btn-notify-stock {
@@ -452,7 +452,7 @@
    3. BANNIÈRE WHOLESALE / PRO
    ========================================================================== */
 .market-wholesale-banner {
-  background: linear-gradient(135deg, #0d4a22 0%, #064e3b 100%);
+  background: linear-gradient(135deg, #2C77B0 0%, #23689E 100%);
   border-radius: 24px;
   padding: 3rem;
   color: #ffffff;
@@ -460,7 +460,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 2.5rem;
-  box-shadow: 0 20px 40px rgba(13, 74, 34, 0.25);
+  box-shadow: 0 20px 40px rgba(44, 119, 176, 0.25);
   overflow: hidden;
   width: 100%;
   margin: 0 auto;
@@ -579,8 +579,8 @@
 .cdh-count-badge {
   font-size: 0.75rem;
   font-weight: 800;
-  background: #dcfce7;
-  color: #166534;
+  background: #EAF5FD;
+  color: #23689E;
   padding: 0.2rem 0.55rem;
   border-radius: 9999px;
 }
@@ -641,7 +641,7 @@
 .btn-browse-empty {
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
-  background: #0d4a22;
+  background: #2C77B0;
   color: #ffffff;
   border: none;
   font-weight: 700;
@@ -651,7 +651,7 @@
 }
 
 .btn-browse-empty:hover {
-  background: #15803d;
+  background: #1F5F94;
   transform: translateY(-2px);
 }
 
@@ -731,7 +731,7 @@
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
   font-size: 0.95rem;
-  color: #0d4a22;
+  color: #2C77B0;
 }
 
 .ci-remove-btn {
@@ -782,7 +782,7 @@
 
 .cdf-free {
   font-weight: 700;
-  color: #16a34a;
+  color: #2C77B0;
 }
 
 .cdf-total-line {
@@ -799,7 +799,7 @@
   font-family: 'Outfit', sans-serif;
   font-size: 1.4rem;
   font-weight: 900;
-  color: #0d4a22;
+  color: #2C77B0;
 }
 
 .cdf-actions {
@@ -816,17 +816,17 @@
   width: 100%;
   padding: 0.95rem;
   border-radius: 12px;
-  background: #25d366;
+  background: #2C77B0;
   color: #ffffff;
   font-weight: 800;
   font-size: 0.95rem;
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+  box-shadow: 0 4px 14px rgba(44, 119, 176, 0.35);
   transition: all 0.25s ease;
 }
 
 .btn-whatsapp-order:hover {
-  background: #20ba59;
+  background: #23689E;
   transform: translateY(-2px);
 }
 
@@ -856,18 +856,25 @@
   position: fixed;
   bottom: 24px;
   right: 24px;
+  max-width: calc(100vw - 48px);
   background: #0f172a;
   color: #ffffff;
   padding: 0.9rem 1.35rem;
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   gap: 0.75rem;
   font-weight: 700;
   font-size: 0.92rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   z-index: 3000;
   animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.boutique-toast svg {
+  flex-shrink: 0;
+  stroke: #9FD3F2;
 }
 
 @keyframes toastSlideUp {
@@ -878,6 +885,23 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .boutique-toast {
+    left: 16px;
+    right: 16px;
+    bottom: 20px;
+    width: auto;
+    max-width: 440px;
+    margin: 0 auto;
+    justify-content: center;
+    text-align: center;
+    padding: 0.85rem 1.15rem;
+    font-size: 0.86rem;
+    line-height: 1.35;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -958,7 +982,7 @@
     padding: 2rem 1.25rem;
     border-radius: 20px;
     margin: 0 auto;
-    box-shadow: 0 12px 30px rgba(13, 74, 34, 0.2);
+    box-shadow: 0 12px 30px rgba(44, 119, 176, 0.2);
   }
 
   .mwb-title {

@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/reproduction")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ReproductionController {
 
     private final ReproductionService reproductionService;

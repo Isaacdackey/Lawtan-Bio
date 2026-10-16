@@ -7,15 +7,15 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 44px;
-  height: 31px;
-  margin-left: -22px;
-  margin-top: -15px;
+  width: 36px;
+  height: 36px;
+  margin-left: -2px;
+  margin-top: -16px;
   pointer-events: none;
   z-index: 999999;
   opacity: 0;
   visibility: hidden;
-  transform-origin: center center;
+  transform-origin: 2px 16px;
   transition: opacity 0.25s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
               visibility 0.25s;
   will-change: transform;
@@ -26,20 +26,26 @@
   visibility: visible;
 }
 
+.cow-cursor-container.is-disabled {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 /* Bulle 'Meuh !' */
 .cow-meuh-bubble {
   position: absolute;
-  top: -24px;
-  right: -10px;
+  top: -18px;
+  right: -8px;
   background: #FAF8F5;
-  border: 1.5px solid #D9A441;
-  color: #1E5E3A;
+  border: 1.5px solid #F29A2E;
+  color: #23689E;
   font-family: 'Fraunces', serif;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  padding: 2px 9px;
+  padding: 1px 7px;
   border-radius: 9999px;
-  box-shadow: 0 4px 14px rgba(217, 164, 65, 0.25);
+  box-shadow: 0 3px 10px rgba(44, 119, 176, 0.2);
   pointer-events: none;
   white-space: nowrap;
   animation: meuhPop 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -70,94 +76,48 @@
 .cow-cursor-container[data-state="action"] .cow-halo {
   opacity: 0.75;
   transform: scale(1.08);
-  border-color: #D9A441;
+  border-color: #2C77B0;
 }
 
-/* SVG Vache */
-.cow-svg {
+/* Image Zébu Bleu 36px */
+.cow-zebu-img {
   display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.16));
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(18, 48, 74, 0.18));
   transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
               opacity 0.25s ease;
-  transform-origin: center center;
+  transform-origin: 2px 16px;
 }
 
-/* Animation au repos : respiration sereine & battement de queue */
-.cow-cursor-container:not(.is-walking) .cow-body {
+/* Animation au repos : respiration subtile */
+.cow-cursor-container:not(.is-walking) .cow-zebu-img {
   animation: cowBreathe 3.5s ease-in-out infinite;
-  transform-origin: center center;
-}
-
-.cow-cursor-container:not(.is-walking) .cow-tail-group {
-  animation: cowTailFlick 4.5s ease-in-out infinite;
-  transform-origin: 8px 17px;
 }
 
 @keyframes cowBreathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.025, 0.985); }
+  50% { transform: scale(1.03, 0.98); }
 }
 
-@keyframes cowTailFlick {
-  0%, 80%, 100% { transform: rotate(0deg); }
-  85% { transform: rotate(-18deg); }
-  90% { transform: rotate(12deg); }
-  95% { transform: rotate(-8deg); }
-}
-
-/* Animation de trot r\u00e9aliste & fluide quand le curseur avance */
-.cow-cursor-container.is-walking .cow-svg {
+/* Animation de trot fluide quand le curseur avance */
+.cow-cursor-container.is-walking .cow-zebu-img {
   animation: cowBob 0.38s ease-in-out infinite alternate;
 }
 
 @keyframes cowBob {
   from { transform: translateY(0); }
-  to { transform: translateY(-2px); }
+  to { transform: translateY(-3px); }
 }
 
-.cow-cursor-container.is-walking .leg-front-left,
-.cow-cursor-container.is-walking .leg-back-right {
-  animation: legTrotA 0.38s ease-in-out infinite alternate;
-  transform-origin: 20px 20px;
+/* États spécifiques */
+.cow-cursor-container[data-state="action"] .cow-zebu-img {
+  transform: scale(1.18);
 }
 
-.cow-cursor-container.is-walking .leg-front-right,
-.cow-cursor-container.is-walking .leg-back-left {
-  animation: legTrotB 0.38s ease-in-out infinite alternate;
-  transform-origin: 20px 20px;
-}
-
-@keyframes legTrotA {
-  0% { transform: rotate(-16deg); }
-  100% { transform: rotate(18deg); }
-}
-
-@keyframes legTrotB {
-  0% { transform: rotate(18deg); }
-  100% { transform: rotate(-16deg); }
-}
-
-/* \u00c9tats sp\u00e9cifiques */
-.cow-cursor-container[data-state="action"] .cow-svg {
-  transform: scale(1.24);
-}
-
-.cow-cursor-container[data-state="action"] .cow-ear {
-  animation: earTwitch 0.4s ease-in-out 1;
-  transform-origin: 36px 12px;
-}
-
-@keyframes earTwitch {
-  0%, 100% { transform: rotate(0deg); }
-  40% { transform: rotate(-25deg); }
-  70% { transform: rotate(15deg); }
-}
-
-.cow-cursor-container[data-state="text"] .cow-svg {
-  transform: scale(0.72);
+.cow-cursor-container[data-state="text"] .cow-zebu-img {
+  transform: scale(0.75);
   opacity: 0.65;
 }
 
@@ -166,8 +126,8 @@
   visibility: hidden !important;
 }
 
-.cow-cursor-container.is-pressed .cow-svg {
-  transform: scale(0.86, 1.15) !important;
+.cow-cursor-container.is-pressed .cow-zebu-img {
+  transform: scale(0.9) !important;
 }
 
 .cow-cursor-container[data-state="disabled"] {

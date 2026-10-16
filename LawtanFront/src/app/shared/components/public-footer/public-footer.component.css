@@ -113,7 +113,7 @@
 }
 
 .contact-icon {
-  color: #2A7F48;
+  color: #2C77B0;
   flex-shrink: 0;
 }
 
@@ -129,22 +129,22 @@
   align-items: center;
   gap: 0.55rem;
   padding: 0.7rem 1.25rem;
-  background: #0d4a22;
-  border: 1px solid #1E5E3A;
+  background: #1F5F94;
+  border: 1px solid #2C77B0;
   color: #FFFFFF;
   border-radius: 8px;
   font-size: 0.88rem;
   font-weight: 700;
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(13, 74, 34, 0.4);
+  box-shadow: 0 4px 14px rgba(35, 104, 158, 0.4);
   transition: all 0.2s ease;
 }
 
 .footer-devis-btn:hover {
-  background: #156b34;
+  background: #2C77B0;
   color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(13, 74, 34, 0.55);
+  box-shadow: 0 6px 18px rgba(44, 119, 176, 0.45);
 }
 
 .footer-bottom {
@@ -181,7 +181,7 @@
 }
 
 .footer-pill svg {
-  color: #34D399;
+  color: #9FD3F2;
 }
 
 @media (max-width: 1024px) {
