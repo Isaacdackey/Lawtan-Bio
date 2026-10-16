@@ -61,6 +61,7 @@ export interface ProductStock {
   storageLocation?: string;
   isOrganicCertified?: boolean;
   daysRemainingDlc?: number;
+  imageUrl?: string;
 }
 
 export interface TransformationSummary {

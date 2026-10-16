@@ -27,4 +27,5 @@ public class ProductStockDTO {
     private String storageLocation;
     private Boolean isOrganicCertified;
     private Long daysRemainingDlc; // Jours restants avant expiration DLC
+    private String imageUrl; // Photo du produit
 }

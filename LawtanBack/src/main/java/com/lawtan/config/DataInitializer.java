@@ -45,6 +45,7 @@ public class DataInitializer implements CommandLineRunner {
                         jdbcTemplate.execute(
                                         "ALTER TABLE customers ADD COLUMN IF NOT EXISTS active BOOLEAN DEFAULT TRUE");
                         jdbcTemplate.execute("UPDATE customers SET active = TRUE WHERE active IS NULL");
+                        jdbcTemplate.execute("ALTER TABLE product_stocks ADD COLUMN IF NOT EXISTS image_url TEXT");
                         // Les enumerations evoluent (ajout de RAW_MILK) : Hibernate ne met pas a jour
                         // les contraintes CHECK deja creees, on les retire pour ne pas bloquer les
                         // insertions.

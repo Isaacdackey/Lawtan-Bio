@@ -49,4 +49,7 @@ public class ProductStock {
 
     @Builder.Default
     private Boolean isOrganicCertified = true;
+
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl; // Photo du produit (URL ou data-url base64)
 }

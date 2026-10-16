@@ -67,6 +67,7 @@ public class ProductStockServiceImpl implements ProductStockService {
         stock.setDlcExpiryDate(dto.getDlcExpiryDate());
         stock.setStorageLocation(dto.getStorageLocation());
         stock.setIsOrganicCertified(dto.getIsOrganicCertified() != null ? dto.getIsOrganicCertified() : true);
+        stock.setImageUrl(dto.getImageUrl());
 
         ProductStock saved = productStockRepository.save(stock);
         return toDTO(saved);
@@ -101,6 +102,7 @@ public class ProductStockServiceImpl implements ProductStockService {
                 .storageLocation(s.getStorageLocation())
                 .isOrganicCertified(s.getIsOrganicCertified())
                 .daysRemainingDlc(daysRemaining)
+                .imageUrl(s.getImageUrl())
                 .build();
     }
 }

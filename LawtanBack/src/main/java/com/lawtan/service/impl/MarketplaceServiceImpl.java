@@ -254,7 +254,7 @@ public class MarketplaceServiceImpl implements MarketplaceService {
                 s.getUnitPriceFcfa(),
                 s.getUnit(),
                 qty,
-                null, // pas d'image stockée en base : le front utilise l'emoji
+                s.getImageUrl(), // photo personnalisée du produit stockée en base
                 qty > 0,
                 s.getDlcExpiryDate(),
                 s.getIsOrganicCertified(),

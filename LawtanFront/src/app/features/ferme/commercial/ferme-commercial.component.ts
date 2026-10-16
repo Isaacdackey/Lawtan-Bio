@@ -81,8 +81,50 @@ export class FermeCommercialComponent implements OnInit {
     unitPriceFcfa: 1000,
     dlcExpiryDate: '',
     storageLocation: 'Chambre Froide Laiterie (+4°C)',
-    isOrganicCertified: true
+    isOrganicCertified: true,
+    imageUrl: ''
   };
+
+  handleProductPhotoUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Compression et optimisation automatique pour mobile/PC
+          const canvas = document.createElement('canvas');
+          const maxDim = 800;
+          let width = img.width;
+          let height = img.height;
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const optimized = canvas.toDataURL('image/jpeg', 0.82);
+            this.stockForm.imageUrl = optimized;
+          } else {
+            this.stockForm.imageUrl = e.target?.result as string;
+          }
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeProductPhoto(): void {
+    this.stockForm.imageUrl = '';
+  }
   marketplaceOrders = signal<MarketplaceOrderResult[]>([]);
   marketplaceOrdersLoading = signal<boolean>(false);
   marketplaceOrdersError = signal<string | null>(null);
@@ -361,7 +403,8 @@ export class FermeCommercialComponent implements OnInit {
       unitPriceFcfa: stock.unitPriceFcfa,
       dlcExpiryDate: stock.dlcExpiryDate || '',
       storageLocation: stock.storageLocation || 'Chambre Froide Laiterie (+4°C)',
-      isOrganicCertified: stock.isOrganicCertified !== false
+      isOrganicCertified: stock.isOrganicCertified !== false,
+      imageUrl: stock.imageUrl || ''
     };
     this.isEditStockModalOpen.set(true);
   }
@@ -380,7 +423,8 @@ export class FermeCommercialComponent implements OnInit {
       unitPriceFcfa: 1000,
       dlcExpiryDate: dlc.toISOString().split('T')[0],
       storageLocation: 'Chambre Froide Laiterie (+4°C)',
-      isOrganicCertified: true
+      isOrganicCertified: true,
+      imageUrl: ''
     };
     this.isNewStockModalOpen.set(true);
   }
@@ -400,7 +444,8 @@ export class FermeCommercialComponent implements OnInit {
       totalValueFcfa: (Number(this.stockForm.quantityAvailable) || 0) * (Number(this.stockForm.unitPriceFcfa) || 0),
       dlcExpiryDate: this.stockForm.dlcExpiryDate || undefined,
       storageLocation: this.stockForm.storageLocation,
-      isOrganicCertified: this.stockForm.isOrganicCertified
+      isOrganicCertified: this.stockForm.isOrganicCertified,
+      imageUrl: this.stockForm.imageUrl || undefined
     };
 
     this.api.createOrUpdateStock(payload).subscribe({

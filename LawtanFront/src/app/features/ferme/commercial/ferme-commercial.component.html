@@ -559,6 +559,35 @@
           <input type="text" [(ngModel)]="stockForm.storageLocation" name="stkLoc" placeholder="Ex: Chambre Froide Laiterie (+4°C)" />
         </div>
 
+        <!-- UPLOAD PHOTO DU PRODUIT (MOBILE / PC) -->
+        <div class="form-group-item" style="border:1px dashed #cbd5e1;padding:14px;border-radius:10px;background:#f8fafc">
+          <label style="display:block;margin-bottom:8px;font-weight:700;color:#1e293b">Photo du Produit (Boutique) :</label>
+          
+          <div *ngIf="stockForm.imageUrl" style="display:flex;align-items:center;gap:14px;margin-bottom:10px">
+            <div style="width:72px;height:72px;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;background:#fff;flex-shrink:0">
+              <img [src]="stockForm.imageUrl" alt="Aperçu Produit" style="width:100%;height:100%;object-fit:cover" />
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:0.8rem;color:#16a34a;font-weight:600">Photo sélectionnée prête pour la boutique</span>
+              <button type="button" class="btn-secondary" style="font-size:0.75rem;padding:4px 8px;color:#dc2626;border-color:#fca5a5" (click)="removeProductPhoto()">
+                ✕ Supprimer la photo
+              </button>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:#2563eb;color:#fff;border-radius:6px;cursor:pointer;font-size:0.82rem;font-weight:600">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              <span>{{ stockForm.imageUrl ? 'Changer la photo' : 'Choisir une photo (PC / Téléphone)' }}</span>
+              <input type="file" accept="image/*" (change)="handleProductPhotoUpload($event)" style="display:none" />
+            </label>
+            <span style="font-size:0.75rem;color:#64748b">Format JPG, PNG, WebP (optimisé automatiquement)</span>
+          </div>
+        </div>
+
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0">
           <input type="checkbox" id="chkOrganic" [(ngModel)]="stockForm.isOrganicCertified" name="stkOrg" style="width:18px;height:18px" />
           <label for="chkOrganic" style="font-weight:600;color:#1e293b;cursor:pointer">Certifié Biologique (Ferme Lawtan Bio)</label>
