@@ -56,6 +56,19 @@ export class FermeCommercialComponent implements OnInit {
   activeCommercialSubTab = signal<'invoices' | 'customers' | 'payments' | 'marketplace' | 'products'>('invoices');
   productStocks = signal<ProductStock[]>([]);
   productStocksLoading = signal<boolean>(false);
+  stockFilterStatus = signal<'ALL' | 'ACTIVE' | 'ARCHIVED'>('ALL');
+
+  activeStocksCount = computed(() => this.productStocks().filter(s => (s.quantityAvailable || 0) > 0).length);
+  archivedStocksCount = computed(() => this.productStocks().filter(s => !(s.quantityAvailable > 0)).length);
+
+  filteredProductStocks = computed(() => {
+    const list = this.productStocks();
+    const filter = this.stockFilterStatus();
+    if (filter === 'ACTIVE') return list.filter(s => (s.quantityAvailable || 0) > 0);
+    if (filter === 'ARCHIVED') return list.filter(s => !(s.quantityAvailable > 0));
+    return list;
+  });
+
   isEditStockModalOpen = signal<boolean>(false);
   isNewStockModalOpen = signal<boolean>(false);
   selectedStockForEdit = signal<ProductStock | null>(null);
@@ -403,17 +416,30 @@ export class FermeCommercialComponent implements OnInit {
     });
   }
 
-  deleteProductStock(stock: ProductStock): void {
+  toggleArchiveProductStock(stock: ProductStock): void {
     if (!stock.id) return;
-    if (!confirm(`Supprimer définitivement le produit « ${stock.productName} » du catalogue ?`)) return;
+    const isCurrentlyActive = (stock.quantityAvailable || 0) > 0;
+    const newQty = isCurrentlyActive ? 0 : 50; // 0 = hors-ligne / archivé, > 0 = en rayon
+    const actionLabel = isCurrentlyActive ? 'archiver et masquer de la boutique' : 'remettre en rayon sur la boutique';
 
-    this.api.deleteStock(stock.id).subscribe({
+    if (!confirm(`Voulez-vous ${actionLabel} le produit « ${stock.productName} » ?`)) return;
+
+    const payload: ProductStock = {
+      ...stock,
+      quantityAvailable: newQty,
+      totalValueFcfa: newQty * (stock.unitPriceFcfa || 0)
+    };
+
+    this.api.createOrUpdateStock(payload).subscribe({
       next: () => {
-        this.notificationService.afficherToast(`Produit « ${stock.productName} » supprimé.`);
+        const msg = isCurrentlyActive
+          ? `Produit « ${stock.productName} » archivé (retiré de la boutique avec succès).`
+          : `Produit « ${stock.productName} » remis en rayon sur la boutique !`;
+        this.notificationService.afficherToast(msg);
         this.loadProductStocks();
       },
       error: () => {
-        this.notificationService.afficherToast('Impossible de supprimer ce produit.');
+        this.notificationService.afficherToast('Erreur lors de la mise à jour du statut du produit.');
       }
     });
   }
