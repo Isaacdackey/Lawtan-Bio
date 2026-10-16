@@ -107,7 +107,7 @@ export class AuthService {
     this.currentUser.set(user);
     this.isAuthenticated.set(true);
     this.authError.set(null);
-    if (typeof window !== 'undefined' && remember) {
+    if (typeof window !== 'undefined') {
       localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
       localStorage.setItem(STORAGE_KEY_TOKEN, token);
     }
