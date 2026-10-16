@@ -2,7 +2,7 @@
 
 <main class="accueil-main">
 
-  <section class="hero-slider-section" (mouseenter)="setSliderPaused(true)" (mouseleave)="setSliderPaused(false)">
+  <section class="hero-slider-section">
     <div class="slider-container">
       @for (slide of slides; track slide.id; let idx = $index) {
         <div class="slide-item" [class.active]="currentSlide() === idx">

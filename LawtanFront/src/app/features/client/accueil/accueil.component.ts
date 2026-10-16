@@ -324,7 +324,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       if (!this.isSliderPaused()) {
         this.nextSlide(false);
       }
-    }, 6500);
+    }, 12000);
   }
 
   private restartAutoplay(): void {

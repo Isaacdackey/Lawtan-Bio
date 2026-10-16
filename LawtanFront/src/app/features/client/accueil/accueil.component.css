@@ -353,11 +353,7 @@
 }
 
 .bottle-indicator.active .milk-liquid-clip {
-  animation: bottleMilkRise 6.5s linear forwards;
-}
-
-.hero-slider-section:hover .bottle-indicator.active .milk-liquid-clip {
-  animation-play-state: paused;
+  animation: bottleMilkRise 12s linear forwards;
 }
 
 @keyframes bottleMilkRise {
