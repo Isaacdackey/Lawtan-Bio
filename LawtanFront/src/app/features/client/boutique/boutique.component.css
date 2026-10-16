@@ -587,16 +587,30 @@
 
 .cdh-close-btn {
   background: #f1f5f9;
-  border: none;
+  border: 1px solid #e2e8f0;
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  font-size: 1.1rem;
-  color: #64748b;
+  color: #334155;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cdh-close-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+  transform: rotate(90deg);
+}
+
+.cdh-close-btn svg {
+  display: block;
 }
 
 .cart-drawer-body {
