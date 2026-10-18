@@ -81,7 +81,7 @@ public class MarketplaceServiceImpl implements MarketplaceService {
         LocalDate today = LocalDate.now();
         return productStockRepository.findByQuantityAvailableGreaterThan(0.0).stream()
                 .filter(s -> s.getDlcExpiryDate() == null || !s.getDlcExpiryDate().isBefore(today))
-                .map(this::categoryOf)
+                .map(s -> categoryOf(s))
                 .filter(Objects::nonNull)
                 .distinct()
                 .sorted()
