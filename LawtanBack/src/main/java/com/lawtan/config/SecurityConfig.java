@@ -54,8 +54,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/ping").permitAll()
                         .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                                                // Marketplace : catalogue et passage de commande publics (clients sans compte)
+                        // Marketplace : catalogue et passage de commande publics (clients sans compte)
                         .requestMatchers(HttpMethod.GET, "/api/marketplace/products", "/api/marketplace/categories").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/marketplace/orders").permitAll()
                         // Marketplace : suivi et traitement des commandes réservés à l'équipe
