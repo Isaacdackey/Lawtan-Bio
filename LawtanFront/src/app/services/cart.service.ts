@@ -3,7 +3,7 @@ import { Injectable, signal, computed } from '@angular/core';
 export interface MarketProduct {
   id: string;
   name: string;
-  category: 'lait' | 'caille' | 'beurre' | 'fromage';
+  category: 'lait' | 'caille' | 'beurre' | 'fromage' | 'fourrage';
   categoryLabel: string;
   priceFcfa: number;
   unit: string;
@@ -11,6 +11,7 @@ export interface MarketProduct {
   image: string;
   badge: string;
   available: boolean;
+  onQuoteOnly?: boolean;
   nutrition: string;
   conservation: string;
 }
@@ -54,7 +55,7 @@ export class CartService {
   syncProducts(products: MarketProduct[]): void {
     const byId = new Map(products.map(product => [product.id, product]));
     this.cart.update(items => items
-      .filter(item => /^\d+$/.test(item.product.id) && byId.has(item.product.id))
+      .filter(item => byId.has(item.product.id))
       .map(item => ({ ...item, product: byId.get(item.product.id)! })));
     this.saveToStorage();
   }

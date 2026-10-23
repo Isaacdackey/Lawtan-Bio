@@ -693,4 +693,15 @@ export class ApiService {
       this.trackError()
     );
   }
+
+  // --- Upload Media / Cloudinary ---
+  uploadMedia(file: File, folder?: string): Observable<{ url: string; filename: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (folder) formData.append('folder', folder);
+    return this.http.post<{ url: string; filename: string }>(`${this.baseUrl}/media/upload`, formData).pipe(
+      this.trackSuccess(),
+      this.trackError()
+    );
+  }
 }

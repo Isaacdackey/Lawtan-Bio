@@ -7,5 +7,6 @@ public enum ProductType {
     BUTTER,           // Beurre Pasteurisé Fermier
     CREAM,            // Crème Fraîche
     PASTEURIZED_MILK, // Lait Frais Pasteurisé Bio
-    RAW_MILK          // Lait cru de la cuve, vendu tel quel en vente directe
+    RAW_MILK,         // Lait cru de la cuve, vendu tel quel en vente directe
+    FODDER            // Fourrage, sous-produits d'élevage (Son de riz, Paille, Foin)
 }

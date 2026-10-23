@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { FermeMockService } from '../services/ferme-mock.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { ApiService } from '../../../services/api.service';
 import { Animal, Pedigree } from '../models/animal.model';
 import { Chart, registerables } from 'chart.js';
 
@@ -19,6 +20,7 @@ Chart.register(...registerables);
 export class FermeTroupeauComponent implements OnInit, AfterViewInit, OnDestroy {
   fermeService = inject(FermeMockService);
   notificationService = inject(NotificationService);
+  apiService = inject(ApiService);
   private route = inject(ActivatedRoute);
 
   private perfChartInstance: Chart | null = null;
@@ -400,13 +402,23 @@ export class FermeTroupeauComponent implements OnInit, AfterViewInit, OnDestroy 
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const url = e.target?.result as string;
-        if (target === 'new') this.newAnimalForm.imageUrl = url;
-        else this.editAnimalForm.imageUrl = url;
-      };
-      reader.readAsDataURL(file);
+      // Upload direct vers Cloudinary via l'API backend
+      this.apiService.uploadMedia(file, 'animaux').subscribe({
+        next: (res) => {
+          if (target === 'new') this.newAnimalForm.imageUrl = res.url;
+          else this.editAnimalForm.imageUrl = res.url;
+        },
+        error: () => {
+          // Fallback aperçu local si offline
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const url = e.target?.result as string;
+            if (target === 'new') this.newAnimalForm.imageUrl = url;
+            else this.editAnimalForm.imageUrl = url;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
     }
   }
 

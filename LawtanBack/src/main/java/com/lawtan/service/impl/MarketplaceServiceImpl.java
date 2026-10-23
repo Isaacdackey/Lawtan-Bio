@@ -44,7 +44,8 @@ public class MarketplaceServiceImpl implements MarketplaceService {
             ProductType.BUTTER, "Beurre",
             ProductType.CREAM, "Crème fraîche",
             ProductType.PASTEURIZED_MILK, "Lait pasteurisé",
-            ProductType.RAW_MILK, "Lait cru");
+            ProductType.RAW_MILK, "Lait cru",
+            ProductType.FODDER, "Fourrage & Aliment");
 
     private final ProductStockRepository productStockRepository;
     private final MarketplaceOrderRepository orderRepository;

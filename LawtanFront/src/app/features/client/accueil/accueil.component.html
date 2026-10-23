@@ -265,9 +265,17 @@
               Une exploitation agropastorale modèle, au cœur du terroir sénégalais.
             </h3>
             <p class="history-narrative-text">
-              Née de la volonté d'offrir un lait d'une pureté absolue sans compromis, la Ferme LAWTAN BIO concilie 
-              respect du savoir-faire pastoral traditionnel et innovations numériques de pointe.
+              Née de la volonté d'offrir un lait d'une pureté absolue sans compromis, la Ferme LAWTAN BIO allie savoir-faire pastoral traditionnel et innovation.
             </p>
+            @if (isFullTextExpanded('intro')) {
+              <p class="history-narrative-text history-narrative-extended">
+                Implantée à Dagana, notre exploitation assure une maîtrise intégrale du cycle de production, du pâturage et fourrage local jusqu'au conditionnement sous chaîne du froid garantie.
+              </p>
+            }
+            <button type="button" class="btn-read-more btn-read-more-left" (click)="toggleFullText('intro')">
+              <span class="btn-read-more-icon">{{ isFullTextExpanded('intro') ? '−' : '+' }}</span>
+              <span class="btn-read-more-label">{{ isFullTextExpanded('intro') ? 'Réduire' : 'Lire la suite' }}</span>
+            </button>
           </div>
 
           <div class="history-photo-frame-wrapper">
@@ -324,28 +332,37 @@
                       Valoriser le lait local sénégalais face aux poudres d'importation.
                     </h4>
                     <p class="chapter-p">
-                      Face à la prédominance des produits laitiers industriels importés, la <strong>Ferme LAWTAN BIO</strong> s'est fixé une mission claire : 
-                      produire localement un lait noble, frais et riche en matière grasse, issu de vaches choyées et nourries sainement.
-                    </p>
-                    <p class="chapter-p">
-                      Installée sur un site agricole préservé à Dagana, notre ferme a intégré la digitalisation dès sa conception pour assurer une 
-                      traçabilité totale du fourrage cultivé jusqu'au consommateur final.
+                      Face à la prédominance des produits laitiers industriels importés, la <strong>Ferme LAWTAN BIO</strong> produit localement un lait noble, frais et riche en matière grasse, issu de vaches choyées au cœur du terroir de Dagana.
                     </p>
 
-                    <div class="chapter-bullets-grid">
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Zéro additif, zéro conservateur chimique ni épaississant.</span>
+                    @if (isFullTextExpanded('histoire')) {
+                      <div class="chapter-extended-text">
+                        <p class="chapter-p">
+                          Installée sur un site agricole préservé, notre ferme a intégré la digitalisation dès sa conception pour assurer une 
+                          traçabilité totale du fourrage cultivé jusqu'au consommateur final.
+                        </p>
+
+                        <div class="chapter-bullets-grid">
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Zéro additif, zéro conservateur chimique ni épaississant.</span>
+                          </div>
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Valorisation du savoir-faire local des éleveurs et bouviers.</span>
+                          </div>
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Engagement ferme pour la souveraineté alimentaire nationale.</span>
+                          </div>
+                        </div>
                       </div>
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Valorisation du savoir-faire local des éleveurs et bouviers.</span>
-                      </div>
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Engagement ferme pour la souveraineté alimentaire nationale.</span>
-                      </div>
-                    </div>
+                    }
+
+                    <button type="button" class="btn-read-more" (click)="toggleFullText('histoire')">
+                      <span class="btn-read-more-icon">{{ isFullTextExpanded('histoire') ? '−' : '+' }}</span>
+                      <span class="btn-read-more-label">{{ isFullTextExpanded('histoire') ? 'Réduire le texte' : 'Lire la suite' }}</span>
+                    </button>
                   </div>
 
                   <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: true }"></ng-container>
@@ -381,32 +398,39 @@
 
                   <div class="chapter-body-content">
                     <h4 class="chapter-content-lead">
-                      Un cheptel de 9 bovins d'exception suivi à la loupe numérique.
+                      Un cheptel d'exception suivi à la loupe numérique.
                     </h4>
                     <p class="chapter-p">
-                      Notre troupeau est composé de <strong>7 vaches laitières de haut rang</strong> (croisements Montbéliarde x Guzerá, Holstein), 
-                      reconnues pour leur rusticité face au climat sahélien et leur rendement riche en protéines nobles, 
-                      ainsi que de 2 jeunes génisses et 4 taureaux reproducteurs d'élite.
-                    </p>
-                    <p class="chapter-p">
-                      Chaque vache porte une boucle d'identification officielle avec son pedigree complet, son historique de gestation, 
-                      son poids et sa courbe de lactation enregistrés sur notre système numérique.
+                      Notre troupeau compte <strong>7 vaches laitières de haut rang</strong> (croisements Montbéliarde x Guzerá, Holstein) reconnues pour leur rusticité sahélienne et leur lait riche en protéines nobles.
                     </p>
 
-                    <div class="chapter-bullets-grid">
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Fiche génétique et arbre généalogique jusqu'aux grands-parents.</span>
+                    @if (isFullTextExpanded('cheptel')) {
+                      <div class="chapter-extended-text">
+                        <p class="chapter-p">
+                          Chaque vache porte une boucle d'identification avec son pedigree complet, ses gestations, son poids et sa courbe de traite enregistrés numériquement.
+                        </p>
+
+                        <div class="chapter-bullets-grid">
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Fiche génétique et arbre généalogique certifiés.</span>
+                          </div>
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Suivi de la traite biquotidienne individualisé.</span>
+                          </div>
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Bien-être animal certifié : stabulation libre et pâturage aéré.</span>
+                          </div>
+                        </div>
                       </div>
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Suivi de la traite biquotidienne (matin et soir) individualisé.</span>
-                      </div>
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Bien-être animal certifié : stabulation libre et pâturage aéré.</span>
-                      </div>
-                    </div>
+                    }
+
+                    <button type="button" class="btn-read-more" (click)="toggleFullText('cheptel')">
+                      <span class="btn-read-more-icon">{{ isFullTextExpanded('cheptel') ? '−' : '+' }}</span>
+                      <span class="btn-read-more-label">{{ isFullTextExpanded('cheptel') ? 'Réduire le texte' : 'Lire la suite' }}</span>
+                    </button>
                   </div>
 
                   <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: true }"></ng-container>
@@ -445,29 +469,36 @@
                       100% Autonome grâce au soleil généreux du Sénégal.
                     </h4>
                     <p class="chapter-p">
-                      La Ferme LAWTAN fonctionne au quotidien sur une <strong>centrale solaire photovoltaïque autonome</strong>. 
-                      De la salle de traite mécanique au pompage d'eau pour l'abreuvement et l'irrigation du fourrage, 
-                      l'énergie solaire couvre l'intégralité des besoins opérationnels.
-                    </p>
-                    <p class="chapter-p">
-                      Nos tanks à lait isothermes refroidissent le lait à 4°C immédiatement après la traite, sans jamais subir 
-                      les aléas ou coupures du réseau électrique national.
+                      La Ferme LAWTAN fonctionne entièrement grâce à une <strong>centrale solaire autonome</strong> alimentant les lignes de traite, l'abreuvement et les tanks refroidis à 4°C.
                     </p>
 
-                    <div class="chapter-bullets-grid">
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Chaîne du froid 100% sécurisée par énergie solaire ininterrompue.</span>
+                    @if (isFullTextExpanded('solaire')) {
+                      <div class="chapter-extended-text">
+                        <p class="chapter-p">
+                          Nos tanks isothermes maintiennent la fraîcheur absolue sans jamais subir les coupures ou variations du réseau électrique.
+                        </p>
+
+                        <div class="chapter-bullets-grid">
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Chaîne du froid 100% sécurisée par énergie solaire ininterrompue.</span>
+                          </div>
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Pompage solaire pour des abreuvoirs toujours tempérés.</span>
+                          </div>
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Bilan carbone exemplaire avec zéro émission directe.</span>
+                          </div>
+                        </div>
                       </div>
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Pompage solaire pour des abreuvoirs toujours tempérés et propres.</span>
-                      </div>
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Bilan carbone exemplaire : une empreinte écologique minimale.</span>
-                      </div>
-                    </div>
+                    }
+
+                    <button type="button" class="btn-read-more" (click)="toggleFullText('solaire')">
+                      <span class="btn-read-more-icon">{{ isFullTextExpanded('solaire') ? '−' : '+' }}</span>
+                      <span class="btn-read-more-label">{{ isFullTextExpanded('solaire') ? 'Réduire le texte' : 'Lire la suite' }}</span>
+                    </button>
                   </div>
 
                   <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: true }"></ng-container>
@@ -506,29 +537,36 @@
                       8 professionnels permanents au service de l'excellence laitière.
                     </h4>
                     <p class="chapter-p">
-                      La réussite de la ferme repose sur des femmes et des hommes d'expérience : 
-                      <strong>1 Manager Général</strong>, <strong>1 Docteur Vétérinaire référent</strong>, <strong>1 Technicien d'Élevage expert</strong>, 
-                      1 Responsable Commerciale et 3 Bouviers dévoués aux soins quotidiens.
-                    </p>
-                    <p class="chapter-p">
-                      Chaque membre applique un protocole d'hygiène rigoureux pour garantir un produit sain, conforme 
-                      aux exigences les plus strictes de la sécurité sanitaire des aliments.
+                      Vétérinaire, technicien d'élevage, bouviers et commerciale unissent leur savoir-faire au quotidien pour garantir des produits laitiers purs et d'une sécurité sanitaire irréprochable.
                     </p>
 
-                    <div class="chapter-bullets-grid">
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Visite vétérinaire préventive quotidienne sur chaque animal.</span>
+                    @if (isFullTextExpanded('equipe')) {
+                      <div class="chapter-extended-text">
+                        <p class="chapter-p">
+                          Chaque membre applique un protocole d'hygiène rigoureux dès la traite du matin jusqu'à l'emballage hermétique.
+                        </p>
+
+                        <div class="chapter-bullets-grid">
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Visite vétérinaire préventive quotidienne sur chaque animal.</span>
+                          </div>
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Nettoyage et stérilisation automatique des lignes de traite.</span>
+                          </div>
+                          <div class="chapter-bullet">
+                            <span class="cb-check">✓</span>
+                            <span>Formation continue aux bonnes pratiques agropastorales.</span>
+                          </div>
+                        </div>
                       </div>
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Nettoyage et stérilisation automatique des lignes de traite.</span>
-                      </div>
-                      <div class="chapter-bullet">
-                        <span class="cb-check">✓</span>
-                        <span>Formation continue aux bonnes pratiques agropastorales modernes.</span>
-                      </div>
-                    </div>
+                    }
+
+                    <button type="button" class="btn-read-more" (click)="toggleFullText('equipe')">
+                      <span class="btn-read-more-icon">{{ isFullTextExpanded('equipe') ? '−' : '+' }}</span>
+                      <span class="btn-read-more-label">{{ isFullTextExpanded('equipe') ? 'Réduire le texte' : 'Lire la suite' }}</span>
+                    </button>
                   </div>
 
                   <ng-container *ngTemplateOutlet="pouringMilkPillar; context: { flipped: true }"></ng-container>
@@ -642,22 +680,20 @@
     </div>
   </section>
 
-  <app-pastoral-divider [variant]="'cows'"></app-pastoral-divider>
-
   <section id="produits" class="section-gamme">
     <div class="container">
       
       <div class="section-tag-center" [appReveal]="'slide-right'" [stagger]="0">
         <span class="section-badge-gold">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 2h8l2 5H6l2-5z"/><rect x="6" y="7" width="12" height="14" rx="2"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-          Notre Gamme Laitière
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Catalogue & Marketplace de la Ferme
         </span>
       </div>
       <h2 class="section-title-center" [appReveal]="'words'">
-        Des produits laitiers frais, purs et sains
+        Tous les produits frais & du terroir de notre exploitation
       </h2>
       <p class="section-sub-center" [appReveal]="'slide-right'" [stagger]="1">
-        Destinés aux distributeurs, supermarchés, hôtels-restaurants, écoles et aux familles exigeantes en quête de goût authentique.
+        Lait frais pasteurisé, sow artisanal, fromages, yaourts et sous-produits d'élevage (son de riz, paille) en direct de la ferme.
       </p>
 
       <div class="gamme-hint-row" [appReveal]="'slide-right'" [stagger]="2">
@@ -674,76 +710,62 @@
 
     </div>
 
-    <div class="gamme-marquee-wrapper" aria-label="Défilement continu de la gamme laitière">
+    <div class="gamme-marquee-wrapper" aria-label="Défilement continu des produits du marketplace">
       <div class="gamme-edge-fade fade-left" aria-hidden="true"></div>
       <div class="gamme-edge-fade fade-right" aria-hidden="true"></div>
 
       <div class="gamme-marquee-track">
         <div class="gamme-track-half">
           <ng-container *ngTemplateOutlet="gammeCards"></ng-container>
-          <ng-container *ngTemplateOutlet="gammeCards"></ng-container>
         </div>
         <div class="gamme-track-half" aria-hidden="true">
-          <ng-container *ngTemplateOutlet="gammeCards"></ng-container>
           <ng-container *ngTemplateOutlet="gammeCards"></ng-container>
         </div>
       </div>
     </div>
 
     <ng-template #gammeCards>
-      <div class="gamme-feature-card">
-        <div class="gfc-img-wrap">
-          <img src="/images/product-lait-frais.jpg" alt="Lait Frais Pasteurisé LAWTAN" class="gfc-img" loading="lazy" />
-          <span class="gfc-badge">Pur Terroir</span>
-        </div>
-        <div class="gfc-info">
-          <h3 class="gfc-title">Lait Frais Entier Pasteurisé</h3>
-          <p class="gfc-desc">
-            Un lait non écrémé, crémeux et riche, pasteurisé à température douce pour éliminer tout germe tout en conservant les ferments vivants et les vitamines originelles.
-          </p>
-          <ul class="gfc-list">
-            <li><strong>Conditionnements :</strong> Bouteilles verre 1L & Bidons 5L</li>
-            <li><strong>Richesse :</strong> 38 g/L matière grasse moyenne</li>
-            <li><strong>Conservation :</strong> 5 jours à 4°C</li>
-          </ul>
-        </div>
-      </div>
+      @for (prod of products; track prod.id) {
+        <div class="gamme-feature-card">
+          <div class="gfc-img-wrap">
+            <img [src]="prod.image" [alt]="prod.name" class="gfc-img" loading="lazy" />
+            <span class="gfc-badge" [class.gold]="prod.category === 'caille'" [class.warning]="prod.onQuoteOnly">
+              {{ prod.badge }}
+            </span>
+          </div>
+          <div class="gfc-info">
+            <div class="gfc-meta-row">
+              <span class="gfc-cat-pill">{{ prod.categoryLabel }}</span>
+              <span class="gfc-unit-pill">{{ prod.unit }}</span>
+            </div>
+            <h3 class="gfc-title">{{ prod.name }}</h3>
+            <p class="gfc-desc">{{ prod.description }}</p>
 
-      <div class="gamme-feature-card">
-        <div class="gfc-img-wrap">
-          <img src="/images/product-lait-caille.jpg" alt="Lait Caillé Traditionnel Sow" class="gfc-img" loading="lazy" />
-          <span class="gfc-badge gold">Savoir-Faire Pastoral</span>
-        </div>
-        <div class="gfc-info">
-          <h3 class="gfc-title">Lait Caillé Artisanal (Sow)</h3>
-          <p class="gfc-desc">
-            Le joyau des traditions pastorales sénégalaises. Fermenté avec douceur, il développe une consistance veloutée onctueuse et une acidité subtilement équilibrée.
-          </p>
-          <ul class="gfc-list">
-            <li><strong>Conditionnements :</strong> Pots 500g, Pots 1kg & Seaux 2L/5L</li>
-            <li><strong>Usage :</strong> Dégustation pure, Thiakry, couscous au lait</li>
-            <li><strong>Bénéfice :</strong> 100% probiotiques vivants pour le confort digestif</li>
-          </ul>
-        </div>
-      </div>
+            <div class="gfc-action-footer">
+              <div class="gfc-price-tag">
+                @if (prod.onQuoteOnly) {
+                  <span class="gfc-price-val quote-mode">Sur Devis</span>
+                } @else {
+                  <span class="gfc-price-val">{{ prod.priceFcfa.toLocaleString('fr-FR') }}</span>
+                  <span class="gfc-price-cur">FCFA</span>
+                }
+              </div>
 
-      <div class="gamme-feature-card">
-        <div class="gfc-img-wrap">
-          <img src="/images/product-fromage.jpg" alt="Yaourts et Fromages Fermiers LAWTAN" class="gfc-img" loading="lazy" />
-          <span class="gfc-badge">Transformation Laitière</span>
+              @if (prod.onQuoteOnly) {
+                <a routerLink="/devis" [queryParams]="{ cat: 'laitier', prod: prod.id }" class="btn-gfc-cta quote-btn">
+                  <span>Devis</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+              } @else {
+                <a routerLink="/boutique" class="btn-gfc-cta">
+                  <span>Commander</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+              }
+            </div>
+          </div>
         </div>
-        <div class="gfc-info">
-          <h3 class="gfc-title">Fromages Fermiers & Yaourts Brassés</h3>
-          <p class="gfc-desc">
-            Transformation artisanale du lait bio de notre élevage. Yaourts brassés aux ferments vivants et tommes fermières fraîches affinées avec soin.
-          </p>
-          <ul class="gfc-list">
-            <li><strong>Conditionnements :</strong> Pots 125g & 250g, Pièces 200g</li>
-            <li><strong>Gamme :</strong> Yaourts nature/aromatisés & fromages frais</li>
-            <li><strong>Qualité :</strong> 100% lait bio pur de la ferme, sans additif</li>
-          </ul>
-        </div>
-      </div>
+      }
     </ng-template>
 
     <!-- BOUTON DÉCOUVRIR LA BOUTIQUE / VOIR PLUS -->
@@ -762,7 +784,7 @@
     </div>
   </section>
 
-  <app-pastoral-divider [variant]="'mixed'"></app-pastoral-divider>
+  <app-pastoral-divider [variant]="'cows'"></app-pastoral-divider>
 </main>
 
 <app-public-footer></app-public-footer>

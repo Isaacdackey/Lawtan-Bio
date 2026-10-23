@@ -2,31 +2,11 @@
 
 <main class="boutique-main">
 
-  <!-- HERO BANNER BOUTIQUE -->
-  <section class="boutique-hero">
-    <div class="container boutique-hero-content">
-      <div class="bh-badge-wrap">
-        <span class="bh-badge">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 0 1-8 0"/>
-          </svg>
-          Boutique Directe & Vente Fermière
-        </span>
-      </div>
-
-      <h1 class="boutique-hero-title">
-        Commandez en direct de la ferme, <br class="hidden-mobile">
-        <span class="title-highlight">livré à votre porte ou en point relais.</span>
-      </h1>
-
-      <p class="boutique-hero-desc">
-        Sélectionnez vos produits laitiers frais du jour. Vos commandes sont préparées le matin même de la traite pour une fraîcheur et une authenticité inégalées.
-      </p>
-
-     
-      <div class="boutique-action-bar">
+  <section class="boutique-catalog-section">
+    <div class="container">
+      
+      <!-- BARRE DE RECHERCHE COMPACTE -->
+      <div class="boutique-search-header">
         <div class="search-input-wrap">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2">
             <circle cx="11" cy="11" r="8"/>
@@ -43,15 +23,8 @@
           }
         </div>
       </div>
-    </div>
-  </section>
 
-  
-  <section class="boutique-catalog-section">
-    <div class="container">
-      
-      
-        <div class="market-filters-bar">
+      <div class="market-filters-bar">
         <button class="mfilter-btn" [class.active]="selectedCategory() === 'all'" (click)="selectedCategory.set('all')">
           Tous les Produits ({{ products().length }})
         </button>
@@ -63,6 +36,9 @@
         </button>
         <button class="mfilter-btn" [class.active]="selectedCategory() === 'fromage'" (click)="selectedCategory.set('fromage')">
           Fromages & Nouveautés
+        </button>
+        <button class="mfilter-btn" [class.active]="selectedCategory() === 'fourrage'" (click)="selectedCategory.set('fourrage')">
+          Fourrage & Aliment Bétail
         </button>
       </div>
 
@@ -111,11 +87,20 @@
 
               <div class="pmc-action-bar">
                 <div class="pmc-price">
-                  <span class="price-val">{{ prod.priceFcfa.toLocaleString('fr-FR') }}</span>
-                  <span class="price-cur">FCFA</span>
+                  @if (prod.onQuoteOnly) {
+                    <span class="price-val price-quote">Sur Devis</span>
+                  } @else {
+                    <span class="price-val">{{ prod.priceFcfa.toLocaleString('fr-FR') }}</span>
+                    <span class="price-cur">FCFA</span>
+                  }
                 </div>
 
-                @if (prod.available) {
+                @if (prod.onQuoteOnly) {
+                  <button class="btn-quote-product" (click)="requestQuoteForProduct(prod)">
+                    <span>Demander un Devis</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  </button>
+                } @else if (prod.available) {
                   <button class="btn-add-cart" (click)="addToCart(prod)">
                     <span>Ajouter</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -151,10 +136,6 @@
 
     </div>
   </section>
-
-
-  <app-pastoral-divider [variant]="'mixed'"></app-pastoral-divider>
-
 
   <div class="cart-drawer-backdrop" [class.open]="isCartDrawerOpen()" (click)="closeCartDrawer()"></div>
   <div class="cart-drawer-panel" [class.open]="isCartDrawerOpen()">

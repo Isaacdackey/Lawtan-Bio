@@ -6,7 +6,7 @@ import { PublicHeaderComponent } from '../../../shared/components/public-header/
 import { PublicFooterComponent } from '../../../shared/components/public-footer/public-footer.component';
 import { RevealDirective } from '../../../shared/directives/reveal.directive';
 
-export type DevisNature = 'prestation' | 'laitier';
+export type DevisNature = 'laitier';
 
 @Component({
   selector: 'app-devis',
@@ -27,7 +27,7 @@ export class DevisComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
-  devisCategory = signal<DevisNature>('prestation');
+  devisCategory = signal<DevisNature>('laitier');
   cartSourceData = signal<{ items: any[]; totalAmount: number } | null>(null);
   isSubmitting = signal<boolean>(false);
   isSubmitted = signal<boolean>(false);
@@ -45,12 +45,6 @@ export class DevisComponent implements OnInit {
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
       }, 50);
-    }
-
-    // Gestion du domaine via paramètre d'URL (ex: ?cat=laitier)
-    const queryCat = this.route.snapshot.queryParams['cat'];
-    if (queryCat === 'laitier' || queryCat === 'prestation') {
-      this.setCategory(queryCat as DevisNature);
     }
 
     // Récupération dynamique du panier transféré depuis la boutique
@@ -80,19 +74,14 @@ export class DevisComponent implements OnInit {
     }
   }
 
-  readonly servicesAgricoles = [
-    { id: 'labour', label: 'Labour mécanisé profond', unit: 'Hectare' },
-    { id: 'offsettage', label: 'Offsettage / Pulvérisation', unit: 'Hectare' },
-    { id: 'biyonnage', label: 'Biyonnage & Préparation des sols', unit: 'Hectare' },
-    { id: 'moissonnage', label: 'Moissonnage-battage du riz & céréales', unit: 'Hectare / Heure' },
-    { id: 'pressage', label: 'Pressage de balles de paille / fourrage', unit: 'Balle / Hectare' }
-  ];
-
   readonly produitsLaitiers = [
     { id: 'lait-frais', label: 'Lait frais entier pasteurisé (Bouteilles 1L & Bidons 5L)' },
     { id: 'lait-caille', label: 'Lait caillé traditionnel "Sow" LAWTAN (Pots 500g & Seaux 2L/5L)' },
     { id: 'beurre-artisanal', label: 'Beurre fermier & Crème fraîche barattée (Pains 250g/500g)' },
-    { id: 'partenariat-distributeur', label: 'Approvisionnement régulier CHR (Hôtels, Restaurants, Boutiques)' }
+    { id: 'fromages-fermiers', label: 'Fromages fermiers & Yaourts brassés bio' },
+    { id: 'son-de-riz', label: 'Son de riz bio pour alimentation du bétail (Sacs de 50 kg)' },
+    { id: 'paille-foin', label: 'Boîte de paille & foin compressé (Fourrage & Litière)' },
+    { id: 'partenariat-distributeur', label: 'Approvisionnement régulier CHR & Élevage (Gros volumes)' }
   ];
 
   readonly engagementsDevis = [
@@ -107,8 +96,8 @@ export class DevisComponent implements OnInit {
       icon: 'tag'
     },
     {
-      titre: 'Chaîne du Froid & Matériel Neuf',
-      desc: 'Transport réfrigéré à 4°C et tracteurs/moissonneuses entretenus.',
+      titre: 'Chaîne du Froid 4°C Garantie',
+      desc: 'Transport réfrigéré certifié et respect strict des normes sanitaires.',
       icon: 'truck'
     }
   ];
@@ -119,8 +108,8 @@ export class DevisComponent implements OnInit {
       reponse: 'Notre service commercial vous transmet une estimation officielle par email ou WhatsApp sous 24h ouvrées après réception de vos critères.'
     },
     {
-      question: 'Le carburant et le chauffeur sont-ils inclus dans les travaux agricoles ?',
-      reponse: 'Oui, toutes nos prestations mécanisées (labour, moissonnage, pressage) comprennent l’opérateur qualifié et le carburant, sauf accord spécifique sur-mesure.'
+      question: 'Quels sont les volumes minimaux pour une commande en gros ?',
+      reponse: 'Nos tarifs grossistes s’appliquent dès 20 litres de lait frais, ou à partir de cartons de 12 unités pour le lait caillé et les fromages.'
     },
     {
       question: 'Livrez-vous les produits laitiers en dehors de la région de Saint-Louis ?',
@@ -137,11 +126,6 @@ export class DevisComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern(/^[0-9+ ]{8,18}$/)]],
       email: ['', [Validators.required, Validators.email]],
       locality: ['', [Validators.required]],
-
-      agriculturalService: ['labour'],
-      workVolume: ['', [Validators.min(1)]],
-      volumeUnit: ['hectare'],
-      desiredDate: [''],
 
       dairyProduct: ['lait-frais'],
       estimatedQuantity: [''],
@@ -170,7 +154,14 @@ export class DevisComponent implements OnInit {
 
     let matchedProduct = 'lait-frais';
     const firstCat = items[0]?.product?.category;
-    if (firstCat === 'caille') {
+    const firstId = items[0]?.product?.id;
+    if (firstId === 'son-de-riz-50kg') {
+      matchedProduct = 'son-de-riz';
+    } else if (firstId === 'boite-paille-foin') {
+      matchedProduct = 'paille-foin';
+    } else if (firstCat === 'fourrage') {
+      matchedProduct = 'son-de-riz';
+    } else if (firstCat === 'caille') {
       matchedProduct = 'lait-caille';
     } else if (firstCat === 'beurre') {
       matchedProduct = 'beurre-artisanal';
@@ -179,18 +170,31 @@ export class DevisComponent implements OnInit {
     }
 
     const totalQty = items.reduce((acc: number, curr: any) => acc + (curr.quantity || 1), 0);
+    const hasOnlyQuoteItems = items.every((i: any) => i.product?.onQuoteOnly || i.product?.priceFcfa === 0);
 
     const messageLines = [
-      'Demande de devis sur mesure issue de mon panier boutique :',
-      ...items.map((i: any) => `• ${i.quantity}x ${i.product?.name || 'Produit'} (${((i.product?.priceFcfa || 0) * (i.quantity || 1)).toLocaleString('fr-FR')} FCFA)`),
-      `Total estimé : ${cartPayload.totalAmount.toLocaleString('fr-FR')} FCFA`,
+      hasOnlyQuoteItems
+        ? 'Demande de devis pour les produits de la ferme sélectionnés :'
+        : 'Demande de devis sur mesure issue de mon panier boutique :',
+      ...items.map((i: any) => {
+        const isQuote = i.product?.onQuoteOnly || i.product?.priceFcfa === 0;
+        const priceText = isQuote ? '(Sur devis)' : `(${((i.product?.priceFcfa || 0) * (i.quantity || 1)).toLocaleString('fr-FR')} FCFA)`;
+        return `• ${i.quantity}x ${i.product?.name || 'Produit'} ${priceText}`;
+      }),
+      ...(cartPayload.totalAmount > 0
+        ? [`Total estimé : ${cartPayload.totalAmount.toLocaleString('fr-FR')} FCFA`]
+        : ['Tarif : Chiffrage sur devis selon volume et lieu de livraison']),
       '',
       'Je souhaite obtenir un devis personnalisé incluant les modalités de conditionnement, de conservation et de livraison.'
     ];
 
+    const qtyString = cartPayload.totalAmount > 0
+      ? `${totalQty} unité${totalQty > 1 ? 's' : ''} (${cartPayload.totalAmount.toLocaleString('fr-FR')} FCFA)`
+      : `${totalQty} unité${totalQty > 1 ? 's' : ''} (Tarif sur devis)`;
+
     this.devisForm.patchValue({
       dairyProduct: matchedProduct,
-      estimatedQuantity: `${totalQty} unité${totalQty > 1 ? 's' : ''} (${cartPayload.totalAmount.toLocaleString('fr-FR')} FCFA)`,
+      estimatedQuantity: qtyString,
       deliveryFrequency: 'ponctuel',
       message: messageLines.join('\n')
     });
@@ -235,8 +239,6 @@ export class DevisComponent implements OnInit {
   resetForm(): void {
     this.clearCartSource();
     this.devisForm.reset({
-      agriculturalService: 'labour',
-      volumeUnit: 'hectare',
       dairyProduct: 'lait-frais',
       deliveryFrequency: 'ponctuel',
       termsAccepted: true

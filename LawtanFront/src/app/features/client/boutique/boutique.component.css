@@ -98,17 +98,24 @@
   flex-wrap: wrap;
 }
 
+.boutique-search-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
 .search-input-wrap {
   position: relative;
   display: flex;
   align-items: center;
   background: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1.5px solid #cbd5e1;
   border-radius: 9999px;
   padding: 0.35rem 1rem 0.35rem 1.25rem;
   width: 100%;
-  max-width: 480px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+  max-width: 520px;
+  box-shadow: 0 4px 14px rgba(18, 48, 74, 0.06);
   transition: all 0.3s ease;
 }
 
@@ -446,6 +453,39 @@
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
+}
+
+/* Bouton Spécifique "Demander un Devis" pour Son de Riz & Paille */
+.price-val.price-quote {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #12304A;
+  background: #EAF5FD;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid #BFDFF3;
+}
+
+.btn-quote-product {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #12304A 0%, #23689E 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(18, 48, 74, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-quote-product:hover {
+  background: linear-gradient(135deg, #23689E 0%, #2C77B0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(35, 104, 158, 0.35);
 }
 
 /* ==========================================================================

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -143,14 +144,37 @@ public class DataInitializer implements CommandLineRunner {
                                                 .productType(ProductType.PASTEURIZED_MILK)
                                                 .targetUnit("Bouteille 1L")
                                                 .milkLitersPerUnit(1.0)
-                                                .ingredientsList("100% Lait cru entier de traite bio certifié")
-                                                .shelfLifeDays(7)
-                                                .processInstructions(
-                                                                "Pasteurisation flash 72°C pendant 15s, refroidissement direct à 3°C, embouteillage stérile.")
-                                                .emoji("")
+                                                .ingredientsList("100% Lait cru entier bio pasteurisé à 72°C")
+                                                .shelfLifeDays(6)
+                                                .processInstructions("Pasteurisation douce, embouteillage immédiat, refroidissement +4°C.")
+                                                .emoji("🥛")
                                                 .standardSellingPriceFcfa(1200.0)
+                                                .build(),
+                                Recipe.builder()
+                                                .code("REC-FOD-01")
+                                                .name("Son de Riz Bio (Aliment Bétail)")
+                                                .productType(ProductType.FODDER)
+                                                .targetUnit("Sac de 50 kg")
+                                                .milkLitersPerUnit(0.0)
+                                                .ingredientsList("100% Son de riz naturel pur des rizières locales du Walo")
+                                                .shelfLifeDays(90)
+                                                .processInstructions("Mouture et ensachage hermétique sur palettes sèches.")
+                                                .emoji("🌾")
+                                                .standardSellingPriceFcfa(0.0)
+                                                .build(),
+                                Recipe.builder()
+                                                .code("REC-FOD-02")
+                                                .name("Boîte de Paille & Foin Compressé")
+                                                .productType(ProductType.FODDER)
+                                                .targetUnit("Botte / Boîte compressée")
+                                                .milkLitersPerUnit(0.0)
+                                                .ingredientsList("Paille de riz et foin naturel séchés au soleil")
+                                                .shelfLifeDays(180)
+                                                .processInstructions("Pressage en bottes denses, stockage sous hangar aéré.")
+                                                .emoji("📦")
+                                                .standardSellingPriceFcfa(0.0)
                                                 .build()));
-                log.info("5 recettes officielles de transformation enregistrées en base de données.");
+                log.info("7 recettes officielles de transformation enregistrées en base de données.");
         }
 
         private void initAppUsers() {
@@ -1181,14 +1205,75 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         private void initProductStocks() {
-                if (productStockRepository.count() > 0) {
-                        log.info("Stocks produits déjà présents en base ({} lots) : amorçage ignoré.",
-                                        productStockRepository.count());
-                        return;
-                }
-                log.info("Initialisation du catalogue et des stocks produits bio (Boutique & Vente directe)...");
                 Map<String, Recipe> recipeMap = recipeRepository.findAll().stream()
                                 .collect(Collectors.toMap(Recipe::getCode, r -> r, (a, b) -> a));
+
+                if (productStockRepository.count() > 0) {
+                        log.info("Stocks produits présents en base ({} lots) : mise à jour des URLs Cloudinary...",
+                                        productStockRepository.count());
+                        List<ProductStock> existing = productStockRepository.findAll();
+                        for (ProductStock s : existing) {
+                                String name = s.getProductName() != null ? s.getProductName().toLowerCase() : "";
+                                if (name.contains("lait frais")) {
+                                        s.setImageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788882/lawtan-bio/product-lait-frais.jpg");
+                                } else if (name.contains("caill") || name.contains("sow")) {
+                                        s.setImageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788880/lawtan-bio/product-lait-caille.jpg");
+                                } else if (name.contains("fromage fermier") || name.contains("niayes")) {
+                                        s.setImageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788879/lawtan-bio/product-fromage.jpg");
+                                } else if (name.contains("fromage blanc")) {
+                                        s.setImageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788879/lawtan-bio/product-fromage.jpg");
+                                } else if (name.contains("yaourt")) {
+                                        s.setImageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788880/lawtan-bio/product-lait-caille.jpg");
+                                } else if (name.contains("riz")) {
+                                        s.setImageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788895/lawtan-bio/SondeRiz.png");
+                                } else if (name.contains("paille") || name.contains("foin")) {
+                                        s.setImageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788875/lawtan-bio/paille.jpg");
+                                }
+                        }
+                        productStockRepository.saveAll(existing);
+
+                        // Vérifier si le Son de riz et la Paille manquent
+                        boolean hasSonRiz = existing.stream().anyMatch(s -> s.getProductName() != null && s.getProductName().toLowerCase().contains("riz"));
+                        boolean hasPaille = existing.stream().anyMatch(s -> s.getProductName() != null && s.getProductName().toLowerCase().contains("paille"));
+
+                        LocalDate today = LocalDate.now();
+                        List<ProductStock> toAdd = new ArrayList<>();
+                        if (!hasSonRiz && recipeMap.containsKey("REC-FOD-01")) {
+                                toAdd.add(ProductStock.builder()
+                                        .productName("Son de Riz Bio — Sac de 50 kg")
+                                        .recipe(recipeMap.get("REC-FOD-01"))
+                                        .quantityAvailable(50.0)
+                                        .unit("Sac de 50 kg")
+                                        .unitPriceFcfa(0.0)
+                                        .totalValueFcfa(0.0)
+                                        .mfgDate(today.minusDays(5))
+                                        .dlcExpiryDate(today.plusDays(85))
+                                        .storageLocation("Hangar de Stockage Fourrage Sec")
+                                        .isOrganicCertified(true)
+                                        .imageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788895/lawtan-bio/SondeRiz.png")
+                                        .build());
+                        }
+                        if (!hasPaille && recipeMap.containsKey("REC-FOD-02")) {
+                                toAdd.add(ProductStock.builder()
+                                        .productName("Boîte de Paille & Foin Compressé")
+                                        .recipe(recipeMap.get("REC-FOD-02"))
+                                        .quantityAvailable(80.0)
+                                        .unit("Botte / Boîte compressée")
+                                        .unitPriceFcfa(0.0)
+                                        .totalValueFcfa(0.0)
+                                        .mfgDate(today.minusDays(10))
+                                        .dlcExpiryDate(today.plusDays(170))
+                                        .storageLocation("Hangar de Stockage Fourrage Sec")
+                                        .isOrganicCertified(true)
+                                        .imageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788875/lawtan-bio/paille.jpg")
+                                        .build());
+                        }
+                        if (!toAdd.isEmpty()) {
+                                productStockRepository.saveAll(toAdd);
+                                log.info("✅ {} nouveaux produits fourrage insérés en base.", toAdd.size());
+                        }
+                        return;
+                }
 
                 LocalDate today = LocalDate.now();
                 List<ProductStock> stocks = List.of(
@@ -1251,6 +1336,33 @@ public class DataInitializer implements CommandLineRunner {
                                                 .dlcExpiryDate(today.plusDays(26))
                                                 .storageLocation("Chambre Froide Laiterie (+4°C)")
                                                 .isOrganicCertified(true)
+                                                .imageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788880/lawtan-bio/product-lait-caille.jpg")
+                                                .build(),
+                                ProductStock.builder()
+                                                .productName("Son de Riz Bio — Sac de 50 kg")
+                                                .recipe(recipeMap.get("REC-FOD-01"))
+                                                .quantityAvailable(50.0)
+                                                .unit("Sac de 50 kg")
+                                                .unitPriceFcfa(0.0)
+                                                .totalValueFcfa(0.0)
+                                                .mfgDate(today.minusDays(5))
+                                                .dlcExpiryDate(today.plusDays(85))
+                                                .storageLocation("Hangar de Stockage Fourrage Sec")
+                                                .isOrganicCertified(true)
+                                                .imageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788895/lawtan-bio/SondeRiz.png")
+                                                .build(),
+                                ProductStock.builder()
+                                                .productName("Boîte de Paille & Foin Compressé")
+                                                .recipe(recipeMap.get("REC-FOD-02"))
+                                                .quantityAvailable(80.0)
+                                                .unit("Botte / Boîte compressée")
+                                                .unitPriceFcfa(0.0)
+                                                .totalValueFcfa(0.0)
+                                                .mfgDate(today.minusDays(10))
+                                                .dlcExpiryDate(today.plusDays(170))
+                                                .storageLocation("Hangar de Stockage Fourrage Sec")
+                                                .isOrganicCertified(true)
+                                                .imageUrl("https://res.cloudinary.com/drqsusznh/image/upload/v1792788875/lawtan-bio/paille.jpg")
                                                 .build());
 
                 productStockRepository.saveAll(stocks);

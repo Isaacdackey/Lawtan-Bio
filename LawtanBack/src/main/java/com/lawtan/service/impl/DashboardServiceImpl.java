@@ -272,6 +272,7 @@ public class DashboardServiceImpl implements DashboardService {
             case CREAM -> "Crème Fraîche";
             case PASTEURIZED_MILK -> "Lait Frais Bio";
             case RAW_MILK -> "Lait Cru (vente directe)";
+            case FODDER -> "Fourrage & Sous-produits";
         };
     }
 
@@ -283,7 +284,8 @@ public class DashboardServiceImpl implements DashboardService {
             case BUTTER -> "#eab308";
             case CREAM -> "#f472b6";
             case PASTEURIZED_MILK -> "#16a34a";
-            case RAW_MILK -> "#0ea5e9";
+            case RAW_MILK -> "#0284c7";
+            case FODDER -> "#84cc16";
         };
     }
 }

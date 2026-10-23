@@ -52,6 +52,7 @@ export interface PaymentItem {
 export class FermeCommercialComponent implements OnInit {
   fermeService = inject(FermeMockService);
   notificationService = inject(NotificationService);
+  apiService = inject(ApiService);
 
   activeCommercialSubTab = signal<'invoices' | 'customers' | 'payments' | 'marketplace' | 'products'>('invoices');
   productStocks = signal<ProductStock[]>([]);
@@ -89,36 +90,20 @@ export class FermeCommercialComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          // Compression et optimisation automatique pour mobile/PC
-          const canvas = document.createElement('canvas');
-          const maxDim = 800;
-          let width = img.width;
-          let height = img.height;
-          if (width > height && width > maxDim) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
-          } else if (height > maxDim) {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, width, height);
-            const optimized = canvas.toDataURL('image/jpeg', 0.82);
-            this.stockForm.imageUrl = optimized;
-          } else {
+      // Upload direct sur Cloudinary dans le dossier produits
+      this.apiService.uploadMedia(file, 'produits').subscribe({
+        next: (res) => {
+          this.stockForm.imageUrl = res.url;
+        },
+        error: () => {
+          // Fallback aperçu local si offline
+          const reader = new FileReader();
+          reader.onload = (e) => {
             this.stockForm.imageUrl = e.target?.result as string;
-          }
-        };
-        img.src = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
     }
   }
 

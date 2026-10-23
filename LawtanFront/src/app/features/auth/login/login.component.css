@@ -47,7 +47,7 @@
 .showcase-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/images/login-bg.png');
+  background-image: url('https://res.cloudinary.com/drqsusznh/image/upload/v1792788872/lawtan-bio/login-bg.png');
   background-size: cover;
   background-position: center 30%;
   background-repeat: no-repeat;

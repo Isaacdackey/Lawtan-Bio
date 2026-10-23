@@ -7,6 +7,7 @@ import { PublicFooterComponent } from '../../../shared/components/public-footer/
 import { PastoralDividerComponent } from '../../../shared/components/pastoral-divider/pastoral-divider.component';
 import { RevealDirective } from '../../../shared/directives/reveal.directive';
 import { RevealService } from '../../../shared/services/reveal.service';
+import { CLOUDINARY_IMAGES } from '../../../core/constants/cloudinary-images';
 
 export interface SliderSlide {
   id: number;
@@ -26,7 +27,7 @@ export interface SliderSlide {
 export interface MarketProduct {
   id: string;
   name: string;
-  category: 'lait' | 'caille' | 'beurre' | 'fromage';
+  category: 'lait' | 'caille' | 'beurre' | 'fromage' | 'fourrage';
   categoryLabel: string;
   priceFcfa: number;
   unit: string;
@@ -34,6 +35,7 @@ export interface MarketProduct {
   image: string;
   badge: string;
   available: boolean;
+  onQuoteOnly?: boolean;
   nutrition: string;
   conservation: string;
 }
@@ -75,7 +77,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
   slides: SliderSlide[] = [
     {
       id: 0,
-      image: '/images/VacheHolsteindevantfermelaitièremoderne.png',
+      image: CLOUDINARY_IMAGES.vacheHolsteinFerme,
       badge: 'Élevage Bovin d\'Élite • Cheptel Sélectionné',
       title: 'L\'excellence laitière sénégalaise,',
       titleHighlight: 'un cheptel d\'élite nourri au respect du vivant.',
@@ -89,7 +91,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       id: 1,
-      image: '/images/imagelaitquicoule.png',
+      image: CLOUDINARY_IMAGES.imageLaitQuiCoule,
       badge: 'Traite Mécanique & Haute Technologie',
       title: 'Une laiterie moderne de pointe,',
       titleHighlight: 'pureté absolue, hygiène et chaîne du froid 4°C.',
@@ -103,7 +105,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       id: 2,
-      image: '/images/Produits laitiers frais à la ferme.png',
+      image: CLOUDINARY_IMAGES.produitsLaitiersFraisFerme,
       badge: 'Fraîcheur Fermière • Du Pré à Votre Table',
       title: 'Savourez la générosité de nos produits,',
       titleHighlight: 'lait frais entier, Sow onctueux, yaourts & fromages.',
@@ -122,11 +124,11 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
 
     activeHistoryPhoto = computed(() => {
     switch (this.activeAboutTab()) {
-      case 'histoire': return '/images/VacheHolsteindevantfermelaitièremoderne.png';
-      case 'cheptel':  return '/images/produits-laitiers-frais-ferme.png';
-      case 'solaire':  return '/images/traite-lait-frais.jpg';
-      case 'equipe':   return '/images/imagelaitquicoule.png';
-      default:         return '/images/VacheHolsteindevantfermelaitièremoderne.png';
+      case 'histoire': return CLOUDINARY_IMAGES.vacheHolsteinFerme;
+      case 'cheptel':  return CLOUDINARY_IMAGES.produitsLaitiersFraisFerme;
+      case 'solaire':  return CLOUDINARY_IMAGES.traiteLaitFrais;
+      case 'equipe':   return CLOUDINARY_IMAGES.imageLaitQuiCoule;
+      default:         return CLOUDINARY_IMAGES.vacheHolsteinFerme;
     }
   });
   
@@ -139,6 +141,20 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       default: return 'Ferme LAWTAN BIO';
     }
   });
+
+  expandedFullText = signal<Record<string, boolean>>({});
+
+  toggleFullText(tab: string): void {
+    const current = this.expandedFullText();
+    this.expandedFullText.set({
+      ...current,
+      [tab]: !current[tab]
+    });
+  }
+
+  isFullTextExpanded(tab: string): boolean {
+    return !!this.expandedFullText()[tab];
+  }
 
   toggleAboutChapter(tab: 'histoire' | 'cheptel' | 'solaire' | 'equipe'): void {
     if (this.activeAboutTab() === tab) {
@@ -161,7 +177,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       priceFcfa: 1200,
       unit: 'Bouteille en verre 1L',
       description: 'Lait entier 100% naturel issu de notre traite du matin. Pasteurisation douce préservant vitamines A, D et calcium.',
-      image: '/images/product-lait-frais.jpg',
+      image: CLOUDINARY_IMAGES.productLaitFrais,
       badge: 'Bestseller du Matin',
       available: true,
       nutrition: '3.8% Matière Grasse • 3.2% Protéines',
@@ -175,7 +191,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       priceFcfa: 5500,
       unit: 'Bidon scellé 5L',
       description: 'Format économique pour grandes familles, restaurants, pâtisseries et écoles. Traite du jour garantie.',
-      image: '/images/product-lait-frais.jpg',
+      image: CLOUDINARY_IMAGES.productLaitFrais,
       badge: 'Format Éco & Restauration',
       available: true,
       nutrition: 'Richesse naturelle intégrale • Zéro écrémage',
@@ -189,7 +205,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       priceFcfa: 1500,
       unit: 'Pot en grès 500g',
       description: 'Préparé selon la tradition pastorale sénégalaise avec des ferments lactiques nobles. Texture onctueuse et goût velouté incomparable.',
-      image: '/images/product-lait-caille.jpg',
+      image: CLOUDINARY_IMAGES.productLaitCaille,
       badge: 'Recette Traditionnelle',
       available: true,
       nutrition: 'Probiotiques naturels • Digestion facile',
@@ -203,7 +219,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       priceFcfa: 5000,
       unit: 'Seau alimentaire 2L',
       description: 'Idéal pour les cérémonies, familles nombreuses ou consommation quotidienne de Thiakry et desserts traditionnels.',
-      image: '/images/product-lait-caille.jpg',
+      image: CLOUDINARY_IMAGES.productLaitCaille,
       badge: 'Générosité Terroir',
       available: true,
       nutrition: 'Texture veloutée riche en ferments actifs',
@@ -217,7 +233,7 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       priceFcfa: 500,
       unit: 'Pot 125g',
       description: 'Yaourt ferme et onctueux élaboré à partir de lait bio frais de nos vaches avec ferments lactiques vivants.',
-      image: '/images/product-lait-caille.jpg',
+      image: CLOUDINARY_IMAGES.productLaitCaille,
       badge: 'Bio Certifié',
       available: true,
       nutrition: 'Ferments lactiques vivants • Riche en calcium',
@@ -231,11 +247,41 @@ export class AccueilComponent implements OnInit, AfterViewInit, OnDestroy {
       priceFcfa: 3500,
       unit: 'Meulette fermière 300g',
       description: 'Nouveauté issue de notre atelier de transformation fromagère. Affiné délicatement avec des aromates cultivés à la ferme.',
-      image: '/images/product-fromage.jpg',
+      image: CLOUDINARY_IMAGES.productFromage,
       badge: 'Bientôt Disponible',
       available: false,
       nutrition: 'Riche en calcium et protéines nobles',
       conservation: 'En cours de certification & lancement'
+    },
+    {
+      id: 'son-de-riz-50kg',
+      name: 'Son de Riz Bio — Sac de 50 kg',
+      category: 'fourrage',
+      categoryLabel: 'Aliment Bétail & Sous-produit',
+      priceFcfa: 0,
+      unit: 'Sac de 50 kg',
+      description: 'Son de riz pur issu des rizières locales du Walo, très riche en énergie et matières grasses végétales pour optimiser la ration laitière.',
+      image: CLOUDINARY_IMAGES.sonDeRiz,
+      badge: 'Sur Devis Uniquement',
+      available: true,
+      onQuoteOnly: true,
+      nutrition: 'Riche en lipides végétaux et fibres digestibles',
+      conservation: 'À stocker au sec sur palettes à l\'abri de l\'humidité'
+    },
+    {
+      id: 'boite-paille-foin',
+      name: 'Boîte de Paille & Foin Compressé',
+      category: 'fourrage',
+      categoryLabel: 'Fourrage & Litière',
+      priceFcfa: 0,
+      unit: 'Botte / Boîte compressée',
+      description: 'Paille de riz et foin naturel séchés au soleil. Fourrage essentiel pour la rumination bovine et litière absorbante saine.',
+      image: CLOUDINARY_IMAGES.paille,
+      badge: 'Sur Devis Uniquement',
+      available: true,
+      onQuoteOnly: true,
+      nutrition: 'Fibres brutes indispensables au transit ruminal',
+      conservation: 'Conserver en zone ventilée et abritée de la pluie'
     }
   ];
 
