@@ -80,6 +80,14 @@ export class PublicHeaderComponent {
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 50);
+    } else {
+      // Pour un retour immédiat et net sans l'animation de volet (wipe)
+      if (typeof document !== 'undefined') {
+        document.documentElement.classList.add('no-view-transition');
+        setTimeout(() => {
+          document.documentElement.classList.remove('no-view-transition');
+        }, 800);
+      }
     }
   }
 

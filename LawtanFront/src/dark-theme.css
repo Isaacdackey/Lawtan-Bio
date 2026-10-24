@@ -389,17 +389,37 @@ body.dark-theme .product-market-card:not(.unavailable):hover {
 }
 
 body.dark-theme .pmc-category,
-.dark-theme .pmc-category {
+.dark-theme .pmc-category,
+body.dark-theme .gfc-cat-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  width: fit-content !important;
+  max-width: fit-content !important;
+  background: rgba(56, 189, 248, 0.12) !important;
   color: #7DD3FC !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  padding: 0.22rem 0.7rem !important;
+  white-space: nowrap !important;
+}
+
+body.dark-theme .gfc-unit-pill {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #94A3B8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  white-space: nowrap !important;
 }
 
 body.dark-theme .pmc-name,
-.dark-theme .pmc-name {
+.dark-theme .pmc-name,
+body.dark-theme .gfc-title {
   color: #F8FAFC !important;
 }
 
 body.dark-theme .pmc-desc,
-.dark-theme .pmc-desc {
+.dark-theme .pmc-desc,
+body.dark-theme .gfc-desc {
   color: #94A3B8 !important;
 }
 
@@ -428,10 +448,11 @@ body.dark-theme .gfc-badge.warning {
 body.dark-theme .gfc-action-footer,
 body.dark-theme .pmc-action-bar,
 body.dark-theme .pmc-footer {
-  background: var(--lw-surface-2) !important;
-  border-top: 1px dashed var(--lw-border) !important;
-  padding: 0.85rem 1rem !important;
-  border-radius: 12px;
+  background: transparent !important;
+  border-top: none !important;
+  padding: 0.5rem 0 0 0 !important;
+  margin-top: auto !important;
+  border-radius: 0 !important;
 }
 
 /* PRIX : Rendre ultra-visible en doré lumineux et blanc (uniquement pour les montants chiffrés) */
@@ -443,9 +464,10 @@ body.dark-theme .price-val:not(.price-quote),
 [data-theme="dark"] .price-val:not(.price-quote),
 body.dark-theme .gfc-price-tag .gfc-price-val:not(.quote-mode),
 .dark-theme .gfc-price-tag .gfc-price-val:not(.quote-mode) {
-  color: #FDE047 !important; /* Jaune doré vif éclatant */
-  text-shadow: 0 1px 8px rgba(253, 224, 71, 0.4) !important;
-  font-weight: 900 !important;
+  color: #FACC15 !important; /* Jaune doré élégant et doux */
+  text-shadow: none !important;
+  font-weight: 800 !important;
+  font-size: 1.25rem !important;
 }
 
 body.dark-theme .gfc-price-cur,
@@ -454,8 +476,23 @@ body.dark-theme .price-cur,
 .dark-theme .price-cur,
 [data-theme="dark"] .gfc-price-cur,
 [data-theme="dark"] .price-cur {
-  color: #E2E8F0 !important;
-  font-weight: 800 !important;
+  color: #94A3B8 !important;
+  font-weight: 600 !important;
+  font-size: 0.72rem !important;
+}
+
+body.dark-theme .btn-gfc-cta,
+body.dark-theme .pmc-btn-add {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25) !important;
+  padding: 0.45rem 1rem !important;
+  font-size: 0.8rem !important;
+}
+
+body.dark-theme .btn-gfc-cta:hover,
+body.dark-theme .pmc-btn-add:hover {
+  background: linear-gradient(135deg, #0369A1 0%, #075985 100%) !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4) !important;
 }
 
 /* Pastille "Sur Devis" dans les cartes (Accueil & Boutique) */
@@ -1158,3 +1195,52 @@ body.dark-theme .theme-toggle:hover {
 body.dark-theme ::-webkit-scrollbar-track { background: var(--lw-bg); }
 body.dark-theme ::-webkit-scrollbar-thumb { background: #1E3752; border-radius: 8px; }
 body.dark-theme ::-webkit-scrollbar-thumb:hover { background: #2A4E74; }
+
+/* ==========================================================================
+   11. BANDEAU PASTORAL (ANIMATION TROUPEAU / CARAVANE D'ANIMAUX) EN DARK MODE
+   ========================================================================== */
+body.dark-theme .pastoral-sheep-strip,
+[data-theme="dark"] .pastoral-sheep-strip {
+  background: linear-gradient(180deg, #0B1929 0%, #0F2338 50%, #0B1929 100%) !important;
+  border-top-color: rgba(56, 189, 248, 0.25) !important;
+  border-bottom-color: rgba(56, 189, 248, 0.2) !important;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-theme .pastoral-trail-line,
+[data-theme="dark"] .pastoral-trail-line {
+  background: linear-gradient(90deg, 
+    rgba(56, 189, 248, 0.05) 0%, 
+    rgba(56, 189, 248, 0.4) 20%, 
+    #38BDF8 50%, 
+    rgba(56, 189, 248, 0.4) 80%, 
+    rgba(56, 189, 248, 0.05) 100%
+  ) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.45) !important;
+}
+
+body.dark-theme .grass-tuft path,
+[data-theme="dark"] .grass-tuft path {
+  stroke: #22D3EE !important;
+  opacity: 0.75;
+}
+
+body.dark-theme .sheep-unit,
+[data-theme="dark"] .sheep-unit {
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6)) !important;
+}
+
+/* ==========================================================================
+   12. BARRE DE PROGRESSION DE DÉFILEMENT (SCROLL-PROGRESS) EN DARK MODE
+   ========================================================================== */
+body.dark-theme .scroll-progress-wrapper,
+[data-theme="dark"] .scroll-progress-wrapper {
+  background: rgba(15, 23, 42, 0.8) !important;
+}
+
+body.dark-theme .progress-bar-fill,
+[data-theme="dark"] .progress-bar-fill {
+  background: linear-gradient(90deg, #1D4ED8 0%, #38BDF8 70%, #FBBF24 100%) !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
+}
+

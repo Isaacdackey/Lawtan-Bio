@@ -133,6 +133,12 @@ section[id],
   animation: pageWipeIn 600ms var(--ease-out-expo) both;
 }
 
+/* Désactivation sélective de la transition (ex: clic sur logo pour retour accueil instantané) */
+html.no-view-transition::view-transition-old(root),
+html.no-view-transition::view-transition-new(root) {
+  animation: none !important;
+}
+
 @keyframes pageWipeOut {
   from { clip-path: inset(0 0 0 0); }
   to { clip-path: inset(0 0 0 100%); opacity: 0.9; }
