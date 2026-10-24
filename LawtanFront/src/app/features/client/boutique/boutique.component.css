@@ -135,17 +135,34 @@
 }
 
 .search-clear-btn {
-  background: #f1f5f9;
+  background: #e2e8f0;
   border: none;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  min-width: 28px;
+  max-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
   border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
-  color: #64748b;
+  color: #475569;
   cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  margin-left: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.search-clear-btn:hover {
+  background: #cbd5e1;
+  color: #0f172a;
+  transform: scale(1.05);
+}
+
+.search-clear-btn svg {
+  display: block;
 }
 
 /* Panier Pillule */
