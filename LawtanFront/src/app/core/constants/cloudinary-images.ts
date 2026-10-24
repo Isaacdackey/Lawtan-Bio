@@ -6,7 +6,9 @@ export const CLOUDINARY_BASE_URL = 'https://res.cloudinary.com/drqsusznh/image/u
 
 export const CLOUDINARY_IMAGES = {
   // Logos & Emblèmes
-  logo: 'https://res.cloudinary.com/drqsusznh/image/upload/v1792788874/lawtan-bio/Logo.png',
+  logo: 'https://res.cloudinary.com/drqsusznh/image/upload/v1792806164/lawtan-bio/Logo-blue.png',
+  logoOriginal: 'https://res.cloudinary.com/drqsusznh/image/upload/v1792788874/lawtan-bio/Logo.png',
+  logoBlue: 'https://res.cloudinary.com/drqsusznh/image/upload/v1792806164/lawtan-bio/Logo-blue.png',
   emblemeSvg: 'https://res.cloudinary.com/drqsusznh/image/upload/v1792788860/lawtan-bio/lawtan-embleme-premium.svg',
   loginBg: 'https://res.cloudinary.com/drqsusznh/image/upload/v1792788872/lawtan-bio/login-bg.png',
 

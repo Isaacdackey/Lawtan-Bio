@@ -564,10 +564,12 @@
     display: flex;
   }
 
-  /* Panier et Devis : strictement la même géométrie et la même bordure dès 1040px */
+  /* Panier, Thème, Devis et Burger : strictement la même géométrie circulaire (38px x 38px) dès 1040px */
   .nav-cart-pill,
+  .theme-toggle,
   .btn-devis-cta,
-  .btn-login-erp {
+  .btn-login-erp,
+  .mobile-toggle-btn {
     width: 38px !important;
     height: 38px !important;
     min-width: 38px !important;
@@ -587,6 +589,20 @@
     color: #2C77B0 !important;
   }
 
+  .theme-toggle {
+    background: #ffffff !important;
+    color: #2C77B0 !important;
+  }
+
+  .mobile-toggle-btn {
+    background: #ffffff !important;
+    padding: 9px !important;
+  }
+
+  .mobile-toggle-btn .bar {
+    background: #12304A;
+  }
+
   .btn-devis-cta,
   .btn-login-erp {
     background: #2C77B0 !important;
@@ -595,6 +611,7 @@
   }
 
   .nav-cart-icon-wrap svg,
+  .theme-toggle svg,
   .btn-devis-cta svg,
   .btn-login-erp svg {
     width: 18px !important;
@@ -632,11 +649,12 @@
   }
 
   .mobile-toggle-btn {
-    width: 38px;
-    height: 38px;
-    min-height: 38px;
-    border-radius: 10px;
-    padding: 8px;
-    box-sizing: border-box;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    border-radius: 50% !important;
+    padding: 9px !important;
+    box-sizing: border-box !important;
   }
 }

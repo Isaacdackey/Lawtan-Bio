@@ -46,13 +46,42 @@
         <div class="market-order-confirmation" role="status">{{ orderConfirmation() }}</div>
       }
       @if (isLoadingProducts()) {
-        <p class="market-loading">Chargement du catalogue depuis la ferme…</p>
+        <div class="market-loading-state" role="status" aria-label="Chargement du catalogue">
+          <div class="market-skeleton-grid">
+            @for (item of [1, 2, 3]; track item) {
+              <div class="market-skeleton-card">
+                <div class="sk-img skeleton-shimmer"></div>
+                <div class="sk-body">
+                  <div class="sk-tag skeleton-shimmer"></div>
+                  <div class="sk-title skeleton-shimmer"></div>
+                  <div class="sk-desc skeleton-shimmer"></div>
+                  <div class="sk-desc short skeleton-shimmer"></div>
+                  <div class="sk-box skeleton-shimmer"></div>
+                  <div class="sk-footer">
+                    <div class="sk-price skeleton-shimmer"></div>
+                    <div class="sk-btn skeleton-shimmer"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="market-loading-label">
+            <span class="sk-spinner"></span>
+            <span>Chargement des produits frais de la ferme...</span>
+          </div>
+        </div>
       }
       @if (productsError()) {
-        <p class="market-error" role="alert">{{ productsError() }}</p>
+        <div class="market-error" role="alert">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>{{ productsError() }}</span>
+        </div>
       }
       @if (!isLoadingProducts() && !productsError() && filteredProducts().length === 0) {
-        <p class="market-loading">Aucun produit disponible pour ces critères.</p>
+        <div class="market-empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2C77B0" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>Aucun produit ne correspond à vos critères de recherche.</p>
+        </div>
       }
 
 

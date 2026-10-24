@@ -2,6 +2,7 @@ import { Component, Input, HostListener, HostBinding, signal, inject, effect } f
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-public-header',
@@ -15,6 +16,7 @@ export class PublicHeaderComponent {
 
   private router = inject(Router);
   cartService = inject(CartService);
+  themeService = inject(ThemeService);
 
   isScrolled = signal<boolean>(false);
   isMobileMenuOpen = signal<boolean>(false);

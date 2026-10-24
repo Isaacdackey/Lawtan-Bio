@@ -2658,8 +2658,9 @@
   .hero-slider-section {
     position: relative;
     width: 100%;
-    min-height: 85svh;
-    min-height: 85dvh;
+    min-height: 72svh;
+    min-height: 72dvh;
+    max-height: 720px;
     height: auto !important;
     overflow: hidden;
     background-color: #0E2438;
@@ -2668,8 +2669,8 @@
   .slider-container {
     position: relative;
     width: 100%;
-    min-height: 85svh;
-    min-height: 85dvh;
+    min-height: 72svh;
+    min-height: 72dvh;
     height: 100%;
   }
 
@@ -2696,14 +2697,14 @@
     z-index: 2;
   }
 
-  /* Image de fond recadrée pour centrer le tracteur dans le cadre supérieur */
+  /* Image de fond recadrée pour centrer le sujet dans le cadre supérieur */
   .slide-bg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     background-size: cover;
-    background-position: 62% 18%;
+    background-position: center 25%;
     filter: brightness(0.95);
   }
 
@@ -2732,18 +2733,18 @@
     z-index: 3;
   }
 
-  /* Alignement en bas (flex-end) avec padding-bottom de 92px pour monter le bloc et laisser respirer les briques de lait */
+  /* Alignement en bas avec espacements optimisés pour ne pas chevaucher les indicateurs */
   .slide-content-wrap {
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 85svh;
-    min-height: 85dvh;
+    min-height: 72svh;
+    min-height: 72dvh;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding-top: calc(var(--nav-height, 68px) + 8px);
-    padding-bottom: 92px;
+    padding-top: calc(var(--nav-height, 68px) + 4px);
+    padding-bottom: 88px;
     z-index: 4;
   }
 
@@ -2773,76 +2774,75 @@
   }
 
   .slide-main-title {
-    font-size: 1.58rem;
-    line-height: 1.2;
-    margin-bottom: 0.65rem;
+    font-size: 1.48rem;
+    line-height: 1.18;
+    margin-bottom: 0.5rem;
     word-break: break-word;
     letter-spacing: -0.02em;
   }
 
   .slide-lead-desc {
-    font-size: 0.88rem;
-    line-height: 1.45;
-    margin-bottom: 1.15rem;
+    font-size: 0.84rem;
+    line-height: 1.4;
+    margin-bottom: 0.9rem;
     color: rgba(255, 255, 255, 0.9);
   }
 
-  /* Boutons d'action compacts, proportionnés et alignés côte à côte */
+  /* Boutons d'action : strictement côte à côte en mode horizontal */
   .slide-actions-row {
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
     align-items: center;
     justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-bottom: 1.15rem;
+    flex-wrap: nowrap !important;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
     width: 100%;
   }
 
   .slide-actions-row .btn-primary-glow,
-  .slide-actions-row .btn-secondary-glass {
+  .slide-actions-row .btn-secondary-glass,
+  .slide-actions-row .btn-whatsapp-hero {
+    flex: 1 1 0;
     width: auto;
-    padding: 0.55rem 1.15rem;
-    font-size: 0.82rem;
+    min-width: 0;
+    padding: 0.52rem 0.65rem;
+    font-size: 0.78rem;
     font-weight: 700;
     border-radius: 9999px;
     letter-spacing: 0.01em;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   }
 
-  .slide-actions-row .btn-whatsapp-hero {
-    width: auto;
-    padding: 0.55rem 1.15rem;
-    font-size: 0.82rem;
-    font-weight: 700;
-    border-radius: 9999px;
-    letter-spacing: 0.01em;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  .slide-actions-row .btn-whatsapp-hero svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
   }
 
   .slide-metrics-strip {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
-    padding-top: 0.9rem;
+    padding-top: 0.75rem;
     border-top: 1px solid rgba(255, 255, 255, 0.3); /* Ligne plus visible */
   }
 
   .sm-value {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 800;
     color: #ffffff;
   }
 
   .sm-label {
-    font-size: 13px; /* Légendes à 13px minimum */
-    line-height: 1.25;
-    color: rgba(255, 255, 255, 0.85); /* Blanche à 85% d'opacité */
+    font-size: 12px;
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.85);
   }
 
   /* Flèches masquées sur mobile pour libérer l'écran */
@@ -2853,7 +2853,7 @@
   /* Indicateurs de carrousel : briques de lait artisanales visibles et centrées */
   .slider-indicators {
     position: absolute;
-    bottom: 16px;
+    bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -2914,8 +2914,8 @@
     .slide-actions-row .btn-primary-glow,
     .slide-actions-row .btn-secondary-glass,
     .slide-actions-row .btn-whatsapp-hero {
-      padding: 0.5rem 0.95rem;
-      font-size: 0.78rem;
+      padding: 0.46rem 0.5rem;
+      font-size: 0.74rem;
     }
     .sm-value {
       font-size: 0.85rem;
