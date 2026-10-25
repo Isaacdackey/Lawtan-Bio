@@ -1270,4 +1270,43 @@
     font-size: 0.85rem;
     padding: 0.8rem 1rem;
   }
+
+  /* Cart Drawer optimisé pour mobile */
+  .cart-drawer-panel {
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+
+  .cart-drawer-header {
+    padding: 1.15rem 1.25rem !important;
+  }
+
+  .cart-drawer-body {
+    padding: 1rem 1.15rem !important;
+  }
+
+  .cart-drawer-footer {
+    padding: 1.15rem 1.25rem calc(1.15rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .cart-item-row {
+    padding: 0.85rem !important;
+    gap: 0.75rem !important;
+  }
+
+  .ci-img {
+    width: 58px !important;
+    height: 58px !important;
+    border-radius: 10px !important;
+  }
+
+  .ci-controls {
+    gap: 0.6rem !important;
+    flex-wrap: wrap !important;
+  }
+
+  .ci-line-total {
+    font-size: 0.92rem !important;
+    white-space: nowrap !important;
+  }
 }
